@@ -1,0 +1,4 @@
+#all files with the extension .secret will be ignored
+backend/*.secret
+frontend/*.secret
+
