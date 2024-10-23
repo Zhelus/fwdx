@@ -1,4 +1,8 @@
 #all files with the extension .secret will be ignored
+
+*.ini
+*.env
+*.secret
 backend/*.ini
 backend/*.env
 backend/*.secret
