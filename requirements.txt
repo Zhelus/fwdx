@@ -1,0 +1,5 @@
+# Backend Requirements
+
+pymongo[srv]
+
+# Frontend Requirements
