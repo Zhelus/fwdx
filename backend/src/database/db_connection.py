@@ -26,7 +26,7 @@ db_connection_string = os.getenv('DB_CONNECTION_STRING')
 
 
 print(f"Imported Connection String: {db_connection_string}")
-"""
+
 uri = db_connection_string
 
 # Create a new client and connect to the server
@@ -48,4 +48,3 @@ try:
     print("Pinged your deployment. You successfully connected to MongoDB!")
 except Exception as e:
     print(e)
-"""
