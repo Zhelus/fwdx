@@ -31,6 +31,8 @@
 
    ```bash
    python -m pip install -r requirements.txt
-   OR 
+   ```
+   OR
+   ```bash
    python3 -m pip install -r requirements.txt
    ```
