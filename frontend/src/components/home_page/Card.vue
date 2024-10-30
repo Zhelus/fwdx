@@ -1,3 +1,8 @@
+<!-- 
+Component for cards showing newest reports on home page
+Last edited by: Blake Good
+Date: 10/30/24
+-->
 <script setup>
     const props = defineProps(['cardTitle', 'cardType', 'pathogenName', 'reportId', 'reportAge', 'pathogenNameFmtd', 'reagentName', 'mismatchCount'])
 

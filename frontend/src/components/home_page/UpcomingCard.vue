@@ -1,3 +1,8 @@
+<!-- 
+Component for displaying upcoming reports on the home page
+Last edited by: Blake Good
+Date: 10/30/24
+-->
 <script setup>
     const props = defineProps(['cardTitle', 'scheduleId', 'reportFrequency', 'pathogenName', 'reagentName', 'mismatchCount', 'reportDate'])
 </script>

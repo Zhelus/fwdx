@@ -1,3 +1,8 @@
+<!-- 
+Component for navigation buttons contained in the navigation bar
+Last edited by: Blake Good
+Date: 10/30/24
+-->
 <script setup>
     import {useRouter} from 'vue-router'
     import {ref, computed, reactive} from 'vue'

@@ -1,3 +1,8 @@
+<!-- 
+Component for form checkbox options and section header
+Last edited by: Blake Good
+Date: 10/30/24
+-->
 <script setup>
     import {ref} from 'vue'
 
