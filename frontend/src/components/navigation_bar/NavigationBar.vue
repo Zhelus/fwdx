@@ -1,0 +1,126 @@
+<script setup>
+    import NavigationButton from './NavigationButton.vue';
+    import {useRouter} from 'vue-router'
+    import {ref, reactive} from 'vue'
+
+    const router = useRouter();
+
+    var homeIsActive = ref(true);
+    var homeIsStandard = ref(false);
+    const homeClassObject = reactive({
+        active: homeIsActive,
+        standard: homeIsStandard,
+        'nav-button': true
+    });
+
+    var pathogenIsActive = ref(false);
+    var pathogenIsStandard = ref(true);
+    const pathogenClassObject = reactive({
+        active: pathogenIsActive,
+        standard: pathogenIsStandard,
+        'nav-button': true
+    });
+
+    var reagentIsActive = ref(false);
+    var reagentIsStandard = ref(true);
+    const reagentClassObject = reactive({
+        active: reagentIsActive,
+        standard: reagentIsStandard,
+        'nav-button': true
+    });
+    
+
+    function navigateToPage(path, buttonName){
+        console.log(path);
+        if(path !== undefined){
+            router.push(path);
+        }
+        homeIsActive.value = buttonName == 'home-nav';
+        pathogenIsActive.value = buttonName == 'pathogens-nav';
+        reagentIsActive.value = buttonName == 'reagents-nav';
+        homeIsStandard.value = buttonName != 'home-nav';
+        pathogenIsStandard.value = buttonName != 'pathogens-nav';
+        reagentIsStandard.value = buttonName != 'reagents-nav';
+    }
+</script>
+
+<template>
+    <div class="nav-bar">
+        <div id="navbar-logo">
+            <img id="fwdx-image" src="@/assets/bioblade.svg" />
+        </div>
+        <div id="navbar-main-buttons">
+            <NavigationButton text="Home" :class-object="homeClassObject" routerPath="/" button-name="home-nav" @nav-button-clicked="navigateToPage"/>
+            <NavigationButton text="Pathogens" :class-object="pathogenClassObject" routerPath="/pathogens" button-name="pathogens-nav" @nav-button-clicked="navigateToPage"/>
+            <NavigationButton text="Reagents" :class-object="reagentClassObject" routerPath="/reagents" button-name="reagents-nav" @nav-button-clicked="navigateToPage"/>
+        </div>
+        <div id="navbar-account-buttons">
+            <NavigationButton text="Sign Out" class-object="sign-out-button" />
+            <NavigationButton text="Account" class-object="my-account-button" />
+        </div>
+    </div>
+</template>
+
+<style scoped>
+    .nav-bar {
+        padding: 0.25rem 1rem;
+        background-color: #FFFFFF;
+        border-bottom: 1pt solid #EFF0F1;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        color: #0E113E;
+        font-family: 'Inter';
+        height: 100%;
+        max-height: 100%;
+        min-height: 100%;
+    }
+
+    @media(min-height: 1080px){
+        #fwdx-image {
+            width: auto;
+            height: 65%;
+            border-radius: 8px;
+        }
+    }
+
+    @media(max-height: 1080px){
+        #fwdx-image {
+            width: 65%;
+            height: auto;
+            border-radius: 8px;
+        }
+    }
+
+    #navbar-logo {
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        align-items: center;
+        width: 20%;
+        height: 100%;
+        padding: 0;
+    }
+
+    #navbar-logo>h3 {
+        font-size: clamp(9.5pt, 1.25vw, 12pt);
+        font-weight: bold;
+        text-wrap: nowrap;
+    }
+
+    #navbar-main-buttons {
+        width: 60%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #navbar-account-buttons {
+        width: 20%;
+        display: flex;
+        flex-direction: row;
+        justify-content: right;
+        align-items: center;
+    }
+</style>
