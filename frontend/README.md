@@ -1,29 +1,11 @@
 # FWDX-BioBlade
+# To setup the frontend...
+1) Move to the folder /fwdx/frontend
+2) Run the command 'npm install'
 
-This template should help get you started developing with Vue 3 in Vite.
+# To test the frontend...
+1) Run the command 'npm run dev' from the /frontend folder
+2) Once the vite server starts, type 'o' to open in the browser
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+# To build the frontend...
+1) Run the command 'npm run build'

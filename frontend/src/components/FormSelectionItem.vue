@@ -1,3 +1,8 @@
+<!-- 
+Component for selection drop-down and section header
+Last edited by: Blake Good
+Date: 10/30/24
+-->
 <script setup>
     import {ref} from 'vue'
 
@@ -18,6 +23,7 @@
         flex-direction: column;
         height: auto;
         width: 40%;
+        min-width: 365px;
         background-color: transparent;
         margin-bottom: 2.5rem;
         margin-top: 0rem;

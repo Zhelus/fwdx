@@ -1,3 +1,8 @@
+<!-- 
+Page view for one-time generation of a new report
+Last edited by: Blake Good
+Date: 10/30/24
+-->
 <script setup>
 import ReportForm from '@/components/ReportForm.vue';
 </script>
