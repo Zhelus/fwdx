@@ -23,7 +23,7 @@ Date: 10/30/24
         flex-direction: column;
         height: auto;
         width: 40%;
-        min-width: 365px;
+        min-width: 380px;
         background-color: transparent;
         margin-bottom: 2.5rem;
         margin-top: 0rem;
@@ -50,6 +50,7 @@ Date: 10/30/24
     }
 
     .select-box:focus {
-        outline: 1pt solid var(--fwdx-yellow);
+        border: var(--input-focus-border);
+        outline: var(--input-focus-outline);
     }
 </style>

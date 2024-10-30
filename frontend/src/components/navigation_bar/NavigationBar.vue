@@ -79,6 +79,7 @@ Date: 10/30/24
         height: 100%;
         max-height: 100%;
         min-height: 100%;
+        min-width: 550px;
     }
 
     @media(min-height: 1080px){
@@ -94,6 +95,15 @@ Date: 10/30/24
             width: 65%;
             height: auto;
             border-radius: 8px;
+        }
+    }
+
+    @media(max-width: 900px){
+        #fwdx-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            min-width: 100px;
         }
     }
 

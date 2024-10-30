@@ -23,9 +23,9 @@ Date: 10/30/24
     .checkbox-item-container {
         display: flex;
         flex-direction: column;
-        height: 12%;
+        height: 10%;
         width: 40%;
-        min-width: 365px;
+        min-width: 380px;
         background-color: transparent;
         margin-bottom: 2.5rem;
         margin-top: 0rem;
@@ -41,7 +41,7 @@ Date: 10/30/24
         color: var(--dark-gray-text);
         font-size: 16pt;
         font-weight: 700;
-        line-height: 24px;
+        line-height: auto;
         text-align: left;
         text-justify: top;
         margin-bottom: 0.25rem;
