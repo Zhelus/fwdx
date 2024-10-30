@@ -9,4 +9,7 @@ backend/*.secret
 frontend/*.ini
 frontend/*.env
 frontend/*.secret
+.DS_Store
+.idea/
+__pycache__/
 

@@ -1,31 +1,48 @@
-#connection file
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
-from dotenv import load_dotenv
 import os
 
-# Load enviornment variables
-load_dotenv()
+import certifi
+from dotenv import load_dotenv
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
-# Setup 
-uri = os.getenv('DB_CONNECTION_STRING') 
+from definitions import ENV_DIR
 
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
+"""
+Temporary wrapper around MongoDB
+"""
 
-# Choose sample database
-db = client["sample_mflix"]
+class MongoDBConnector:
+    def __init__(self):
+        load_dotenv(ENV_DIR)
+        self.uri = os.getenv('DB_CONNECTION_STRING')
 
-# Choose some sample collections, this could be like reagents or users etc
-comments = db["comments"]
-embedded_movies = db["embedded_movies"]
+        # self.client = self.connect()
+        self.client = self.connect_ssl()
 
-# Find a entry 
-# print(comments.)
+    def connect(self):
+        try:
+            client = MongoClient(self.uri, server_api=ServerApi('1'))
+        except Exception as e:
+            print("Error connecting to MongoDB:", e)
 
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
+        return client
+
+    def connect_ssl(self):
+        # Use the certifi library to get the path of the CA certificate
+        ca = certifi.where()
+
+        try:
+            # Create a MongoClient instance and specify the CA certificate path
+            client = MongoClient(self.uri, server_api=ServerApi('1'), tlsCAFile=ca)
+
+        except Exception as e:
+            print("Error connecting to MongoDB:", e)
+
+        return client
+
+    def ping(self):
+        try:
+            self.client.admin.command("ping")
+            print("Pinged your deployment. You successfully connected to MongoDB!")
+        except Exception as e:
+            print("Error connecting to MongoDB:", e)
