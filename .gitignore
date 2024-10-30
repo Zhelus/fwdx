@@ -1,14 +1,8 @@
-#all files with the extension .secret will be ignored
+#all files with the extension .ini, .env, or .secret will be ignored
 
 *.ini
 *.env
 *.secret
-backend/*.ini
-backend/*.env
-backend/*.secret
-frontend/*.ini
-frontend/*.env
-frontend/*.secret
 .DS_Store
 .idea/
 __pycache__/
