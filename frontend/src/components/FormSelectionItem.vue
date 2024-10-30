@@ -18,6 +18,7 @@
         flex-direction: column;
         height: auto;
         width: 40%;
+        min-width: 365px;
         background-color: transparent;
         margin-bottom: 2.5rem;
         margin-top: 0rem;
