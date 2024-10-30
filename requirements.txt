@@ -1,6 +1,6 @@
 # Backend Requirements
-
-pymongo[srv] # needed to connect to the Atlas MongoDB Database
-python-dotenv # needed to load secret environment variables
+pymongo[srv]~=4.10.1
+python-dotenv~=1.0.1
 
 # Frontend Requirements
+certifi~=2024.8.30
