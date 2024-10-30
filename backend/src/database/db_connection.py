@@ -9,6 +9,8 @@ from definitions import ENV_DIR
 
 """
 Temporary wrapper around MongoDB
+Last edited by: Harrison Leath
+Date: 10/30/24
 """
 
 class MongoDBConnector:
