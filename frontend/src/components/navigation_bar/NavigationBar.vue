@@ -1,3 +1,8 @@
+<!-- 
+Component for the navigation bar shown on the top of the page
+Last edited by: Blake Good
+Date: 10/30/24
+-->
 <script setup>
     import NavigationButton from './NavigationButton.vue';
     import {useRouter} from 'vue-router'
@@ -86,6 +91,7 @@
         height: 100%;
         max-height: 100%;
         min-height: 100%;
+        min-width: 550px;
     }
 
     @media(min-height: 1080px){
@@ -101,6 +107,15 @@
             width: 65%;
             height: auto;
             border-radius: 8px;
+        }
+    }
+
+    @media(max-width: 900px){
+        #fwdx-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            min-width: 100px;
         }
     }
 

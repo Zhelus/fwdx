@@ -1,3 +1,8 @@
+<!-- 
+Page view for the home page showing basic report information and actions
+Last edited by: Blake Good
+Date: 10/30/24
+-->
 <script setup>
     import CardContainer from '@/components/home_page/CardContainer.vue';
     import Card from '@/components/home_page/Card.vue'

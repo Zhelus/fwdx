@@ -1,3 +1,9 @@
+<!-- 
+*** Not currently used ***
+Component for a container to hold cards
+Last edited by: Blake Good
+Date: 10/30/24
+-->
 <script setup>
     const props = defineProps(['containerTitle', 'containerType'])
 </script>

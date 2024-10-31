@@ -1,15 +1,45 @@
-#all files with the extension .secret will be ignored
+# Define the file types that will be ignored when pushing to GitHub
+# Last edited by: Blake Good
+# Date: 10/30/24
 
+#all files with the extension .ini, .env, or .secret will be ignored
 *.ini
 *.env
 *.secret
-backend/*.ini
-backend/*.env
-backend/*.secret
-frontend/*.ini
-frontend/*.env
-frontend/*.secret
 .DS_Store
 .idea/
 __pycache__/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# NPM modules and local files
 node_modules
+.DS_Store
+dist
+dist-ssr
+coverage
+*.local
+
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+*.tsbuildinfo
+
+

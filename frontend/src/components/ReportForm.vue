@@ -1,11 +1,22 @@
+<!-- 
+Wrapper component for generating/editing reports
+Last edited by: Blake Good
+Date: 10/30/24
+-->
 <script setup>
     import {ref} from 'vue'
+    import { useRouter } from 'vue-router'
     import FormSelectionItem from './FormSelectionItem.vue';
     import FormCheckboxItem from './FormCheckboxItem.vue';
+    import FormTextInputItem from './FormTextInputItem.vue';
+    import FormActionButton from './FormActionButton.vue';
+    import FormFrequencyInputItem from './FormFrequencyInputItem.vue';
     
-    const props = defineProps(['formTitle'])
+    const props = defineProps(['formTitle', 'showFrequency', 'isEditReport'])
+    const router = useRouter();
     const pathogenSelection = ref('Test');
     const reagentSelection = ref('Test');
+    const confirmationText = ref('');
 
     const pathogenOptions = [
         {
@@ -87,6 +98,15 @@
         }
     ];
 
+    function cancelClicked(){
+        console.log("Clicked cancel button");
+        router.push("/");
+    }
+
+    function submitClicked(){
+        console.log("Clicked submit button");
+    }
+
 
 </script>
 <template>
@@ -96,9 +116,15 @@
         <p style="color: black;">{{ reagentSelection }}</p> -->
         <FormSelectionItem selection-header="Pathogen" :options-list="pathogenOptions" :selection-var="pathogenSelection" select-field="pathogen" @selectionChanged="setSelection"/>
         <FormSelectionItem selection-header="Reagent" :options-list="reagentOptions" :selection-var="reagentSelection" select-field="reagent" @selectionChanged="setSelection"/>
+        <FormFrequencyInputItem v-if="showFrequency" section-header="Report Frequency" />
         <FormCheckboxItem section-header="Databases" :options-list="databaseCheckboxOptions" />
         <FormCheckboxItem section-header="Notifications" :options-list="notificationCheckboxOptions" />
-
+        <FormTextInputItem v-model="confirmationText" section-header="Type 'YES' to confirm the above information is correct" />
+        <div class="form-button-container">
+            <FormActionButton button-text="Cancel" button-class="cancel" @cancelButtonClicked="cancelClicked"/>
+            <FormActionButton v-if="isEditReport" v-model="confirmationText" button-text="Save Changes" button-class="submit" @submitButtonClicked="submitClicked"/>
+            <FormActionButton v-else v-model="confirmationText" button-text="Submit" button-class="submit" @submitButtonClicked="submitClicked"/>
+        </div>
     </div>
 </template>
 <style scoped>
@@ -111,6 +137,7 @@
         background-color: var(--light-gray-container-background);
         border-radius: 5px;
         padding: 25px;
+        overflow-x: scroll;
     }
 
     .form-header {
@@ -121,5 +148,10 @@
         font-size: 26pt;
         line-height: 0.95em;
         margin-bottom: 2.5rem;
+    }
+
+    .form-button-container {
+        display: flex;
+        column-gap: 15px;
     }
 </style>
