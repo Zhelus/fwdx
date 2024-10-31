@@ -23,9 +23,17 @@
 
     var reagentIsActive = ref(false);
     var reagentIsStandard = ref(true);
-    const reagentClassObject = reactive({
+    var reagentClassObject = reactive({
         active: reagentIsActive,
         standard: reagentIsStandard,
+        'nav-button': true
+    });
+
+    const flaskExampleIsActive = ref(false);
+    const flaskExampleIsStandard = ref(true);
+    const flaskExampleClassObject = reactive({
+        active: flaskExampleIsActive,
+        standard: flaskExampleIsStandard,
         'nav-button': true
     });
     
@@ -38,9 +46,12 @@
         homeIsActive.value = buttonName == 'home-nav';
         pathogenIsActive.value = buttonName == 'pathogens-nav';
         reagentIsActive.value = buttonName == 'reagents-nav';
+        flaskExampleIsActive.value = buttonName === 'flaskExample-nav';
+
         homeIsStandard.value = buttonName != 'home-nav';
         pathogenIsStandard.value = buttonName != 'pathogens-nav';
         reagentIsStandard.value = buttonName != 'reagents-nav';
+        flaskExampleIsStandard.value = buttonName !== 'flaskExample-nav';
     }
 </script>
 
@@ -53,6 +64,7 @@
             <NavigationButton text="Home" :class-object="homeClassObject" routerPath="/" button-name="home-nav" @nav-button-clicked="navigateToPage"/>
             <NavigationButton text="Pathogens" :class-object="pathogenClassObject" routerPath="/pathogens" button-name="pathogens-nav" @nav-button-clicked="navigateToPage"/>
             <NavigationButton text="Reagents" :class-object="reagentClassObject" routerPath="/reagents" button-name="reagents-nav" @nav-button-clicked="navigateToPage"/>
+            <NavigationButton text="Flask Example" :class-object="flaskExampleClassObject" routerPath="/flaskExample" button-name="flaskExample-nav" @nav-button-clicked="navigateToPage"/>
         </div>
         <div id="navbar-account-buttons">
             <NavigationButton text="Sign Out" class-object="sign-out-button" />

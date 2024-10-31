@@ -12,4 +12,4 @@ frontend/*.secret
 .DS_Store
 .idea/
 __pycache__/
-
+node_modules
