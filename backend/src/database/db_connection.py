@@ -5,10 +5,11 @@ from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-from definitions import ENV_DIR
+from backend.definitions import ENV_DIR
 
 """
 Temporary wrapper around MongoDB
+
 Last edited by: Harrison Leath
 Date: 10/30/24
 """
@@ -17,6 +18,9 @@ class MongoDBConnector:
     def __init__(self):
         load_dotenv(ENV_DIR)
         self.uri = os.getenv('DB_CONNECTION_STRING')
+
+        if self.uri is None:
+            raise ValueError("Missing DB_CONNECTION_STRING. Is \"config.env\" in the right place?")
 
         # self.client = self.connect()
         self.client = self.connect_ssl()
@@ -48,3 +52,8 @@ class MongoDBConnector:
             print("Pinged your deployment. You successfully connected to MongoDB!")
         except Exception as e:
             print("Error connecting to MongoDB:", e)
+
+
+# debug code
+connector = MongoDBConnector()
+connector.ping()
