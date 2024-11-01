@@ -4,7 +4,7 @@ Last edited by: Blake Good
 Date: 10/30/24
 -->
 <script setup>
-    import ReportForm from '@/components/ReportForm.vue';
+    import ReportForm from '@/components/report_form/ReportForm.vue';
 </script>
 <template>
 <div class="report-page-wrapper">

@@ -61,7 +61,6 @@ Date: 10/30/24
         grid-template-rows: 2.5rem;
         width: 100%;
         gap: 15px;
-        /* font-size: 12pt; */
     }
 
     .frequency-value-input {
@@ -78,6 +77,7 @@ Date: 10/30/24
     .frequency-value-input:focus {
         border: var(--input-focus-border);
         outline: var(--input-focus-outline);
+        transition: 0.03s;
     }
 
     .frequency-unit-options {

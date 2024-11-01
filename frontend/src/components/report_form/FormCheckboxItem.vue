@@ -84,20 +84,8 @@ Date: 10/30/24
         -webkit-appearance: checkbox;
         -moz-appearance:checkbox;
         appearance: checkbox;
-        /* border-radius: 3px;
-        text-align: center;
-        vertical-align: middle; */
-        /* font-size: 1em; */
-        /* accent-color: var(--fwdx-yellow); */
         accent-color: var(--fwdx-yellow);
-        /* color: white; */
     }
-
-    /* input[type='checkbox']:checked:after {
-        content: '\2713';
-        color:white;
-        font-weight: 900;
-    } */
 
     .checkbox-label {
         color: var(--dark-gray-text);
