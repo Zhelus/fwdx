@@ -41,6 +41,7 @@ Date: 10/30/24
     .text-input:focus {
         border: var(--input-focus-border);
         outline: var(--input-focus-outline);
+        transition: 0.03s;
     }
 
     .section-header {

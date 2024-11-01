@@ -112,8 +112,6 @@ Date: 10/30/24
 <template>
     <div class="report-form-container">
         <h1 class="form-header">{{ formTitle }}</h1>
-        <!-- <p style="color: black;">{{ pathogenSelection }}</p>
-        <p style="color: black;">{{ reagentSelection }}</p> -->
         <FormSelectionItem selection-header="Pathogen" :options-list="pathogenOptions" :selection-var="pathogenSelection" select-field="pathogen" @selectionChanged="setSelection"/>
         <FormSelectionItem selection-header="Reagent" :options-list="reagentOptions" :selection-var="reagentSelection" select-field="reagent" @selectionChanged="setSelection"/>
         <FormFrequencyInputItem v-if="showFrequency" section-header="Report Frequency" />
