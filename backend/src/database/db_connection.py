@@ -1,3 +1,10 @@
+"""
+Temporary wrapper around MongoDB
+
+Last edited by: Kyle Stagner
+Date: 2024/11/2
+"""
+
 import os
 
 import certifi
@@ -5,14 +12,16 @@ from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
+"""
+***for backend.definitions to work as designed***
+config.env file must contain PYTHONPATH=./ so that the project root is included in sys path
+#also be sure to include "python.envFile": "${workspaceFolder}/config.env", in your .vscode/settings.json file
+"""
+
 from backend.definitions import ENV_DIR
 
-"""
-Temporary wrapper around MongoDB
 
-Last edited by: Harrison Leath
-Date: 10/30/24
-"""
+
 
 class MongoDBConnector:
     def __init__(self):
