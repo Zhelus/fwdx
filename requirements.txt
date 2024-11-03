@@ -1,6 +1,7 @@
 # Backend Requirements
 pymongo[srv]~=4.10.1
 python-dotenv~=1.0.1
+requests~=2.32.3
 
 # Frontend Requirements
 certifi~=2024.8.30

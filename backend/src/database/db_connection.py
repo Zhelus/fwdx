@@ -6,7 +6,6 @@ Date: 2024/11/03
 """
 
 import os
-import subprocess
 
 import certifi
 from dotenv import load_dotenv
@@ -65,15 +64,17 @@ class MongoDBConnector:
     def get_connection_uri(self):
         return self.uri         
 
-    def launch_mongosh(self):
-        try:
-            # Extract the host and database information from the connection URI
-            command = f'mongosh "{self.uri}"'
-            print("Launching mongosh terminal...")
-            subprocess.run(command, shell=True)
-        except Exception as e:
-            print("Failed to launch mongosh terminal:", e)
+    def close_connection(self):
+        """Close the MongoDB connection gracefully."""
+        if self.client:
+            self.client.close()
+            print("Connection to MongoDB closed.")
 
+# Example usage for testing the connection
+if __name__ == "__main__":
+    connector = MongoDBConnector()
+    connector.close_connection()
+    
 # debug code
 # connector = MongoDBConnector()
 # connector.ping()
