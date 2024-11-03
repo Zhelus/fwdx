@@ -2,7 +2,7 @@
 Temporary wrapper around MongoDB
 
 Last edited by: Kyle Stagner
-Date: 2024/11/2
+Date: 2024/11/03
 """
 
 import os
@@ -21,7 +21,6 @@ config.env file must contain PYTHONPATH=./ so that the project root is included 
 
 from backend.definitions import ENV_DIR
 
-
 class MongoDBConnector:
     def __init__(self):
         load_dotenv(ENV_DIR)
@@ -32,6 +31,8 @@ class MongoDBConnector:
 
         # self.client = self.connect()
         self.client = self.connect_ssl()
+        self.db = self.client['FWDX_Database']  # Replace 'your_database' with the name of your actual database
+
 
     def connect(self):
         try:
@@ -76,4 +77,3 @@ class MongoDBConnector:
 # debug code
 # connector = MongoDBConnector()
 # connector.ping()
-
