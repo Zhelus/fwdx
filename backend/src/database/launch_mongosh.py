@@ -5,7 +5,7 @@ from backend.src.database.db_connection import MongoDBConnector
 Launches a mongosh session using the connection URI from MongoDBConnector.
 mongosh is installed on macos with brew:
 brew tap mongodb/brew
-brew install mongoshuse
+brew install mongosh
 """
 
 def main():

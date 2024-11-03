@@ -1,3 +1,9 @@
+"""
+This code builds the NCBI search quiery, processes the request, and prepares the strings for dataprocessor.py
+Last uploaded: Kyle Stagner
+Date: 2024/11/3
+"""
+
 import os
 import requests
 

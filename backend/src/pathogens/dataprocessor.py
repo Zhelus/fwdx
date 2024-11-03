@@ -1,3 +1,9 @@
+"""
+this python code is used to process data fetched and parsed by ncbi_fetch.py 
+Last uploaded: Kyle Stagner
+Date: 2024/11/3
+"""
+
 from backend.src.database.db_connection import MongoDBConnector
 from backend.src.pathogens.ncbi_fetch import NCBIDataFetcher
 

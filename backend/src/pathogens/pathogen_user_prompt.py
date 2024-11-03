@@ -1,3 +1,11 @@
+"""
+Main entry point into pathogen ingestion process.
+Should be transferable to an API call from the front end later,
+
+Last uploaded: Kyle Stagner
+Date: 2024/11/3
+"""
+
 from backend.src.pathogens.dataprocessor import DataProcessor
 
 def main():
