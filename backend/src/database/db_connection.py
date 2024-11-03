@@ -6,6 +6,7 @@ Date: 2024/11/2
 """
 
 import os
+import subprocess
 
 import certifi
 from dotenv import load_dotenv
@@ -19,8 +20,6 @@ config.env file must contain PYTHONPATH=./ so that the project root is included 
 """
 
 from backend.definitions import ENV_DIR
-
-
 
 
 class MongoDBConnector:
@@ -62,7 +61,19 @@ class MongoDBConnector:
         except Exception as e:
             print("Error connecting to MongoDB:", e)
 
+    def get_connection_uri(self):
+        return self.uri         
+
+    def launch_mongosh(self):
+        try:
+            # Extract the host and database information from the connection URI
+            command = f'mongosh "{self.uri}"'
+            print("Launching mongosh terminal...")
+            subprocess.run(command, shell=True)
+        except Exception as e:
+            print("Failed to launch mongosh terminal:", e)
 
 # debug code
-connector = MongoDBConnector()
-connector.ping()
+# connector = MongoDBConnector()
+# connector.ping()
+
