@@ -9,6 +9,7 @@ import { ref } from 'vue';
 import FormTextInputItem from '@/components/report_form/FormTextInputItem.vue';
 import FormCheckboxItem from '@/components/report_form/FormCheckboxItem.vue';
 import FormActionButton from '@/components/report_form/FormActionButton.vue';
+import { useRouter } from 'vue-router'
 
 const reagentName = ref('');
 const isReagentActive = ref(false);
@@ -16,10 +17,13 @@ const reagentDescription = ref('');
 const reagentString = ref('');
 const isReagentNegative = ref(false);
 const confirmationText = ref('');
+const props = defineProps(['formTitle', 'showFrequency', 'isEditReport'])
+const router = useRouter();
+
 
 function cancelClicked() {
-  // Logic to handle cancel action, such as navigating back or clearing form
-}
+  console.log("Clicked cancel button");
+  router.push("/reagents");}
 
 function addReagentClicked() {
   // Logic to handle adding the reagent, such as submitting the form
@@ -28,17 +32,16 @@ function addReagentClicked() {
 
 <template>
   <div class="add-reagent-form-container">
-    <h1 class="form-header">Add Reagent - Disease Name Here</h1>
-
+    <h1 class="form-header">{{ formTitle }}</h1>
     <!-- Reagent Name and Active Checkbox -->
     <div class="reagent-name-active">
       <FormTextInputItem 
         v-model="reagentName" 
-        section-header="Reagent Name" 
-        placeholder="Enter Reagent Name" 
+        section-header="Oligo Name" 
+        placeholder="Enter Oligo Name" 
       />
       <FormCheckboxItem 
-        :options-list="[{ name: 'Reagent Active?', value: 'active' }]" 
+        :options-list="[{ name: 'Oligo Active?', value: 'active' }]" 
         v-model="isReagentActive" 
       />
     </div>
@@ -46,7 +49,7 @@ function addReagentClicked() {
     <!-- Reagent Description -->
     <FormTextInputItem 
       v-model="reagentDescription" 
-      section-header="Reagent Description" 
+      section-header="Oligo Description" 
       placeholder="Enter Description" 
     />
 
@@ -54,7 +57,7 @@ function addReagentClicked() {
     <div class="reagent-string-upload">
       <FormTextInputItem 
         v-model="reagentString" 
-        section-header="Reagent Strings" 
+        section-header="Oligo Strings" 
         placeholder="Enter here or Upload from text file" 
       />
       <FormActionButton 
@@ -65,7 +68,7 @@ function addReagentClicked() {
 
     <!-- Reagent Negative Checkbox -->
     <FormCheckboxItem 
-      :options-list="[{ name: 'Reagent Negative?', value: 'negative' }]" 
+      :options-list="[{ name: 'Oligo Negative?', value: 'negative' }]" 
       v-model="isReagentNegative" 
     />
 
