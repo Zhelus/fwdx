@@ -1,0 +1,383 @@
+/* 
+CSS file containing styles used by the PrimeVue 'DataTable' component 
+Last edited by: Blake Good
+Date: 11/5/24
+*/
+.p-datatable{
+    background-color: var(--fwdx-white);
+    color: var(--dark-gray-text);
+    border-radius: 7pt;
+    padding-bottom: 1.5rem;
+    box-shadow: 0 0 7px -6px black;
+}
+
+.p-datatable-table-container{
+    background-color: transparent;
+    border-radius: var(--input-border-radius);
+    width: 100%;
+    padding: 0 1.5rem;
+}
+
+.p-datatable-table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.body-cell, .header-cell {
+    padding-right: 0;
+    padding-bottom: 1rem;
+    padding-left: 1rem;
+    text-align: left;
+}
+
+.header-cell {
+    padding-top: 2rem;
+    font-weight: bolder;
+    font-size: 12pt;
+}
+
+.p-datatable-column-header-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.p-datatable-column-title {
+    font-weight: 700;
+    font-size: 12pt;
+    color: var(--fwdx-blue);
+    margin-right: 5px;
+}
+
+.p-datatable-column-filter-button {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background-color: var(--fwdx-white);
+    opacity: 0.5;
+}
+
+.p-datatable-column-filter-button > .p-button-label {
+    display: none;
+    visibility: hidden;
+}
+
+.p-datatable-column-filter-button:hover { 
+    cursor: pointer;
+    opacity: 1;
+    background-color: var(--light-gray-button-bg);
+    transition: 0.1s;
+}
+
+
+.body-cell {
+    padding-top: 1rem;
+    font-weight: normal;
+}
+
+.p-datatable-tbody{
+
+}
+
+
+.p-row-even, .p-row-odd {
+    padding: 2rem;
+    border-top: 1.2pt solid var(--light-gray-outline);
+    background-color: transparent;
+}
+
+.p-row-even:hover, .p-row-odd:hover {
+    background-color: #F7F7f7;
+}
+
+.p-row-even{
+    /* background-color: white; */
+}
+
+.p-row-odd{
+    /* background-color: var(--transparent-button-hover); */
+}
+
+.table-head-row {
+    background-color: transparent;
+}
+
+.p-datatable-paginator-bottom {
+    margin-top: 1.5rem;
+    color: var(--fwdx-blue);
+}
+
+.p-paginator-content {
+    display: flex;
+    justify-content: center;
+}
+
+.p-paginator-first, .p-paginator-prev, .p-paginator-next, .p-paginator-last {
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--fwdx-white);
+    padding: 10px 10px;
+}
+
+.p-paginator-first:not(:disabled):hover, .p-paginator-prev:not(:disabled):hover, .p-paginator-next:not(:disabled):hover, .p-paginator-last:not(:disabled):hover {
+    background-color: var(--transparent-button-hover);
+    cursor: pointer;
+}
+
+.p-paginator-first {
+    
+}
+
+.p-paginator-prev {
+    margin: 0 1rem;
+}
+
+.p-paginator-current {
+    color: var(--fwdx-blue);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 10pt;
+}
+
+.p-paginator-next {
+    margin: 0 1rem;
+}
+
+.p-paginator-last {
+
+}
+
+.p-datatable-filter-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: auto;
+    background-color: var(--light-gray-container-background);
+    box-shadow: 0 4px 14px -10px black;
+    border-radius: 7px;
+    outline: 0.5pt solid var(--light-gray-outline);
+}
+
+@media(min-width: 1000px){
+    .p-datatable-filter-overlay {
+        padding: 1rem;
+        width: 20vw;
+    }
+}
+
+@media(max-width: 1000px){
+    .p-datatable-filter-overlay {
+        padding: 0.5rem;
+        width: 200px;
+    }
+}
+
+.p-datatable-filter-operator-dropdown, .p-datatable-filter-constraint-dropdown {
+    width: 100%;
+    display: inline-flex;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    background-color: var(--fwdx-white);
+    padding: 10px;
+    border-radius: 5px;
+    color: var(--fwdx-blue);
+    margin-bottom: 0.5rem;
+}
+
+.p-datatable-filter-operator-dropdown.p-select-open, 
+.p-datatable-filter-constraint-dropdown.p-select-open,
+.p-datatable-filter-rule > .p-inputtext:focus {
+    outline: 1pt solid var(--fwdx-yellow);
+    border: none;
+    transition: outline 0.03s;
+}
+
+.p-datatable-filter-rule > .p-inputtext {
+    width: 100%;
+    font-family: inherit;
+    font-feature-settings: inherit;
+    color: var(--fwdx-blue);
+    background: var(--fwdx-white);
+    font-size: 11pt;
+    border: none;
+    appearance: none;
+    border-radius: 5px;
+    outline-color: transparent;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.p-datatable-filter-add-rule-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    outline: none;
+    color: var(--fwdx-blue);
+    border-radius: 5px;
+    background-color: transparent;
+    font-size: 10pt;
+    font-weight: 700;
+    height: 30px;
+    margin: 1rem 0;
+}
+
+.p-datatable-filter-add-rule-button:hover {
+    background-color: var(--fwdx-yellow);
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.p-datatable-filter-add-rule-button > .p-button-label {
+    padding-left: 0.5rem;
+    font-weight: 500;
+}
+
+.p-select-label {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    flex: 1 1 auto;
+    width: 1%;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    background: transparent;
+    border: 0 none;
+    outline: 0 none;
+    font-weight: 500;
+}
+
+.p-select-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    padding: 3px;
+    background-color: var(--fwdx-white);
+    color: var(--fwdx-blue);
+    border-radius: 5px;
+    margin-top: 2px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.p-select-option {
+    cursor: pointer;
+    font-weight: normal;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    border: 0 none;
+    border-radius: 5px;
+    padding: 2px 7px;
+}
+
+.p-select-option-selected {
+    background-color: var(--fwdx-blue);
+    color: var(--fwdx-white);
+}
+
+.p-datatable-filter-buttonbar {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    grid-column-gap: 10%;
+}
+
+.p-datatable-filter-buttonbar > button {
+    border: none;
+    border-radius: 5px;
+    padding: 5px 0;
+    font-weight: 900;
+    font-size: 11pt;
+}
+
+.p-datatable-filter-buttonbar > button:hover {
+    cursor: pointer;
+}
+
+.p-datatable-filter-buttonbar > button > .p-button-label {
+    font-weight: 600;
+    font-size: 10pt;
+}
+
+.p-datatable-filter-clear-button {
+    background-color: var(--light-gray-button-bg);
+    color: var(--fwdx-blue);
+}
+
+.p-datatable-filter-apply-button {
+    background-color: var(--fwdx-yellow);
+    color: var(--fwdx-blue);
+}
+
+.p-datatable-filter-remove-rule-button {
+
+}
+
+.p-datatable-filter-remove-rule-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    outline: none;
+    color: #ef4444;
+    border-radius: 5px;
+    background-color: transparent;
+    font-size: 10pt;
+    font-weight: 700;
+    height: 30px;
+}
+
+.p-datatable-filter-remove-rule-button:hover {
+    background-color: #ffe4e4;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.p-datatable-filter-remove-rule-button > .p-button-label {
+    padding-left: 0.5rem;
+    font-weight: 500;
+}
+
+div:has(> .p-datatable-filter-remove-rule-button) {
+    border-bottom: 1pt solid var(--light-gray-outline);
+    margin-top: 1rem;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.2rem;
+}
+
+.p-datatable-column-header-content > span:not(.p-datatable-column-title) {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background-color: var(--fwdx-white);
+    opacity: 0.75;
+}
+
+.p-datatable-column-header-content > span:not(.p-datatable-column-title):hover {
+    cursor: pointer;
+    opacity: 1;
+    background-color: var(--light-gray-button-bg);
+    transition: 0.1s;
+}

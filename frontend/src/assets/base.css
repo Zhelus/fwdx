@@ -1,13 +1,16 @@
 /* 
 CSS file containing variable definitions used throughout the application
 Last edited by: Blake Good
-Date: 10/30/24
+Date: 11/5/24
 */
+
 :root {
   /* FWDX color variables */
   /* Main colors (blue, yellow, white) */
   --fwdx-blue: #0E113E;
   --fwdx-yellow: #FFC906;
+  --fwdx-yellow-transparent: #ffc906b4;
+  --fwdx-blue-transparent: #0e113e80;
   --fwdx-white: #FFFFFF;
   /* Text colors */
   --light-gray-text: #B2B2B2;
@@ -26,7 +29,7 @@ Date: 10/30/24
   --input-focus-border: 1.5pt solid var(--fwdx-yellow);
   --input-focus-outline: none;
   /* Miscellaneous */
-  --light-gray-container-background: #F5F5F5;
+  --light-gray-container-background: #f5f5f5;
   --gray-page-background: #FCFCFC;
   --dark-box-shadow: rgba(0, 0, 0, 0.05);
   --light-gray-outline: #E0E0E0;
@@ -123,3 +126,4 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
