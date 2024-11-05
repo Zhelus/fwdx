@@ -1,13 +1,20 @@
+<!-- 
+Page view for main pathogens page
+Last edited by: Michael Nguyen
+Date: 11/05/24
+-->
+
 <script setup>
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-function actionClicked(path) {
-  if (path) {
-    router.push(path);
+function actionClicked(path, productName) {
+  if (path && productName) {
+    router.push({ path, query: { productName } });
   }
 }
+
 
 // Sample data for the table
 const reagents = [
@@ -40,7 +47,7 @@ const reagents = [
           <td>{{ reagent.productName }}</td>
           <td>{{ reagent.numberOfOligos }}</td>
           <td class="action-buttons">
-            <button class="add-button" @click="actionClicked('/reagents/add')">Add</button>
+            <button class="add-button" @click="actionClicked('/reagents/add', reagent.productName)">Add</button>
             <button class="edit-button" @click="actionClicked('/reagents/edit')">Edit</button>
           </td>
         </tr>
