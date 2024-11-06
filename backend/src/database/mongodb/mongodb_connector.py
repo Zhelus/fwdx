@@ -34,7 +34,7 @@ class MongoDBConnector:
         else:
             self._connect()
 
-        self.database = self.client[os.getenv('DB_NAME')]
+        self.database = self.client[self.env.DB_NAME]
 
     def _connect(self):
         client = None
@@ -68,10 +68,12 @@ class MongoDBConnector:
 
     def fetch_document(self, document: dict, collection: CollectionType):
         collection = self.database[collection.value]
-        result = collection.find_one({"name": "hello"})
+        result = collection.find_one(document)
 
-        if result.acknowledged == "None":
-            print(f"[MongoDBConnector] Error uploading document: {document}")
+        # if result.acknowledged == "None":
+        #     print(f"[MongoDBConnector] Error uploading document: {document}")
+
+        return result
 
     def ping(self):
         try:

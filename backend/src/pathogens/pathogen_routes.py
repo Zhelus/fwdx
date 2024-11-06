@@ -1,5 +1,8 @@
 from flask import Blueprint, jsonify
 
+from backend.src.database.mongodb.mongodb_connector import MongoDBConnector
+from backend.src.helper.collection_type import CollectionType
+
 """
 This file defines the API endpoints for pathogen use cases.
 Make sure the blueprint is attached in "app.py"
@@ -8,11 +11,11 @@ Make sure the blueprint is attached in "app.py"
 bp = Blueprint('pathogen', __name__)
 
 
-@bp.route('/v1/pathogen', methods=['GET'])
-def pathogen_get():
-    return "Your first pathogen is here!"
-
-
-@bp.route('/v1/debug', methods=['GET'])
-def debug():
-    return "this was a test"
+# example query: http://127.0.0.1:5000/v1/pathogen/10632
+@bp.route('/v1/pathogen/<id>', methods=['GET'])
+def pathogen_get(id: str):
+    print("connecting to MongoDB...")
+    mongodb_connector = MongoDBConnector(force_ssl=True)
+    document = mongodb_connector.fetch_document({"TaxonomyID": id}, CollectionType.PATHOGENS)
+    print(document)
+    return f"Pathogen returned is: {document}"

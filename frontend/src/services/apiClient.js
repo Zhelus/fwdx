@@ -19,5 +19,8 @@ const apiClient = axios.create({
 export default {
     getDebug() {
         return apiClient.get('/v1/debug');
+    },
+    getPathogen() {
+        return apiClient.get('/v1/pathogen/10632');
     }
 };
