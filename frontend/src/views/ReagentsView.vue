@@ -15,36 +15,37 @@ function actionClicked(path, productName) {
   }
 }
 
-
 // Sample data for the table
 const reagents = [
-  { id: 1, commonName: "Disease common name", taxonomicName: "Disease Taxonomic Name", productName: "FWDX #001", numberOfOligos: 3 },
-  { id: 2, commonName: "Disease common name", taxonomicName: "Disease Taxonomic Name", productName: "FWDX #002", numberOfOligos: 6 },
-  { id: 3, commonName: "Disease common name", taxonomicName: "Disease Taxonomic Name", productName: "FWDX #003", numberOfOligos: 7 },
-  { id: 4, commonName: "Disease common name", taxonomicName: "Disease Taxonomic Name", productName: "FWDX #004", numberOfOligos: 5 },
-  { id: 5, commonName: "Disease common name", taxonomicName: "Disease Taxonomic Name", productName: "FWDX #005", numberOfOligos: 3 },
-  { id: 6, commonName: "Disease common name", taxonomicName: "Disease Taxonomic Name", productName: "FWDX #006", numberOfOligos: 4 },
+  { id: 1, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #001", productDescription: "Product Description", numberOfOligos: 3 },
+  { id: 2, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #002", productDescription: "Product Description", numberOfOligos: 6 },
+  { id: 3, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #003", productDescription: "Product Description", numberOfOligos: 7 },
+  { id: 4, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #004", productDescription: "Product Description", numberOfOligos: 5 },
+  { id: 5, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #005", productDescription: "Product Description", numberOfOligos: 3 },
+  { id: 6, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #006", productDescription: "Product Description", numberOfOligos: 4 },
 ];
 </script>
 
 <template>
   <div class="reagents-wrapper">
-    <h2 class="page-title">Reagents</h2>
+    <div class="header-container">
+      <h2 class="page-title">Reagents</h2>
+    </div>
     <table class="reagents-table">
       <thead>
         <tr>
-          <th>Disease Common Name</th>
-          <th>Disease Taxonomic Name</th>
+          <th>Taxonomic Name</th>
           <th>Product Name</th>
+          <th>Product Description</th>
           <th>Number of Oligos</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="reagent in reagents" :key="reagent.id">
-          <td>{{ reagent.commonName }}</td>
           <td>{{ reagent.taxonomicName }}</td>
           <td>{{ reagent.productName }}</td>
+          <td>{{ reagent.productDescription }}</td>
           <td>{{ reagent.numberOfOligos }}</td>
           <td class="action-buttons">
             <button class="add-button" @click="actionClicked('/reagents/add', reagent.productName)">Add</button>
@@ -64,11 +65,32 @@ const reagents = [
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 .page-title {
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 1rem;
   color: var(--fwdx-blue); /* Project blue color */
+}
+
+.add-product-button {
+  background-color: #FFC107;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 12px; /* Matching the size of buttons in the table */
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-product-button:hover {
+  background-color: #e0a800;
 }
 
 .reagents-table {
@@ -88,7 +110,6 @@ const reagents = [
   padding: 12px;
   text-align: left;
   border-bottom: 2px solid var(--fwdx-blue); /* Subtle border for separation */
-
 }
 
 .reagents-table td {
@@ -100,7 +121,8 @@ const reagents = [
 .reagents-table tr:hover {
   background-color: #f1f5fa; /* Hover effect for better interactivity */
 }
-button{ 
+
+button { 
     flex: 1;
     padding: 10px 0;
     font-size: 14px;
@@ -121,20 +143,20 @@ button{
 }
 
 .add-button {
-  background-color: #FFC107; /* Yellow color */
+  background-color: #FFC107;
   color: #000;
 }
 
 .add-button:hover {
-  background-color: #e0a800; /* Darker yellow on hover */
+  background-color: #e0a800;
 }
 
 .edit-button {
-  background-color: #1A1A3A; /* Dark navy color */
+  background-color: #1A1A3A;
   color: #FFF;
 }
 
 .edit-button:hover {
-  background-color: #14122b; /* Darker navy on hover */
+  background-color: #14122b;
 }
 </style>
