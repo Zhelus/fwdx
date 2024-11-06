@@ -49,7 +49,7 @@ const reagents = [
           <td>{{ reagent.numberOfOligos }}</td>
           <td class="action-buttons">
             <button class="add-button" @click="actionClicked('/reagents/add', reagent.productName)">Add</button>
-            <button class="edit-button" @click="actionClicked('/reagents/edit')">Edit</button>
+            <button class="edit-button" @click="actionClicked('/reagents/edit',reagent.productName)">Edit</button>
           </td>
         </tr>
       </tbody>

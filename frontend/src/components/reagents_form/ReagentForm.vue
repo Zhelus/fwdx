@@ -20,7 +20,6 @@ const confirmationText = ref('');
 const props = defineProps(['formTitle', 'showFrequency', 'isEditReport'])
 const router = useRouter();
 
-
 function cancelClicked() {
   console.log("Clicked cancel button");
   router.push("/reagents");}
@@ -68,7 +67,7 @@ function addReagentClicked() {
 
     <!-- Reagent Negative Checkbox -->
     <FormCheckboxItem 
-      :options-list="[{ name: 'Oligo Negative?', value: 'negative' }]" 
+      :options-list="[{ name: 'Oligal Negative?', value: 'negative' }]" 
       v-model="isReagentNegative" 
     />
 
