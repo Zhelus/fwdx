@@ -1,16 +1,18 @@
 """
-this python code is used to process data fetched and parsed by ncbi_fetch.py 
+this python code is used to process data fetched and parsed by ncbi_data_fetcher.py
 Last uploaded: Kyle Stagner
 Date: 2024/11/3
 """
 
-from backend.src.database.db_connection import MongoDBConnector
-from backend.src.pathogens.ncbi_fetch import NCBIDataFetcher
+from backend.src.database.mongodb.mongodb_connector import MongoDBConnector
+from backend.src.database.data_fetchers.ncbi_data_fetcher import NCBIDataFetcher
+
 
 class DataProcessor:
     """
     Orchestrates the process of fetching data from NCBI, parsing it, and uploading it to MongoDB.
     """
+
     def __init__(self):
         self.connector = MongoDBConnector()
 
@@ -41,7 +43,7 @@ class DataProcessor:
                     print(f"Using taxonomic ID '{entry_id}' as entry ID.")
 
             # Step 3: Upload data to MongoDB
-            collection = self.connector.db[table]
+            collection = self.connector.database[table]
             result = collection.update_one(
                 {"_id": entry_id},
                 {"$set": {element_to_parse: parsed_string}},
