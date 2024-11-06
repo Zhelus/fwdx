@@ -8,9 +8,11 @@ Date: 2024/11/03
 import os
 
 import certifi
-from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+
+from backend.src.helper.collection_type import CollectionType
+from backend.src.helper.environment import Environment
 
 """
 ***for backend.definitions to work as designed***
@@ -18,63 +20,71 @@ config.env file must contain PYTHONPATH=./ so that the project root is included 
 #also be sure to include "python.envFile": "${workspaceFolder}/config.env", in your .vscode/settings.json file
 """
 
-from backend.definitions import ENV_DIR
 
 class MongoDBConnector:
-    def __init__(self):
-        load_dotenv(ENV_DIR)
-        self.uri = os.getenv('DB_CONNECTION_STRING')
 
-        if self.uri is None:
-            raise ValueError("Missing DB_CONNECTION_STRING. Is \"config.env\" in the right place?")
+    # NOTE: initialization of object creates new connection to MongoDB, may want to create a singleton instead
+    def __init__(self, force_ssl: bool = False):
+        self.env = Environment()
 
-        # self.client = self.connect()
-        self.client = self.connect_ssl()
-        self.db = self.client['FWDX_Database']  # Replace 'your_database' with the name of your actual database
+        self.uri = self.env.DB_CONNECTION_STRING
 
+        if force_ssl:
+            self._connect_ssl()
+        else:
+            self._connect()
 
-    def connect(self):
+        self.database = self.client[os.getenv('DB_NAME')]
+
+    def _connect(self):
+        client = None
         try:
             client = MongoClient(self.uri, server_api=ServerApi('1'))
         except Exception as e:
-            print("Error connecting to MongoDB:", e)
+            print("[MongoDBConnector] Error connecting to MongoDB (SSL not forced):", e)
 
-        return client
+        self.client = client
 
-    def connect_ssl(self):
+    def _connect_ssl(self):
+        client = None
+
         # Use the certifi library to get the path of the CA certificate
         ca = certifi.where()
-
         try:
             # Create a MongoClient instance and specify the CA certificate path
             client = MongoClient(self.uri, server_api=ServerApi('1'), tlsCAFile=ca)
 
         except Exception as e:
-            print("Error connecting to MongoDB:", e)
+            print("[MongoDBConnector] Error connecting to MongoDB (SSL forced):", e)
 
-        return client
+        self.client = client
+
+    def upload_document(self, document: dict, collection: CollectionType):
+        collection = self.database[collection.value]
+        result = collection.insert_one(document)
+
+        if result.acknowledged == "False":
+            print(f"[MongoDBConnector] Error uploading document: {document}")
+
+    def fetch_document(self, document: dict, collection: CollectionType):
+        collection = self.database[collection.value]
+        result = collection.find_one({"name": "hello"})
+
+        if result.acknowledged == "None":
+            print(f"[MongoDBConnector] Error uploading document: {document}")
 
     def ping(self):
         try:
             self.client.admin.command("ping")
-            print("Pinged your deployment. You successfully connected to MongoDB!")
+            print("[MongoDBConnector] Pinged your deployment. You successfully connected to MongoDB!")
         except Exception as e:
-            print("Error connecting to MongoDB:", e)
+            print("[MongoDBConnector] Error connecting to MongoDB:", e)
 
     def get_connection_uri(self):
-        return self.uri         
+        return self.uri
 
     def close_connection(self):
         """Close the MongoDB connection gracefully."""
         if self.client:
             self.client.close()
-            print("Connection to MongoDB closed.")
-
-# Example usage for testing the connection
-if __name__ == "__main__":
-    connector = MongoDBConnector()
-    connector.close_connection()
-    
-# debug code
-# connector = MongoDBConnector()
-# connector.ping()
+            print("[MongoDBConnector] Connection to MongoDB closed.")

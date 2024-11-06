@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
+from src.pathogens import pathogen_routes
 
 """
 Entry point for Flask application.
@@ -12,19 +13,18 @@ For debug mode (w/ hot reloading):
     - flask run --debug
 
 Last edited by: Harrison Leath
-Date: 10/30/24
+Date: 11/5/24
 """
 
 
+# config flask app
 def create_app():
     app = Flask(__name__)
-    # app.config.from_pyfile('config.py')  # Load config
 
     CORS(app)
 
-    # Register blueprints (for modular routes)
-    # app.register_blueprint(main.bp)
-    # app.register_blueprint(auth.bp)
+    # register blueprints (routes in other files)
+    app.register_blueprint(pathogen_routes.bp)
 
     return app
 

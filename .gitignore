@@ -40,6 +40,11 @@ coverage
 *.sln
 *.sw?
 
+# Files resulting from API calls to 3rd party DBs (like NCBI)
+*.fasta
+/data
+
 *.tsbuildinfo
+
 
 
