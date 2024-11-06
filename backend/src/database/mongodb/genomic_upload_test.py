@@ -4,7 +4,7 @@ Last uploaded: Kyle Stagner
 Date: 2024/11/3
 """
 
-from backend.src.database.db_connection import MongoDBConnector
+from backend.src.database.mongodb.mongodb_connector import MongoDBConnector
 
 # Instantiate the MongoDB connector
 connector = MongoDBConnector()
