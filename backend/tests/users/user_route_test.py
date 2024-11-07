@@ -1,25 +1,8 @@
 import json
 from flask import Flask
 from flask_testing import TestCase
-from yourapplication.app import create_app  # Adjust the import according to your project structure
-from yourapplication.models import db, User  # Assuming you're using SQLAlchemy
 
 class TestUserRoutes(TestCase):
-
-    def create_app(self):
-        # Setup Flask application for testing
-        app = create_app('testing')
-        return app
-
-    def setUp(self):
-        # Setup the database, and other initial configurations
-        db.create_all()
-        # Optional: Add test data here
-
-    def tearDown(self):
-        # Teardown the database after tests
-        db.session.remove()
-        db.drop_all()
 
     def test_api_create_user(self):
         # Create a user through the API
