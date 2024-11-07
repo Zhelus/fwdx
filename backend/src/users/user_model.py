@@ -1,5 +1,4 @@
 from mongoengine import Document, StringField, EmailField
-from backend.src.database.db_connection import MongoDBConnector
 
 class User(Document):
     """
