@@ -12,6 +12,8 @@ import BrowseReportsView from '@/views/BrowseReportsView.vue'
 import PathogensView from '@/views/PathogensView.vue'
 import ReagentsView from '@/views/ReagentsView.vue'
 import FlaskExampleView from "@/views/FlaskExampleView.vue";
+import AddReagentView from '@/views/AddReagentView.vue'
+import EditReagentView from '@/views/EditReagentView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +52,16 @@ const router = createRouter({
       path: '/reagents',
       name: 'reagents',
       component: ReagentsView
+    },
+    { 
+      path: '/reagents/add', 
+      name:'addReagent',
+      component: AddReagentView
+    },
+    {
+      path:'/reagents/edit',
+      name:'editReagent',
+      component: EditReagentView
     },
     {
       path: '/flaskExample',
