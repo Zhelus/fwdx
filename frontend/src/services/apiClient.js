@@ -8,16 +8,19 @@ Date: 10/30/24
  */
 
 const apiClient = axios.create({
-  baseURL: 'http://127.0.0.1:5000', // Flask server URL
-  withCredentials: false,
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-  }
+    baseURL: 'http://127.0.0.1:5000', // Flask server URL
+    withCredentials: false,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
 });
 
 export default {
-  getDebug() {
-    return apiClient.get('/api/debug');
-  }
+    getDebug() {
+        return apiClient.get('/v1/debug');
+    },
+    getPathogen() {
+        return apiClient.get('/v1/pathogen/10632');
+    }
 };

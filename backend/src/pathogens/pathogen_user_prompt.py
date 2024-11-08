@@ -6,7 +6,8 @@ Last uploaded: Kyle Stagner
 Date: 2024/11/3
 """
 
-from backend.src.pathogens.dataprocessor import DataProcessor
+from backend.src.database.dataprocessor import DataProcessor
+
 
 def main():
     """
@@ -28,6 +29,7 @@ def main():
     # Instantiate and run the processor
     processor = DataProcessor()
     processor.process_and_upload(gcf_number, table, entry_id, element_to_parse)
+
 
 if __name__ == "__main__":
     main()
