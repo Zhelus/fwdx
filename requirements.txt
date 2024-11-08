@@ -3,6 +3,8 @@ pymongo[srv]~=4.10.1
 python-dotenv~=1.0.1
 requests~=2.32.3
 mongoengine~=0.29.1
+bio~=1.7.1
+biopython~=1.84
 
 # Frontend Requirements
 certifi~=2024.8.30
