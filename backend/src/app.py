@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from backend.src.pathogens import pathogen_routes
-from backend.src.users import user_route
+from backend.src.users import user_controller
 
 """
 Entry point for Flask application.

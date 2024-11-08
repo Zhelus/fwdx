@@ -79,8 +79,7 @@ class MongoDBConnector:
         collection = self.database[collection.value]
         result = collection.find_one_and_delete(document)
 
-        if result.acknowledged == "False":
-            print(f"[MongoDBConnector] Error deleting document: {document}")
+
 
     def update_document(self, filter, update, collection: CollectionType):
         result = self.database[collection.value].update_one(filter, update)
