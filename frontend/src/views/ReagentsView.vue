@@ -12,6 +12,9 @@ function actionClicked(path, productName) {
   if (path && productName) {
     router.push({ path, query: { productName } });
   }
+  else{ 
+    router.push(path);
+  }
 }
 
 // Sample data for the table with Active Version
@@ -31,13 +34,14 @@ const filters = ref({
   activeVersion: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
   numberOfOligos: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
 });
+
 </script>
 
 <template>
   <div class="reagents-wrapper">
     <div class="header-container">
       <h2 class="page-title">Reagents</h2>
-      <button class="add-product-button" @click="actionClicked('/reagents/add')">Add Reagent Product</button>
+      <button class="add-product-button" @click="actionClicked('/reagents/addProduct',Null)">Add Reagent Product</button>
     </div>
 
     <DataTable 
