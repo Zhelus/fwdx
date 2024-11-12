@@ -9,7 +9,6 @@ Date: 11/11/24
     import { InputText } from 'primevue';
     import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
     import { ref } from 'vue';
-    import api from "@/services/apiClient.js";
     import reportsApiHelper from "@/services/reportsApiHelper"
     import Report from "@/entities/Report"
     const search = ref("")
@@ -258,14 +257,13 @@ Date: 11/11/24
             .catch(error => {
                 console.error(error);
             })
-        // search.value = report.saveNewReport();
     }
 
     // Update a single report with new data
     function updateReport(){
         const report = new Report(
-            "1133557",
-            "Test Report 5",
+            "8877665",
+            "Test Report 6",
             "9876543",
             "6730f02aec38fbfe063398da",
             "10632",
@@ -273,26 +271,39 @@ Date: 11/11/24
             ["Mismatch 1", "Mismatch 2"]
         );
         var updatedReportData = {
-            'report_title': "Test Report Update 2",
-            'creation_date': "11/10/24"
+            'report_title': "Test Report 5 Update",
+            'creation_date': "11/18/24"
         }
-        search.value = report.updateReport(updatedReportData);
+        reportsApiHelper.updateReport(report.getId(), updatedReportData)
+            .then(data => {
+                search.value = data;
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
 
     // Delete a single report 
     function deleteReport(){
         const report = new Report(
-            "1133557",
-            "Test Report Update 2",
+            "9393939",
+            "Test Report Update 7",
             "9876543",
             "6730f02aec38fbfe063398da",
             "10632",
-            "11/10/24",
+            "11/18/24",
             ["Mismatch 1", "Mismatch 2"]
         );
-        search.value = report.deleteReport();
+        reportsApiHelper.deleteReport(report.getId())
+            .then(data => {
+                search.value = data;
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
 
+    // Get all reports from the 'Reports' collection
     function getAllReports() {
         reportsApiHelper.getAllReports()
             .then(data => {

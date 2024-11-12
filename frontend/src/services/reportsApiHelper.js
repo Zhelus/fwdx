@@ -1,9 +1,9 @@
 import api from "@/services/apiClient.js";
 
 export default {
-    getReport(id) {
+    getReport(reportId) {
         return new Promise(function(resolve, reject){
-            api.getReportById(id)
+            api.getReportById(reportId)
                 .then(response => {
                     console.log("API call was successful.");
                     console.log(response.data);
@@ -12,7 +12,7 @@ export default {
                 })
                 .catch(error => {
                     console.error("API call failed:", error);
-                    reject(Error(`Error fetching report with id: ${id}`));
+                    reject(Error(`Error fetching report with id: ${reportId}`));
                 });
         });
     },
@@ -21,13 +21,12 @@ export default {
             api.getAllReports()
                 .then(response => {
                     console.log("Successful API call -- get all reports.");
-                    console.log(response.data);
                     let reportsData = response.data['reports'];
                     resolve(reportsData);
                 })
                 .catch(error => {
                     console.error("API call failed:", error);
-                    reject("Error fetching all reports");
+                    reject(Error("Error fetching all reports"));
                 });
         });
     },
@@ -42,6 +41,32 @@ export default {
                 .catch(error => {
                     console.error("API call failed:", error);
                     reject(Error("Error creating new report."));
+                });
+        });
+    },
+    deleteReport(reportId) {
+        return new Promise(function(resolve, reject){
+            api.deleteReport(reportId)
+                .then(response => {
+                    console.log("API call was successful.");
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    console.error("API call failed:", error);
+                    reject(Error("Error occurred while fetching data."));
+                });
+        });
+    },
+    updateReport(reportId, updatedReportData) {
+        return new Promise(function(resolve, reject){
+            api.updateReportById(reportId, updatedReportData)
+                .then(response => {
+                    console.log("API call was successful.");
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    console.error("API call failed:", error);
+                    reject(Error("Error occurred while fetching data."));
                 });
         });
     }

@@ -25,52 +25,8 @@ class Report {
         return reportJson;
     }
 
-    // Save the report to MongoDB
-    saveNewReport(){
-        var responseData = ""
-        const reportData = this.getJson();
-        api.createReport(reportData)
-            .then(response => {
-                console.log("API call was successful.");
-                responseData = response.data;
-            })
-            .catch(error => {
-                console.error("API call failed:", error);
-                responseData = "Error occurred while fetching data.";
-            });
-        console.log(responseData);
-        return responseData;
-    }
-
-    // Update the report with new data
-    updateReport(updatedReportData){
-        var responseData = ""
-        api.updateReportById(this.reportId, updatedReportData)
-            .then(response => {
-                console.log("API call was successful.");
-                responseData = response.data;
-            })
-            .catch(error => {
-                console.error("API call failed:", error);
-                responseData = "Error occurred while fetching data.";
-            });
-        console.log(responseData);
-        return responseData;
-    }
-
-    deleteReport() {
-        var responseData = "";
-        api.deleteReport(this.reportId)
-            .then(response => {
-                console.log("API call was successful.");
-                responseData = response.data;
-            })
-            .catch(error => {
-                console.error("API call failed:", error);
-                responseData = "Error occurred while fetching data.";
-            });
-        console.log(responseData);
-        return responseData;
+    getId() {
+        return this.reportId;
     }
 }
 
