@@ -29,15 +29,36 @@ def get_product(product_id):
 
 def update_product(product_id, product_data):
     """
-    Updates an existing product in the database.
+    Updates an existing product in the database with the provided name and appends new oligos to the versions list.
     :param product_id: ID of the product to update.
-    :param product_data: Dictionary with updated product data.
+    :param product_data: Dictionary with updated product data, including name and possibly new oligos.
     :return: Result of the MongoDB update operation.
     """
+    # Filter to find the product by its ID
     product_filter = {"_id": ObjectId(product_id)}
-    update = {"$set": product_data}
-    return connector.update_document(product_filter, update, CollectionType.REAGENTS)
 
+    # Check if the product exists
+    existing_product = connector.fetch_document(product_filter, CollectionType.REAGENTS)
+    if not existing_product:
+        return {"error": "Product not found"}, 404
+
+    # Prepare separate update payloads for name and versions
+    update_operations = {}
+
+    # Update the name if provided
+    if "name" in product_data:
+        update_operations["$set"] = {"name": product_data["name"]}
+
+    # Append new oligos as a new version and update the active version index if oligos are provided
+    if "oligos" in product_data:
+        new_version = product_data["oligos"]
+        update_operations["$push"] = {"versions": new_version}
+        update_operations["$set"] = {"active_version_index": len(existing_product["versions"])}
+
+    # Perform the update operation
+    result = connector.update_document(product_filter, update_operations, CollectionType.REAGENTS)
+
+    return result
 
 def delete_product(product_id):
     """
