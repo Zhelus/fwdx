@@ -16,11 +16,21 @@ Date: 11/5/24
     border-radius: var(--input-border-radius);
     width: 100%;
     padding: 0 1.5rem;
+    padding-top: 1.5rem;
 }
 
 .p-datatable-table{
     border-collapse: collapse;
     width: 100%;
+
+}
+
+.p-datatable-thead {
+    border-top-right-radius: 10px;
+}
+
+.table-head-row {
+
 }
 
 .body-cell, .header-cell {
@@ -31,10 +41,24 @@ Date: 11/5/24
 }
 
 .header-cell {
-    padding-top: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
     font-weight: bolder;
     font-size: 12pt;
+    background-color: #eaeaea;
+
 }
+
+.header-cell:is(:first-child) {
+    border-top-left-radius: 10px;
+    /* background-color: #eaeaea; */
+}
+
+.header-cell:is(:last-child) {
+    border-top-right-radius: 10px;
+    /* background-color: #eaeaea; */
+}
+
 
 .p-datatable-column-header-content {
     display: flex;
@@ -58,7 +82,7 @@ Date: 11/5/24
     justify-content: center;
     align-items: center;
     border: none;
-    background-color: var(--fwdx-white);
+    background-color: transparent;
     opacity: 0.5;
 }
 
@@ -105,6 +129,7 @@ Date: 11/5/24
 
 .table-head-row {
     background-color: transparent;
+    border-radius: 10px;
 }
 
 .p-datatable-paginator-bottom {
@@ -371,7 +396,7 @@ div:has(> .p-datatable-filter-remove-rule-button) {
     justify-content: center;
     align-items: center;
     border: none;
-    background-color: var(--fwdx-white);
+    background-color: transparent;
     opacity: 0.75;
 }
 
