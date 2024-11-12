@@ -1,11 +1,10 @@
-<!-- 
-Page view for main pathogens page
-Last edited by: Michael Nguyen
-Date: 11/05/24
--->
-
 <script setup>
 import { useRouter } from 'vue-router';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import InputText from 'primevue/inputtext';
+import { ref } from 'vue';
+import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
 
 const router = useRouter();
 
@@ -15,52 +14,86 @@ function actionClicked(path, productName) {
   }
 }
 
-// Sample data for the table
+// Sample data for the table with Active Version
 const reagents = [
-  { id: 1, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #001", productDescription: "Product Description", numberOfOligos: 3 },
-  { id: 2, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #002", productDescription: "Product Description", numberOfOligos: 6 },
-  { id: 3, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #003", productDescription: "Product Description", numberOfOligos: 7 },
-  { id: 4, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #004", productDescription: "Product Description", numberOfOligos: 5 },
-  { id: 5, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #005", productDescription: "Product Description", numberOfOligos: 3 },
-  { id: 6, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #006", productDescription: "Product Description", numberOfOligos: 4 },
+  { id: 1, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #001", activeVersion: 1, numberOfOligos: 3 },
+  { id: 2, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #002", activeVersion: 2, numberOfOligos: 6 },
+  { id: 3, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #003", activeVersion: 3, numberOfOligos: 7 },
+  { id: 4, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #004", activeVersion: 2, numberOfOligos: 5 },
+  { id: 5, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #005", activeVersion: 1, numberOfOligos: 3 },
+  { id: 6, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #006", activeVersion: 4, numberOfOligos: 4 },
 ];
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  taxonomicName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+  productName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+  activeVersion: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+  numberOfOligos: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+});
 </script>
 
 <template>
   <div class="reagents-wrapper">
     <div class="header-container">
       <h2 class="page-title">Reagents</h2>
+      <button class="add-product-button" @click="actionClicked('/reagents/add')">Add Reagent Product</button>
     </div>
-    <table class="reagents-table">
-      <thead>
-        <tr>
-          <th>Taxonomic Name</th>
-          <th>Product Name</th>
-          <th>Product Description</th>
-          <th>Number of Oligos</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="reagent in reagents" :key="reagent.id">
-          <td>{{ reagent.taxonomicName }}</td>
-          <td>{{ reagent.productName }}</td>
-          <td>{{ reagent.productDescription }}</td>
-          <td>{{ reagent.numberOfOligos }}</td>
-          <td class="action-buttons">
-            <button class="add-button" @click="actionClicked('/reagents/add', reagent.productName)">Add</button>
-            <button class="edit-button" @click="actionClicked('/reagents/edit',reagent.productName)">Edit</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+    <DataTable 
+      :value="reagents"  
+      :rows="10" 
+      :rowsPerPageOptions="[5, 10, 15]"
+      paginator
+      v-model:filters="filters"
+      filter-display="menu"
+      :globalFilterFields="['taxonomicName', 'productName', 'activeVersion']"
+      removableSort
+      currentPageReportTemplate="{currentPage} / {totalPages}"
+      paginatorTemplate="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+    >
+      <!-- Column Definitions -->
+      <Column field="taxonomicName" header="Taxonomic Name" sortable>
+        <template #filter="{ filterModel }">
+          <InputText v-model="filterModel.value" placeholder="Search by taxonomic name"/>
+        </template>
+      </Column>
+      
+      <Column field="productName" header="Product Name" sortable>
+        <template #filter="{ filterModel }">
+          <InputText v-model="filterModel.value" placeholder="Search by product name"/>
+        </template>
+      </Column>
+
+      <Column field="activeVersion" header="Active Version" sortable dataType="numeric">
+        <template #filter="{ filterModel }">
+          <InputText v-model="filterModel.value" placeholder="Search by version"/>
+        </template>
+      </Column>
+      
+      <Column field="numberOfOligos" header="Number of Oligos" sortable dataType="numeric">
+        <template #filter="{ filterModel }">
+          <InputText v-model="filterModel.value" placeholder="Search by oligos"/>
+        </template>
+      </Column>
+
+      <!-- Actions Column with Buttons -->
+      <Column header="Actions">
+        <template #body="slotProps">
+          <div class="action-buttons">
+          <button class="action-button" @click="actionClicked('/reagents/add', slotProps.data.productName)">Add</button>
+          <button class="action-button edit" @click="actionClicked('/reagents/edit', slotProps.data.productName)">Edit</button>
+        </div>
+        </template>
+      </Column>
+    </DataTable>
   </div>
 </template>
 
 <style scoped>
 .reagents-wrapper {
   padding: 2rem;
-  background-color: #f8f9fa; /* Light gray background to make the table stand out */
+  background-color: #f8f9fa;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
@@ -75,7 +108,7 @@ const reagents = [
 .page-title {
   font-size: 24px;
   font-weight: bold;
-  color: var(--fwdx-blue); /* Project blue color */
+  color: var(--fwdx-blue);
 }
 
 .add-product-button {
@@ -83,7 +116,7 @@ const reagents = [
   color: #000;
   border: none;
   border-radius: 5px;
-  padding: 6px 12px; /* Matching the size of buttons in the table */
+  padding: 6px 12px;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -93,70 +126,35 @@ const reagents = [
   background-color: #e0a800;
 }
 
-.reagents-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: var(--fwdx-white);
-  border-radius: 10px;
-  border-color: var(--fwdx-blue);
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.reagents-table th {
-  background-color: #eef2f7; /* Light background for table header */
-  color: var(--fwdx-blue); /* Project blue color for header text */
-  font-weight: bold;
-  padding: 12px;
-  text-align: left;
-  border-bottom: 2px solid var(--fwdx-blue); /* Subtle border for separation */
-}
-
-.reagents-table td {
-  padding: 30px;
-  color: #000; /* Black color for table content */
-  border-bottom: 1px solid var(--fwdx-blue); /* Border for row separation */
-}
-
-.reagents-table tr:hover {
-  background-color: #f1f5fa; /* Hover effect for better interactivity */
-}
-
-button { 
-    flex: 1;
-    padding: 10px 0;
-    font-size: 14px;
-}
-
+/* Style for the action buttons container to add space */
 .action-buttons {
   display: flex;
-  gap: 10px;
+  gap: 10px; /* Space between Add and Edit buttons */
 }
 
-.add-button, .edit-button {
-  padding: 6px 12px;
+.action-button {
+  background-color: #FFC107;
+  color: #000;
   border: none;
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
+  padding: 8px 20px; /* Broader button width */
   transition: background-color 0.3s;
+  width: 100px; /* Set a fixed width for both buttons */
 }
 
-.add-button {
-  background-color: #FFC107;
-  color: #000;
-}
 
-.add-button:hover {
+.action-button:hover {
   background-color: #e0a800;
 }
 
-.edit-button {
+.action-button.edit {
   background-color: #1A1A3A;
   color: #FFF;
 }
 
-.edit-button:hover {
+.action-button.edit:hover {
   background-color: #14122b;
 }
 </style>
