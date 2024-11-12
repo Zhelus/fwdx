@@ -8,15 +8,15 @@ Date: 11/5/24
     color: var(--dark-gray-text);
     border-radius: 7pt;
     padding-bottom: 1.5rem;
-    box-shadow: 0 0 7px -6px black;
+    box-shadow: 0 4px 10px -10px black;
+    margin-bottom: 5rem;
 }
 
 .p-datatable-table-container{
     background-color: transparent;
     border-radius: var(--input-border-radius);
     width: 100%;
-    padding: 0 1.5rem;
-    padding-top: 1.5rem;
+    padding: 0rem 0rem;
 }
 
 .p-datatable-table{
@@ -56,7 +56,6 @@ Date: 11/5/24
 
 .header-cell:is(:last-child) {
     border-top-right-radius: 10px;
-    /* background-color: #eaeaea; */
 }
 
 

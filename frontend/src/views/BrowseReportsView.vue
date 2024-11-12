@@ -11,208 +11,48 @@ Date: 11/11/24
     import { ref } from 'vue';
     import reportsApiHelper from "@/services/reportsApiHelper"
     import Report from "@/entities/Report"
-    const search = ref("")
+    import { onBeforeMount } from 'vue';
 
-
-
-    // Test data for the reports data table
-    const reports = [
-        {
-            title: 'Report 1',
-            date: '11/2/24 @ 10:30am',
-            pathogen: 'Candida Auris',
-            reagent: 'Reagent 1',
-            sourceDB: 'NCBI',
-            mismatchCount: '2'
-        },
-        {
-            title: 'Report 2',
-            date: '11/1/24 @ 10:30am',
-            pathogen: 'Influenza',
-            reagent: 'Reagent 2',
-            sourceDB: 'NCBI',
-            mismatchCount: '6'
-        },
-        {
-            title: 'Report 3',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Influenza',
-            reagent: 'Reagent 5',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 4',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Covid-19',
-            reagent: 'Reagent 3',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 4',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Covid-19',
-            reagent: 'Reagent 3',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 4',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Covid-19',
-            reagent: 'Reagent 3',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 1',
-            date: '11/2/24 @ 10:30am',
-            pathogen: 'Candida Auris',
-            reagent: 'Reagent 1',
-            sourceDB: 'NCBI',
-            mismatchCount: '2'
-        },
-        {
-            title: 'Report 2',
-            date: '11/1/24 @ 10:30am',
-            pathogen: 'Influenza',
-            reagent: 'Reagent 2',
-            sourceDB: 'NCBI',
-            mismatchCount: '6'
-        },
-        {
-            title: 'Report 3',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Influenza',
-            reagent: 'Reagent 5',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 2',
-            date: '11/1/24 @ 10:30am',
-            pathogen: 'Influenza',
-            reagent: 'Reagent 2',
-            sourceDB: 'NCBI',
-            mismatchCount: '6'
-        },
-        {
-            title: 'Report 3',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Influenza',
-            reagent: 'Reagent 5',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 4',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Covid-19',
-            reagent: 'Reagent 3',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 4',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Covid-19',
-            reagent: 'Reagent 3',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 2',
-            date: '11/1/24 @ 10:30am',
-            pathogen: 'Influenza',
-            reagent: 'Reagent 2',
-            sourceDB: 'NCBI',
-            mismatchCount: '6'
-        },
-        {
-            title: 'Report 3',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Influenza',
-            reagent: 'Reagent 5',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 4',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Covid-19',
-            reagent: 'Reagent 3',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 4',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Covid-19',
-            reagent: 'Reagent 3',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 2',
-            date: '11/1/24 @ 10:30am',
-            pathogen: 'Influenza',
-            reagent: 'Reagent 2',
-            sourceDB: 'NCBI',
-            mismatchCount: '6'
-        },
-        {
-            title: 'Report 3',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Influenza',
-            reagent: 'Reagent 5',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 4',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Covid-19',
-            reagent: 'Reagent 3',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        },
-        {
-            title: 'Report 4',
-            date: '10/31/24 @ 10:30am',
-            pathogen: 'Covid-19',
-            reagent: 'Reagent 3',
-            sourceDB: 'NCBI',
-            mismatchCount: '0'
-        }
-    ]
+    // Work to be done before the page is displayed
+    // We only show the table after all reports are fetched (initComplete = true)
+    const initComplete = ref(false);
+    const reports = ref([]);
+    onBeforeMount(async () => {
+        // GET all reports from MongoDB
+        await reportsApiHelper.getAllReports()
+                .then(data => {
+                    reports.value = data;
+                    for(let i=0; i<reports.value.length; i++){
+                        reports.value[i]['mismatchCount'] = reports.value[i]['mismatches'].length;
+                    }
+                }).catch(error => {
+                    console.error(error);
+                });
+        // Show the table with report data
+        setTimeout(() => {
+            initComplete.value = true;
+        }, "1000")
+    })
     
     // JSON object containing the definitions for filters related to the data table
     const filters = ref();
     filters.value = {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        title: { 
+        report_title: { 
             operator: FilterOperator.AND, 
             constraints: [{ 
                 value: null, 
                 matchMode: FilterMatchMode.STARTS_WITH 
             }] 
         },
-        pathogen: { 
+        pathogen_id: { 
             operator: FilterOperator.AND, 
             constraints: [{ 
                 value: null, 
                 matchMode: FilterMatchMode.STARTS_WITH 
             }] 
         },
-        reagent: { 
-            operator: FilterOperator.AND, 
-            constraints: [{ 
-                value: null, 
-                matchMode: FilterMatchMode.STARTS_WITH 
-            }] 
-        },
-        sourceDB: { 
+        reagent_id: { 
             operator: FilterOperator.AND, 
             constraints: [{ 
                 value: null, 
@@ -230,12 +70,7 @@ Date: 11/11/24
 
     // Get a single report from MongoDB using the report's ID
     function getReport(){
-        reportsApiHelper.getReport("1234567")
-            .then(data => {
-                search.value = data;
-            }).catch(error => {
-                console.log(error);
-            });
+        reportsApiHelper.getReport("1234567").catch( error => { console.error(error) } );
     }
 
     // Create a new report and send it to the backend
@@ -249,14 +84,7 @@ Date: 11/11/24
             "11/18/24",
             ["Mismatch 1", "Mismatch 2"]
         )
-        reportsApiHelper.saveNewReport(report)
-            .then(data => {
-                search.value = data;
-                console.log(search.value);
-            })
-            .catch(error => {
-                console.error(error);
-            })
+        reportsApiHelper.saveNewReport(report).catch( error => { console.error(error) } );
     }
 
     // Update a single report with new data
@@ -274,13 +102,7 @@ Date: 11/11/24
             'report_title': "Test Report 5 Update",
             'creation_date': "11/18/24"
         }
-        reportsApiHelper.updateReport(report.getId(), updatedReportData)
-            .then(data => {
-                search.value = data;
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        reportsApiHelper.updateReport(report.getId(), updatedReportData).catch( error => { console.error(error) } );
     }
 
     // Delete a single report 
@@ -294,32 +116,22 @@ Date: 11/11/24
             "11/18/24",
             ["Mismatch 1", "Mismatch 2"]
         );
-        reportsApiHelper.deleteReport(report.getId())
-            .then(data => {
-                search.value = data;
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        reportsApiHelper.deleteReport(report.getId()).catch( error => { console.error(error) } );
     }
 
     // Get all reports from the 'Reports' collection
     function getAllReports() {
-        reportsApiHelper.getAllReports()
-            .then(data => {
-                search.value = data;
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        reportsApiHelper.getAllReports().catch( error => { console.error(error) } );
     }
 
 </script>
 <template>
 <div class="browse-reports-wrapper">
+    <div class="loader" v-if="!initComplete"></div>
     <h1 class="form-header">Browse Reports</h1>
     <!-- Use to add a new data table component to the page -->
     <DataTable 
+        v-if="initComplete"
         :value="reports"  
         :rows="10" :rowsPerPageOptions="[5, 10, 15, 20]"
         paginator
@@ -336,7 +148,7 @@ Date: 11/11/24
             - The "field" option defines which field/key from the data will be stored in this column
             - The "header" option defines what the name of the column will be displayed as
         -->
-        <Column field="title" header="Title" sortable>
+        <Column field="report_title" header="Title" sortable>
             <!-- Use to add a filter element to a column in the table  -->
             <template #filter="{ filterModel }">
                 <InputText
@@ -345,8 +157,8 @@ Date: 11/11/24
                 placeholder="Search by title"/>
              </template> 
         </Column>
-        <Column field="date" header="Date" sortable></Column>
-        <Column field="pathogen" header="Pathogen" sortable>
+        <Column field="creation_date" header="Date" sortable></Column>
+        <Column field="pathogen_id" header="Pathogen" sortable>
             <template #filter="{ filterModel }">
                 <InputText
                 v-model="filterModel.value"
@@ -354,20 +166,12 @@ Date: 11/11/24
                 placeholder="Search by pathogen"/>
              </template> 
         </Column>
-        <Column field="reagent" header="Reagent" sortable>
+        <Column field="reagent_id" header="Reagent" sortable>
             <template #filter="{ filterModel }">
                 <InputText
                 v-model="filterModel.value"
                 type="text"
                 placeholder="Search by reagent"/>
-             </template> 
-        </Column>
-        <Column field="sourceDB" header="Source DB" sortable>
-            <template #filter="{ filterModel }">
-                <InputText
-                v-model="filterModel.value"
-                type="text"
-                placeholder="Search by source database"/>
              </template> 
         </Column>
         <!-- Options for a column that is to be filtered numerically  -->
@@ -391,18 +195,9 @@ Date: 11/11/24
     <button @click="updateReport">Update Report</button>
     <button @click="deleteReport">Delete Report</button>
     <button @click="getAllReports">Get All Reports</button>
-
-
-    <p class="reports-p">The Report Is: {{ search }}</p>
 </div>
 </template>
 <style scoped>
-    .reports-p {
-        visibility: visible;
-        display: block;
-        font-size: 12pt;
-        color: black;
-    }
     .browse-reports-wrapper {
         min-height: 100%;
         height: 100%;
@@ -437,5 +232,42 @@ Date: 11/11/24
     .view-report-button:hover {
         cursor: pointer;
         background-color: var(--fwdx-blue-button-hover);
+    }
+
+    .loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -120px;
+        margin-left: -60px;
+        border: 16px solid var(--light-gray-outline);
+        border-top: 16px solid var(--fwdx-yellow);
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 0.75s ease-in-out infinite, changeColor 1.5s ease-in-out 0s infinite ;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes changeColor {
+        0%     {
+            /* background-color: var(--fwdx-yellow); */
+            border-top: 16px solid var(--fwdx-blue); /* Blue */
+        }
+        50%  {
+            /* background-color:var(--fwdx-white); */
+            border-top: 16px solid var(--fwdx-yellow); /* Blue */
+        }
+        75%  {
+            /* background-color:var(--fwdx-white); */
+            border-top: 16px solid var(--fwdx-yellow); /* Blue */
+        }
+        100%{
+            border-top: 16px solid var(--fwdx-blue); /* Blue */
+        }
     }
 </style>
