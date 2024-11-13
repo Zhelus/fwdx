@@ -22,5 +22,24 @@ export default {
     },
     getPathogen() {
         return apiClient.get('/v1/pathogen/10632');
+    },
+    getReportById(reportId) {
+        var url = '/v1/report/' + reportId;
+        return apiClient.get(url);
+    },
+    createReport(reportData) {
+        return apiClient.post('/v1/report', reportData)
+    },
+    updateReportById(reportId, updatedReportData) {
+        var url = '/v1/report/' + reportId;
+        return apiClient.put(url, updatedReportData)
+    },
+    deleteReport(reportId) {
+        var url = '/v1/report/' + reportId;
+        return apiClient.delete(url);
+    },
+    getAllReports() {
+        var url = '/v1/report/all';
+        return apiClient.get(url);
     }
 };

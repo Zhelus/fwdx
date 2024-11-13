@@ -104,6 +104,9 @@ Date: 11/12/24
         max-height: 100%;
         min-height: 100%;
         min-width: 550px;
+        position: sticky;
+        top: 0;
+        left: 0;
     }
 
     @media(min-height: 1080px){

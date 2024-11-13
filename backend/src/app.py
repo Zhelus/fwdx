@@ -2,6 +2,8 @@ from flask import Flask
 from flask_cors import CORS
 from backend.src.pathogens import pathogen_routes
 from backend.src.users import user_controller
+from fwdx.backend.src.reports import report_controller
+
 
 """
 Entry point for Flask application.
@@ -30,7 +32,8 @@ def create_app():
 
     # register blueprints (routes in other files)
     app.register_blueprint(pathogen_routes.bp)
-    app.register_blueprint(user_route.bp)
+    app.register_blueprint(user_controller.bp)
+    app.register_blueprint(report_controller.bp)
 
     return app
 
