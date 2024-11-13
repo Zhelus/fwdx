@@ -78,6 +78,7 @@ class MongoDBConnector:
     def delete_document(self, document: dict, collection: CollectionType):
         collection = self.database[collection.value]
         result = collection.find_one_and_delete(document)
+        return result
 
     def update_document(self, filter, update, collection: CollectionType):
         result = self.database[collection.value].update_one(filter, update)
@@ -85,6 +86,15 @@ class MongoDBConnector:
 
         # if result.acknowledged == "False":
         #     print(f"[MongoDBConnector] Error updating document {document}")
+
+    def fetch_all_documents(self, collection: CollectionType, filter: dict = {}):
+        result = self.database[collection.value].find(filter)
+        return result
+
+    def create_collection(self, collection: CollectionType):
+        collection = self.database.create_collection(collection.value)
+        print(f"Created New Collection:\n{collection}\n{collection.name}")
+
 
     def ping(self):
         try:
