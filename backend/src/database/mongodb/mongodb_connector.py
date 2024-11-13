@@ -80,7 +80,6 @@ class MongoDBConnector:
         result = collection.find_one_and_delete(document)
         return result
 
-
     def update_document(self, filter, update, collection: CollectionType):
         result = self.database[collection.value].update_one(filter, update)
         return result

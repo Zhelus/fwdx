@@ -1,7 +1,7 @@
 <!-- 
 Component for the navigation bar shown on the top of the page
-Last edited by: Blake Good
-Date: 10/30/24
+Last edited by: Nicholas Tullbane
+Date: 11/12/24
 -->
 <script setup>
     import NavigationButton from './NavigationButton.vue';
@@ -41,6 +41,15 @@ Date: 10/30/24
         standard: flaskExampleIsStandard,
         'nav-button': true
     });
+
+    const accountIsActive = ref(false);
+    const accountIsStandard = ref(true);
+    const accountClassObject = reactive({
+        active: accountIsActive,
+        standard: accountIsStandard,
+        'nav-button': true
+    });
+
     
 
     function navigateToPage(path, buttonName){
@@ -48,15 +57,18 @@ Date: 10/30/24
         if(path !== undefined){
             router.push(path);
         }
-        homeIsActive.value = buttonName == 'home-nav';
-        pathogenIsActive.value = buttonName == 'pathogens-nav';
-        reagentIsActive.value = buttonName == 'reagents-nav';
+        homeIsActive.value = buttonName === 'home-nav';              // Changed some of these to 3 ='s
+        pathogenIsActive.value = buttonName === 'pathogens-nav';
+        reagentIsActive.value = buttonName === 'reagents-nav';
         flaskExampleIsActive.value = buttonName === 'flaskExample-nav';
+        accountIsActive.value = buttonName === "accounts-nav"
 
-        homeIsStandard.value = buttonName != 'home-nav';
-        pathogenIsStandard.value = buttonName != 'pathogens-nav';
-        reagentIsStandard.value = buttonName != 'reagents-nav';
+
+        homeIsStandard.value = buttonName !== 'home-nav';
+        pathogenIsStandard.value = buttonName !== 'pathogens-nav';
+        reagentIsStandard.value = buttonName !== 'reagents-nav';
         flaskExampleIsStandard.value = buttonName !== 'flaskExample-nav';
+        accountIsStandard.value = buttonName !== 'accounts-nav';
     }
 </script>
 
@@ -72,8 +84,8 @@ Date: 10/30/24
             <NavigationButton text="Flask Example" :class-object="flaskExampleClassObject" routerPath="/flaskExample" button-name="flaskExample-nav" @nav-button-clicked="navigateToPage"/>
         </div>
         <div id="navbar-account-buttons">
-            <NavigationButton text="Sign Out" class-object="sign-out-button" />
-            <NavigationButton text="Account" class-object="my-account-button" />
+            <NavigationButton text="Sign Out" :class-object="sign-out-button"/>
+            <NavigationButton text="Account" :class-object="accountClassObject" router-path="/accounts" button-name="accounts-nav" @nav-button-clicked="navigateToPage" />
         </div>
     </div>
 </template>
