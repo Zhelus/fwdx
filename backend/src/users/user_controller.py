@@ -35,14 +35,14 @@ def api_delete_user(user_id):
     return f"User deleted is: {document}"
 
 
-@bp.route(f'{API_VERSION}/users/register', methods=['GET', 'POST'])
+@bp.route(f'/{API_VERSION}/users/register', methods=['GET', 'POST'])
 def api_register_user():
     user_data = request.get_json()
     document = register_user(user_data['email'], user_data['password'])
     return f"User is registered is: {document}"
 
 
-@bp.route(f'{API_VERSION}/users/login', methods=['GET', 'POST'])
+@bp.route(f'/{API_VERSION}/users/login', methods=['GET', 'POST'])
 def api_login_user():
     document = login_user()
     return f"User is logged in: {document}"
