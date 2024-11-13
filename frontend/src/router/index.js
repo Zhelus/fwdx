@@ -14,6 +14,7 @@ import ReagentsView from '@/views/ReagentsView.vue'
 import FlaskExampleView from "@/views/FlaskExampleView.vue";
 import AddReagentView from '@/views/AddReagentView.vue'
 import EditReagentView from '@/views/EditReagentView.vue'
+import AddProductView from '@/views/AddProductView.vue'
 import AccountView from "@/views/AccountView.vue";
 import AddAccountView from "@/views/AddAccountView.vue";
 import EditAccountView from "@/views/EditAccountView.vue";
@@ -61,6 +62,12 @@ const router = createRouter({
       name:'addReagent',
       component: AddReagentView
     },
+    {
+      path: '/reagents/addProduct',
+      name: 'addProduct',
+      component: AddProductView
+    },
+
     {
       path:'/reagents/edit',
       name:'editReagent',
