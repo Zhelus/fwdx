@@ -28,7 +28,6 @@ def delete_user(user_id):
     return connector.delete_document({"_id":ObjectId(user_id)}, CollectionType.ACCOUNTS)
 
 
-
 '''
 On hold until user registration, login, and forgot password are built out
 '''
@@ -41,3 +40,9 @@ def change_password(user_id, new_password):
 def hash_password(self, password):
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+
+def register_user():
+    return connector.register_document({CollectionType.ACCOUNTS})
+
+def login_user():
+    return connector.login_document({CollectionType.ACCOUNTS})
