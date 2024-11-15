@@ -21,8 +21,11 @@ def create_pathogen():
     return create_pathogen_document(request)
 
 
-# example query: GET -> http://127.0.0.1:5000/v1/pathogen?limit=10
+# Query one document:
 # example query: GET -> http://127.0.0.1:5000/v1/pathogen?id=12345
+
+# Query one or more documents
+# example query: GET -> http://127.0.0.1:5000/v1/pathogen?limit=10
 
 # Combined GET endpoint for a single pathogen or multiple pathogens
 # For example:
@@ -39,7 +42,7 @@ def update_pathogen():
     return update_pathogen_document(request)
 
 
-# example query: DELETE -> http://127.0.0.1:5000/v1/pathogen/NC_045512.2
+# example query: DELETE -> http://127.0.0.1:5000/v1/pathogen?id=12345
 @bp.route(f'/{API_VERSION}/pathogen/', methods=['DELETE'])
 def delete_pathogen():
     return delete_pathogen_document(request)

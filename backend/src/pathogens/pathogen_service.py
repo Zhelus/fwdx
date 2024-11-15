@@ -61,11 +61,14 @@ def update_pathogen_document(flask_request: request):
 
 
 def delete_pathogen_document(flask_request: request):
-    accession_id = flask_request.get_json()["accession_id"]
+    id_arg = flask_request.args.get('id', type=str)
 
-    result = connector.delete_document({"accession_id": accession_id}, CollectionType.PATHOGENS)
+    if id_arg is None:
+        return "Failed to delete pathogen, no ID found in request", 400
+
+    result = connector.delete_document({"accession_id": id_arg}, CollectionType.PATHOGENS)
 
     if result is not None:
-        return f"Successfully deleted pathogen with accession_id: {accession_id}", 200
+        return f"Successfully deleted pathogen with accession_id: {id_arg}", 200
     else:
         return "Failed to delete pathogen document", 400
