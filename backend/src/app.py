@@ -4,6 +4,7 @@ from backend.src.pathogens import pathogen_routes
 from backend.src.users import user_controller
 from backend.src.reports import report_controller
 from backend.src.reagents import product_controller
+from backend.src.reagents import oligo_controller
 
 
 """
@@ -36,7 +37,7 @@ def create_app():
     app.register_blueprint(user_controller.bp)
     app.register_blueprint(report_controller.bp)
     app.register_blueprint(product_controller.bp)
-
+    app.register_blueprint(oligo_controller.bp)
     return app
 
 
