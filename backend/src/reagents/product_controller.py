@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from .product_service import create_product, get_product, update_product, delete_product, add_product_version, set_active_version
+from ..database.mongodb.mongodb_connector import MongoDBConnector
 from ...definitions import API_VERSION
 
 bp = Blueprint('products', __name__)

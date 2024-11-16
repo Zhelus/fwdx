@@ -3,7 +3,7 @@ from bson import ObjectId
 from backend.src.database.mongodb.mongodb_connector import MongoDBConnector
 from backend.src.helper.collection_type import CollectionType
 
-connector = MongoDBConnector()
+connector = MongoDBConnector(force_ssl=True)
 
 '''
 CRUD operations for Product (Reagent) objects.
@@ -16,6 +16,7 @@ def create_product(product_data):
     :return: Result of the MongoDB insert operation.
     """
     return connector.upload_document(product_data, CollectionType.REAGENTS)
+
 
 
 def get_product(product_id):
