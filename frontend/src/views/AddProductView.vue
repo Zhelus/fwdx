@@ -4,7 +4,7 @@ Last edited by: Michael Nguyen
 Date: 11/12/24
 -->
 <script setup>
-    import AddProductForm from '@/components/reagents_form/AddProductForm.vue';
+    import AddProductForm from '@/components/products_form/AddProductForm.vue';
 </script>
 <template>
 <div class="report-page-wrapper">

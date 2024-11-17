@@ -80,7 +80,8 @@ Date: 11/12/24
         <div id="navbar-main-buttons">
             <NavigationButton text="Home" :class-object="homeClassObject" routerPath="/" button-name="home-nav" @nav-button-clicked="navigateToPage"/>
             <NavigationButton text="Pathogens" :class-object="pathogenClassObject" routerPath="/pathogens" button-name="pathogens-nav" @nav-button-clicked="navigateToPage"/>
-            <NavigationButton text="Reagents" :class-object="reagentClassObject" routerPath="/reagents" button-name="reagents-nav" @nav-button-clicked="navigateToPage"/>
+            <NavigationButton text="Oligos" :class-object="oligoClassObject" routerPath="/oligos" button-name="oligos-nav" @nav-button-clicked="navigateToPage"/>
+            <NavigationButton text="Products" :class-object="reagentClassObject" routerPath="/reagents" button-name="reagents-nav" @nav-button-clicked="navigateToPage"/>
             <NavigationButton text="Flask Example" :class-object="flaskExampleClassObject" routerPath="/flaskExample" button-name="flaskExample-nav" @nav-button-clicked="navigateToPage"/>
         </div>
         <div id="navbar-account-buttons">

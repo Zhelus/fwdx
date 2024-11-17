@@ -10,9 +10,9 @@ import ScheduleReportView from '@/views/ScheduleReportView.vue'
 import EditScheduleView from '@/views/EditScheduleView.vue'
 import BrowseReportsView from '@/views/BrowseReportsView.vue'
 import PathogensView from '@/views/PathogensView.vue'
-import ReagentsView from '@/views/ReagentsView.vue'
+import ReagentsView from '@/views/ProductsHomeView.vue'
 import FlaskExampleView from "@/views/FlaskExampleView.vue";
-import AddReagentView from '@/views/AddReagentView.vue'
+import AddReagentView from '@/views/AddOligoView.vue'
 import EditReagentView from '@/views/EditReagentView.vue'
 import AddProductView from '@/views/AddProductView.vue'
 import AccountView from "@/views/AccountView.vue";
@@ -60,7 +60,7 @@ const router = createRouter({
     { 
       path: '/reagents/add', 
       name:'addReagent',
-      component: AddReagentView
+      component: AddProductView
     },
     {
       path: '/reagents/addProduct',
@@ -72,6 +72,11 @@ const router = createRouter({
       path:'/reagents/edit',
       name:'editReagent',
       component: EditReagentView
+    },
+    {
+      path: '/oligos',
+      name: 'oligos',
+      component: ReagentsView
     },
     {
       path: '/flaskExample',

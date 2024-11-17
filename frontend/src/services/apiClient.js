@@ -41,5 +41,23 @@ export default {
     getAllReports() {
         var url = '/v1/report/all';
         return apiClient.get(url);
+    },
+    getAllProducts() {
+        return apiClient.get('/v1/products');
+    },
+    getProductById(productId) {
+        var url = '/v1/products/' + productId;
+        return apiClient.get(url);
+    },
+    createProduct(productData) {
+        return apiClient.post('/v1/products', productData);
+    },
+    updateProductById(productId, updatedProductData) {
+        var url = '/v1/products/' + productId;
+        return apiClient.put(url, updatedProductData);
+    },
+    deleteProduct(productId) {
+        var url = '/v1/products/' + productId;
+        return apiClient.delete(url);
     }
 };

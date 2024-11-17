@@ -4,7 +4,7 @@ Last edited by: Michael Nguyen
 Date: 10/30/24
 -->
 <script setup>
-    import AddReagentForm from '@/components/reagents_form/ReagentForm.vue';
+    import AddOligoForm from '@/components/oligos_form/AddOligoForm.vue';
     import { useRoute } from 'vue-router';
     const route = useRoute();
     const productName = route.query.productName || "Product Name";
@@ -13,7 +13,7 @@ Date: 10/30/24
 </script>
 <template>
 <div class="report-page-wrapper">
-    <AddReagentForm/>
+    <AddOligoForm/>
 </div>
 </template>
 <style scoped>
