@@ -15,6 +15,7 @@ import FlaskExampleView from "@/views/FlaskExampleView.vue";
 import AddReagentView from '@/views/AddOligoView.vue'
 import EditReagentView from '@/views/EditReagentView.vue'
 import AddProductView from '@/views/AddProductView.vue'
+import OligosHomeView from '@/views/OligosHomeView.vue'
 import AccountView from "@/views/AccountView.vue";
 import AddAccountView from "@/views/AddAccountView.vue";
 import EditAccountView from "@/views/EditAccountView.vue";
@@ -76,7 +77,7 @@ const router = createRouter({
     {
       path: '/oligos',
       name: 'oligos',
-      component: ReagentsView
+      component: OligosHomeView
     },
     {
       path: '/flaskExample',

@@ -59,5 +59,20 @@ export default {
     deleteProduct(productId) {
         var url = '/v1/products/' + productId;
         return apiClient.delete(url);
+    }, 
+    getAllOligos() {
+        return apiClient.get('/v1/oligos/all');
+    },
+    getActiveOligos() {
+        return apiClient.get('/v1/oligos');
+    },
+    getOligoById(oligoId) {
+        return apiClient.get(`/v1/oligos/${oligoId}`);
+    },
+    createOligo(oligoData) {
+        return apiClient.post('/v1/oligos', oligoData);
+    },
+    archiveOligo(oligoId) {
+        return apiClient.delete(`/v1/oligos/${oligoId}/archive`);
     }
 };
