@@ -29,6 +29,8 @@ def create_app():
         "methods":["GET", "POST", "PUT", "DELETE", "PATCH"]
     }
 
+    app.secret_key = 'shhhhh, its a secret'  # Set a secure random secret key
+
     CORS(app, resources={r"/*": cors_config})
 
     # register blueprints (routes in other files)

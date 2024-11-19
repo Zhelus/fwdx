@@ -1,5 +1,9 @@
+import hashlib
 from bson import ObjectId
 import bcrypt
+from flask import url_for, redirect, session
+from mongoengine import connect
+
 from backend.src.database.mongodb.mongodb_connector import MongoDBConnector
 from backend.src.helper.collection_type import CollectionType
 
@@ -27,22 +31,35 @@ def update_user(user_id, user_data):
 def delete_user(user_id):
     return connector.delete_document({"_id":ObjectId(user_id)}, CollectionType.ACCOUNTS)
 
+def login_user(email: str, password: str):
+    # Hash the password for comparison
+    # hashed_password = hashlib.sha256(password.encode()).hexdigest()
+    hashed_password = "123456789"
 
-'''
-On hold until user registration, login, and forgot password are built out
-'''
+    # Fetch the user document from MongoDB
+    user_document = connector.fetch_document({"email": email}, CollectionType.ACCOUNTS)
+
+    # Check if the user exists and the password matches
+    if user_document and user_document.get('password') == hashed_password:
+        user_id = user_document.get('_id')    #Fetch the user id
+        session['user_id'] = str(user_id)        #Begin session for user
+        session['logged_in'] = True           #Set boolean flag to true for logged in
+        return True, "Login Successful"
+    else:
+        return False, "Invalid username or password"
+
+
+def logout_user():
+    #Remove user info from session
+    session.pop('user_id', None)
+    session.pop('logged_in', None)
+
 
 def change_password(user_id, new_password):
     filter = {"_id": ObjectId(user_id)}
     update = {"$set": new_password}
     return connector.update_document(filter, update, CollectionType.ACCOUNTS)
 
-def hash_password(self, password):
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
-
-def register_user():
+def register_user(user_data):
     return connector.register_document({CollectionType.ACCOUNTS})
 
-def login_user():
-    return connector.login_document({CollectionType.ACCOUNTS})

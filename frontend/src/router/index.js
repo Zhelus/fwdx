@@ -17,12 +17,30 @@ import EditReagentView from '@/views/EditReagentView.vue'
 import AccountView from "@/views/AccountView.vue";
 import AddAccountView from "@/views/AddAccountView.vue";
 import EditAccountView from "@/views/EditAccountView.vue";
+import LoginView from "@/views/LoginView.vue";
+import RegisterView from "@/views/RegisterView.vue";
+import ForgotPasswordView from "@/views/ForgotPasswordView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path:'/',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView
+    },
+    {
+      path: '/forgot_password',
+      name: 'forgot_password',
+      component: ForgotPasswordView
+    },
+    {
+      path: '/reports',
       name: 'home',
       component: HomeView
     },

@@ -1,9 +1,8 @@
-from flask import Blueprint, request
-from .user_service import create_user, get_user, update_user, delete_user, change_password, register_user, login_user
+from flask import Blueprint, request, jsonify
+from .user_service import create_user, get_user, update_user, delete_user, change_password, register_user, login_user, logout_user
 from ...definitions import API_VERSION
 
 bp = Blueprint('users', __name__)
-
 
 #example query: http://127.0.0.1:5000/v1/users/create
 @bp.route(f'/{API_VERSION}/users/create', methods=['POST'])
@@ -21,7 +20,7 @@ def api_get_user(user_id):
 
 
 #example query: http://127.0.0.1:5000/v1/users/update/6722541f635480d44cf29db4
-@bp.route(f'/{API_VERSION}/update/<string:user_id>', methods=['PUT'])
+@bp.route(f'/{API_VERSION}/users/update/<string:user_id>', methods=['PUT'])
 def api_update_user(user_id):
     user_data = request.get_json()
     document = update_user(user_id, user_data)
@@ -35,25 +34,31 @@ def api_delete_user(user_id):
     return f"User deleted is: {document}"
 
 
+@bp.route(f'/{API_VERSION}/users/login', methods=['POST'])
+def api_login_user():
+    email = request.json['email']
+    password = request.json['password']
+    document = login_user(email, password)
+    return f"User logged in is: {document}"
+
+
+@bp.route(f'/{API_VERSION}/users/logout', methods=['POST'])
+def api_logout_user():
+    logout_user()
+    return f"User is logged out"
+
+
 @bp.route(f'/{API_VERSION}/users/register', methods=['GET', 'POST'])
 def api_register_user():
     user_data = request.get_json()
-    document = register_user(user_data['email'], user_data['password'])
+    document = register_user(user_data)
     return f"User is registered is: {document}"
 
 
-@bp.route(f'/{API_VERSION}/users/login', methods=['GET', 'POST'])
-def api_login_user():
-    document = login_user()
-    return f"User is logged in: {document}"
-
-'''
-On hold until user registration, login, and forgot password are built out.
-'''
-
-#example query: http://127.0.0.1:5000/v1/users/changepassword/6722541f635480d44cf29db4
+# example query: http://127.0.0.1:5000/v1/users/changepassword/6722541f635480d44cf29db4
 @bp.route(f'/{API_VERSION}/users/changepassword/<string:user_id>', methods=['PATCH'])
 def api_change_password(user_id):
     new_password = request.get_json().get('newPassword')
     return change_password(user_id, new_password)
+
 
