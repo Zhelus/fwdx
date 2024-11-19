@@ -12,6 +12,7 @@ Date: 11/11/24
     import reportsApiHelper from "@/services/reportsApiHelper"
     import Report from "@/entities/Report"
     import { onBeforeMount } from 'vue';
+    import LoadingIcon from '@/components/misc/LoadingIcon.vue';
 
     // Work to be done before the page is displayed
     // We only show the table after all reports are fetched (initComplete = true)
@@ -127,8 +128,9 @@ Date: 11/11/24
 </script>
 <template>
 <div class="browse-reports-wrapper">
-    <div class="loader" v-if="!initComplete"></div>
-    <h1 class="form-header">Browse Reports</h1>
+    <!-- <div class="loader" v-if="!initComplete"></div> -->
+     <LoadingIcon :is-loading="initComplete" />
+    <h1 class="form-header">All Reports</h1>
     <!-- Use to add a new data table component to the page -->
     <DataTable 
         v-if="initComplete"
@@ -190,11 +192,6 @@ Date: 11/11/24
             </template>
         </Column>
     </DataTable>
-    <button @click="createReport">Create Report</button>
-    <button @click="getReport">Get Report</button>
-    <button @click="updateReport">Update Report</button>
-    <button @click="deleteReport">Delete Report</button>
-    <button @click="getAllReports">Get All Reports</button>
 </div>
 </template>
 <style scoped>
@@ -212,9 +209,9 @@ Date: 11/11/24
         font-weight: 700;
         vertical-align:top;
         letter-spacing: -2%;
-        font-size: 26pt;
+        font-size: var(--page-header-size);
         line-height: 0.95em;
-        margin-bottom: 2.5rem;
+        margin-bottom: 1rem;
     }
 
     .view-report-button {
@@ -223,6 +220,7 @@ Date: 11/11/24
         border-radius: 5px;
         height: 25px;
         width: 60%;
+        min-width: 50px;
         border: none;
         outline: none;
         font-size: 11pt;

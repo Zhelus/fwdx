@@ -25,15 +25,15 @@ Date: 10/30/24
         width: 40%;
         min-width: 380px;
         background-color: transparent;
-        margin-bottom: 2.5rem;
+        margin-bottom: var(--form-element-spacing);
         margin-top: 0rem;
     }
 
     .selection-header {
         color: var(--dark-gray-text);
-        font-size: 16pt;
-        font-weight: 700;
-        line-height: 24px;
+        font-size: var(--subheading-size);
+        font-weight: var(--subheading-weight);
+        line-height: var(--subheading-size);
         text-align: left;
         text-justify: top;
         margin-bottom: 0.25rem;
@@ -46,7 +46,7 @@ Date: 10/30/24
         width: 100%;
         color: var(--dark-gray-text);
         font-weight: 500;
-        font-size: 12pt;
+        font-size: var(--body-text-size);
     }
 
     .select-box:focus {
