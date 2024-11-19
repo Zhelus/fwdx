@@ -4,7 +4,6 @@ Last edited by: Blake Good
 Date: 10/30/24
 -->
 <script setup>
-    import CardContainer from '@/components/home_page/CardContainer.vue';
     import Card from '@/components/home_page/Card.vue'
     import ActionPane from '@/components/home_page/ActionPane.vue';
     import UpcomingCard from '@/components/home_page/UpcomingCard.vue';
@@ -28,9 +27,9 @@ Date: 10/30/24
             </div>
             <h4 class="container-title-text">New Reports</h4>
         </div>
-        <Card card-title="RSV Report 3" card-type="report" pathogen-name="rsv" report-age="2 hours ago" pathogen-name-fmtd="RSV" reagent-name="Reagent #00123" mismatch-count="3"></Card>
-        <Card card-title="Influenza Report 1" card-type="report" pathogen-name="influenza" report-age="2 days ago" pathogen-name-fmtd="Influenza" reagent-name="Reagent #00167" mismatch-count="0"></Card>
-        <Card card-title="RSV Report 2" card-type="report" pathogen-name="rsv" report-age="2 weeks ago" pathogen-name-fmtd="RSV" reagent-name="Reagent #00123" mismatch-count="7"></Card>
+        <Card report-id="1234567" card-title="RSV Report 3" card-type="report" pathogen-name="rsv" report-age="2 hours ago" pathogen-name-fmtd="RSV" reagent-name="Reagent #00123" mismatch-count="3"></Card>
+        <Card report-id="1234567" card-title="Influenza Report 1" card-type="report" pathogen-name="influenza" report-age="2 days ago" pathogen-name-fmtd="Influenza" reagent-name="Reagent #00167" mismatch-count="0"></Card>
+        <Card report-id="1234567" card-title="RSV Report 2" card-type="report" pathogen-name="rsv" report-age="2 weeks ago" pathogen-name-fmtd="RSV" reagent-name="Reagent #00123" mismatch-count="7"></Card>
     </div>
     <div class="scheduled-reports-container">
         <div class="scheduled-title-wrapper">

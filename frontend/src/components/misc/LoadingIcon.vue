@@ -1,8 +1,8 @@
 <script setup>
-    const props = defineProps(['isLoading']);
+    const props = defineProps(['initComplete']);
 </script>
 <template>
-    <div class="loader" v-if="!isLoading"></div>
+    <div class="loader" v-if="!initComplete"></div>
 </template>
 <style scoped>
     .loader {

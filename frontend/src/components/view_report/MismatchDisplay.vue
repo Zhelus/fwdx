@@ -6,8 +6,8 @@
     // Set the size of each mismatch character
     onMounted(() => {
         console.log(props.mismatch);
-        sequenceCharClassName.value = `${props.mismatch.name.replaceAll(' ', '')}-sequence-char`
-        let numChars = props.mismatch.primer.length;
+        sequenceCharClassName.value = `${props.mismatch.oligoName.replaceAll(' ', '')}-sequence-char`
+        let numChars = props.mismatch.oligoSequence.length;
         let widthPercentage = 100/numChars;
         let chars = document.getElementsByClassName(sequenceCharClassName.value);
         for(let i=0; i<chars.length; i++){
@@ -19,17 +19,17 @@
     <div class="mismatch-container">
         <div class="mismatch-title-wrapper">
             <img class="inline-icon" src="../icons/dna-icon.svg"></img>
-            <h3 class="mismatch-title">{{ mismatch.name }}</h3>
+            <h3 class="mismatch-title">{{ mismatch.oligoName }}</h3>
         </div>
         <div class="mismatch-wrapper">
             <div class="sequence-wrapper fwdx-seq">
-                <div :class="`sequence-char ${mismatch.name.replaceAll(' ', '')}-sequence-char`" v-for="(x, index) in mismatch.primer">{{ x }}</div>
+                <div :class="`sequence-char ${mismatch.oligoName.replaceAll(' ', '')}-sequence-char`" v-for="(x, index) in mismatch.oligoSequence">{{ x }}</div>
             </div>
             <div class="sequence-wrapper mismatch-seq">
-                <div v-for="(x, index) in mismatch.mismatchLines" :class="[x=='|' ? 'matchSymbol' : 'mismatchSymbol', `sequence-char ${mismatch.name.replaceAll(' ', '')}-sequence-char`]"><span>{{ x }}</span></div>
+                <div v-for="(x, index) in mismatch.mismatchLines" :class="[x=='|' ? 'matchSymbol' : 'mismatchSymbol', `sequence-char ${mismatch.oligoName.replaceAll(' ', '')}-sequence-char`]"><span>{{ x }}</span></div>
             </div>
             <div class="sequence-wrapper genomic-seq">
-                <div :class="`sequence-char ${mismatch.name.replaceAll(' ', '')}-sequence-char`" v-for="(x, index) in mismatch.genomicSequence">{{ x }}</div>
+                <div :class="`sequence-char ${mismatch.oligoName.replaceAll(' ', '')}-sequence-char`" v-for="(x, index) in mismatch.pathogenSequence">{{ x }}</div>
             </div>
         </div>
     </div>

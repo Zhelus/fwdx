@@ -8,41 +8,55 @@
     const props = defineProps(['testProps']);
     // Get report data from MongoDB
     const reportData = ref({});
-    const pageIsLoading = ref(false);
+    const initComplete = ref(false);
     
     const mismatch = ref();
     mismatch.value = {
-        primer: 'AATGCAACAGTGCAATCTCA',
+        oligoID: '67366cb26b5f81586e616809',
+        oligoName: "Forward Primer",
+        oligoSequence: 'AATGCAACAGTGCAATCTCA',
         mismatchLines: '|||||X||||||||||||||',
-        genomicSequence: 'AATGCCACAGTGCAATCTCA',
+        pathogenSequence: 'AATGCCACAGTGCAATCTCA',
+        pathogenAccessionID: 'KJ643523.1',
+        pathogenCommonName: 'Respiratory syncytial virus type A',
+        pathogenCollectionDate: '2015',
+        pathogenLocation: 'USA',
         genomicPosition: '1987',
-        mismatchIndex: 5,
-        mismatchCount: 1,
-        name: "Forward Primer"
+        mismatchIndex: [5],
+        mismatchCount: 1
     }
 
     const mismatchTwo = ref();
     mismatchTwo.value = {
-        primer: 'GGCCCAACACCAAATTCATC',
+        oligoID: '67366cb26b5f81586e616809',
+        oligoName: "Reverse Primer",
+        oligoSequence: 'GGCCCAACACCAAATTCATC',
         mismatchLines: '||||XX||X||XX|XX|||X',
-        genomicSequence: 'GGCCTTACTCCTGAAACATA',
+        pathogenSequence: 'GGCCTTACTCCTGAAACATA',
+        pathogenAccessionID: 'MF001052.1',
+        pathogenCommonName: 'Respiratory syncytial virus type A',
+        pathogenCollectionDate: '2015',
+        pathogenLocation: 'USA',
         genomicPosition: '708',
-        mismatchIndex: 5,
-        mismatchCount: 8,
-        name: "Reverse Primer"
+        mismatchIndex: [4, 5, 8, 11, 12, 14, 15, 19],
+        mismatchCount: 8
     }
 
     const mismatchThree = ref();
     mismatchThree.value = {
-        primer: 'AAACCTGCTTAGTTTCTTCTTGTTCTC',
+        oligoID: '67366cb26b5f81586e616809',
+        oligoName: "Probe 1",
+        oligoSequence: 'AAACCTGCTTAGTTTCTTCTTGTTCTC',
         mismatchLines: '||||||||||||||||||||X|||||X',
-        genomicSequence: 'AAACCTGCTTAGTTTCTTCTGGTTCTT',
+        pathogenSequence: 'AAACCTGCTTAGTTTCTTCTGGTTCTT',
+        pathogenAccessionID: 'MG027862.1',
+        pathogenCommonName: 'Respiratory syncytial virus type A',
+        pathogenCollectionDate: '2015',
+        pathogenLocation: 'USA',
         genomicPosition: '3861',
-        mismatchIndex: 5,
-        mismatchCount: 2,
-        name: "Probe #1"
+        mismatchIndex: [21, 27],
+        mismatchCount: 2
     }
-    const mismatchPercentages = ref([]);
 
     onBeforeMount(async () => {
         console.log("ON BEFORE MOUNT - VIEW REPORTS");
@@ -51,7 +65,7 @@
         await reportsApiHelper.getReport(props.testProps)
             .then(data => {
                 reportData.value = data;
-                pageIsLoading.value = true;
+                initComplete.value = true;
             })
             .catch(error => {
                 console.error(error);
@@ -59,10 +73,9 @@
     });
 </script>
 <template>
-    <!-- <h1 style="color: var(--fwdx-blue);">{{ testProps }}</h1> -->
     <div class="page-wrapper">
-        <LoadingIcon :is-loading="pageIsLoading" />
-        <div class="report-container"  v-if="pageIsLoading" >
+        <LoadingIcon :init-complete="initComplete" />
+        <div class="report-container"  v-if="initComplete" >
             <div class="report-header">
                 <h1 class="report-title-text">{{ reportData.report_title }}</h1>
             </div>
@@ -75,9 +88,7 @@
             </div>
             <div class="report-mismatches">
                 <h1 class="section-heading">Mismatches</h1>
-                <MismatchDisplay :mismatch="mismatch"/>
-                <MismatchDisplay :mismatch="mismatchTwo"/>
-                <MismatchDisplay :mismatch="mismatchThree"/>
+                <MismatchDisplay v-for="(x, index) in reportData.mismatches" :mismatch="x"/>
             </div>
         </div>
     </div>
