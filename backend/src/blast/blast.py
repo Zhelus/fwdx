@@ -2,6 +2,12 @@ import os
 import subprocess
 import time
 
+"""
+This is the main blast class that is responsible for creating the blast database and doing blast analysis. Subject to be split into multiple files 
+
+Last uploaded: Carson Freeman 
+Date: 2024/11/19
+"""
 
 class Blast:
 
@@ -9,11 +15,6 @@ class Blast:
         self.fasta_file = fasta_file
         self.blast_database = "blast_database/" + blast_database
         self.db_type = db_type
-
-        if os.path.exists(self.fasta_file):
-           self.create_blast_db()
-        else:
-            print(f"Fasta file {self.fasta_file} does not exist")
 
     """
     The function of this method is to create a BLAST database to run out blast queries off of 
@@ -47,7 +48,7 @@ class Blast:
             '-db', self.blast_database,
             '-out', output_file,
             '-outfmt', '5',
-            '-evalue', '0.001',
+            '-evalue', "0.001", # can mess with this value to get more stingy on what is considered a match
             '-word_size', '7'
         ]
 
@@ -58,6 +59,6 @@ class Blast:
         print(f"Blast complete in {end_time - start_time} seconds.")
 
 blast = Blast("fasta_files/all_genomes.fasta", "blast_db")
-blast.create_blast_db()
-blast.run_blast("fasta_files/omnicron_primer_probes.fasta", "XML_Outputs/omni_blast_results.xml")
+# blast.create_blast_db()
+blast.run_blast("fasta_files/jc_virus_primer_probes.fasta", "XML_Outputs/jc.xml")
 
