@@ -59,9 +59,6 @@
     }
 
     onBeforeMount(async () => {
-        console.log("ON BEFORE MOUNT - VIEW REPORTS");
-        console.log(props['testProps']);
-
         await reportsApiHelper.getReport(props.testProps)
             .then(data => {
                 reportData.value = data;
@@ -81,10 +78,22 @@
             </div>
             <div class="report-stats">
                 <h1 class="section-heading">Details</h1>
-                <p>Date</p>
-                <p>Virus</p>
-                <p>Reagent</p>
-                <p>Mismatches</p>
+                <div class="details-section">
+                    <img class="inline-icon" src="../components/icons/clock-icon.svg"></img>
+                    <p class="details-text">{{reportData.creation_date}}</p>
+                </div>
+                <div class="details-section">
+                    <img class="inline-icon" src="../components/icons/virus-icon.svg"></img>
+                    <p class="details-text">{{reportData.pathogen_id}}</p>
+                </div>
+                <div class="details-section">
+                    <img class="inline-icon" src="../components/icons/beaker-icon.svg"></img>
+                    <p class="details-text">{{reportData.reagent_id}}</p>
+                </div>
+                <div class="details-section">
+                    <img class="inline-icon" src="../components/icons/mismatch-icon.svg"></img>
+                    <p class="details-text">{{reportData.mismatches.length}} total mismatches</p>
+                </div>
             </div>
             <div class="report-mismatches">
                 <h1 class="section-heading">Mismatches</h1>
@@ -115,6 +124,31 @@
         text-align: left;
         text-justify: top;
         margin-bottom: 0.25rem;
+    }
+
+    .details-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        height: auto;
+    }
+
+    .details-section:not(:last-child) {
+        margin-bottom: 2pt;
+    }
+
+    .details-text {
+        color: var(--fwdx-blue);
+        font-size: var(--body-text-size);
+    }
+
+    .inline-icon {
+        height: var(--body-text-size);
+        width: auto;
+        margin-right: 5pt;
+        min-height: 0;
+        max-height: 14pt;
     }
 
     .report-title-text {

@@ -226,7 +226,7 @@ Date: 11/11/24
             </template>
         </Column>
     </DataTable>
-    <button @click="updateReport()">Update Mismatches</button>
+    <!-- <button @click="updateReport()">Update Mismatches</button> -->
 </div>
 </template>
 <style scoped>

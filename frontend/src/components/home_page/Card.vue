@@ -10,7 +10,6 @@ Date: 10/30/24
     const router = useRouter();
 
     function getImageUrl() {
-        console.log(props.pathogenName);
         return new URL(`./card_images/${props.pathogenName}.jpg`, import.meta.url)
     }
 </script>
