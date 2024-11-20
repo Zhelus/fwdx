@@ -1,159 +1,212 @@
-"""
-This code builds the NCBI search quiery, processes the request, and prepares the strings for dataprocessor.py
-Last uploaded: Kyle Stagner
-Date: 2024/11/3
-"""
-
-import os
 import requests
+import time
+import os
+from dotenv import load_dotenv
+from datetime import datetime
+
+load_dotenv()
 
 class NCBIDataFetcher:
     """
     Handles HTTP requests to the NCBI database and parsing of genomic data.
     """
 
+    API_KEY = os.getenv('NCBI_API_KEY')  # Set your NCBI API key in the environment variables
+    REQUEST_DELAY = 0.1  # Adjust the delay as needed (in seconds)
+
     @staticmethod
-    def fetch_genomic_data(identifier):
-        """Fetch data from NCBI using an identifier (e.g., GCF number) and save it as a file."""
+    def make_request_with_retries(url, params, max_retries=3):
+        delay = NCBIDataFetcher.REQUEST_DELAY
+        for attempt in range(max_retries):
+            try:
+                response = requests.get(url, params=params)
+                if response.status_code == 429:
+                    print("Rate limit exceeded. Retrying after delay...")
+                    time.sleep(delay)
+                    delay *= 2  # Exponential backoff
+                    continue
+                response.raise_for_status()
+                time.sleep(NCBIDataFetcher.REQUEST_DELAY)  # Rate limiting
+                return response
+            except requests.exceptions.HTTPError as e:
+                print(f"HTTP error occurred: {e}")
+                return None
+            except Exception as e:
+                print(f"An error occurred: {e}")
+                return None
+        print("Max retries exceeded.")
+        return None
+
+    @staticmethod
+    def fetch_all_data(accession_id):
+        """Fetch all required data using minimal API calls."""
         try:
-            # First, get the assembly UID using the GCF number
-            base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
-            params = {
-                "db": "assembly",
-                "term": identifier,
-                "retmode": "json"
-            }
-
-            response = requests.get(base_url, params=params)
-            response.raise_for_status()
-            data = response.json()
-            uid_list = data.get('esearchresult', {}).get('idlist', [])
-            if not uid_list:
-                print(f"No assembly found for identifier '{identifier}'.")
-                return None
-            assembly_uid = uid_list[0]
-
-            # Get linked nucleotide records
-            link_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi"
-            link_params = {
-                "dbfrom": "assembly",
-                "db": "nuccore",
-                "id": assembly_uid,
-                "retmode": "json"
-            }
-            link_response = requests.get(link_url, params=link_params)
-            link_response.raise_for_status()
-            link_data = link_response.json()
-            linksets = link_data.get('linksets', [])
-            if not linksets or 'linksetdbs' not in linksets[0]:
-                print(f"No nucleotide records linked to assembly '{identifier}'.")
-                return None
-            nuccore_ids = linksets[0]['linksetdbs'][0].get('links', [])
-            if not nuccore_ids:
-                print(f"No nucleotide records linked to assembly '{identifier}'.")
-                return None
-
-            # Fetch the sequence data
+            # Fetch the GenBank record, which contains sequence and rich metadata
             efetch_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
             efetch_params = {
                 "db": "nuccore",
-                "id": ','.join(nuccore_ids),
-                "rettype": "fasta",
-                "retmode": "text"
+                "id": accession_id,
+                "rettype": "gbwithparts",
+                "retmode": "text",
+                "api_key": NCBIDataFetcher.API_KEY
             }
-            efetch_response = requests.get(efetch_url, params=efetch_params)
-            efetch_response.raise_for_status()
-
-            # Save fetched data to a designated directory
-            os.makedirs('data', exist_ok=True)
-            file_path = os.path.join('data', f"{identifier}_data.fasta")
-            with open(file_path, 'w') as file:
-                file.write(efetch_response.text)
-            print(f"Data fetched and saved to {file_path}")
-            return file_path
-
-        except requests.exceptions.HTTPError as e:
-            print(f"HTTP error occurred while fetching data: {e}")
-            return None
-        except requests.exceptions.RequestException as e:
-            print(f"Request error occurred while fetching data: {e}")
-            return None
-        except ValueError as e:
-            print(f"JSON decoding failed: {e}")
-            return None
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-            return None
-
-    @staticmethod
-    def parse_fasta(file_path):
-        """Parse a FASTA formatted file and return a dictionary with parsed data."""
-        try:
-            with open(file_path, 'r') as file:
-                fasta_data = file.read()
-            lines = fasta_data.splitlines()
-            if not lines:
-                print(f"The FASTA file '{file_path}' is empty.")
+            response = NCBIDataFetcher.make_request_with_retries(efetch_url, efetch_params)
+            if not response:
+                print("Failed to fetch data from NCBI.")
                 return None
-            header = lines[0]
-            sequence = ''.join(lines[1:])
-            print(f"Parsed sequence header: {header}")
-            return {"header": header, "sequence": sequence}
-        except FileNotFoundError:
-            print(f"File not found: '{file_path}'.")
-            return None
+            genbank_data = response.text
+            print(f"GenBank data fetched for accession ID {accession_id}.")
+            return genbank_data
         except Exception as e:
-            print(f"An error occurred while parsing the FASTA file: {e}")
+            print(f"Error fetching data: {e}")
             return None
 
     @staticmethod
-    def fetch_taxonomic_id(identifier):
-        """Fetch taxonomic ID from NCBI using an assembly identifier (e.g., GCF number)."""
+    def parse_genbank(genbank_data):
+        """Parse GenBank data to extract required information."""
         try:
-            # First, get the assembly UID using the GCF number
-            esearch_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
-            esearch_params = {
+            data = {
+                "taxonomicID": None,
+                "accessionID": "",
+                "genomic_sequence": "",                
+                "common_name": "",
+                "gcf": "",
+#                "source": "",
+                "collection_date": "",
+                "fwdxdatabase_import_date": ""
+            }
+
+            lines = genbank_data.splitlines()
+            sequence_lines = []
+            in_origin = False
+            in_source_feature = False
+            for i, line in enumerate(lines):
+                line = line.rstrip()
+                if line.startswith("ACCESSION"):
+                    parts = line.split()
+                    if len(parts) > 1:
+                        data["accessionID"] = parts[1]
+                elif line.startswith("VERSION"):
+                    parts = line.split()
+                    if len(parts) > 1:
+                        data["accessionID"] = parts[1]
+                elif line.startswith("SOURCE"):
+                    data["common_name"] = line[12:].strip()
+                    
+                    """    
+                elif line.startswith("  ORGANISM"):
+                    # Fetch taxonomic ID from the following lines
+                    
+                    for j in range(i+1, len(lines)):
+                        if "db_xref=\"taxon:" in lines[j]:
+                            idx = lines[j].find("taxon:")
+                            taxid = lines[j][idx+6:].strip()
+                            if taxid.endswith('"'):
+                                taxid = taxid[:-1]
+                            data["taxonomicID"] = int(taxid)
+                            break
+                        elif not lines[j].startswith(" "):
+                            break
+                    """    
+#                elif line.strip() == "FEATURES             Location/Qualifiers":
+#                    in_features = True
+
+                elif line.strip().startswith("source"):
+                    in_source_feature = True
+                elif in_source_feature:
+                    if line.strip().startswith("/"):
+                        qualifier = line.strip()
+                        if qualifier.startswith("/organism="):
+                            data["organism"] = qualifier.split("=")[1].strip('"')
+                        elif qualifier.startswith("/mol_type="):
+                            data["mol_type"] = qualifier.split("=")[1].strip('"')
+                        elif qualifier.startswith("/isolate="):
+                            data["isolate"] = qualifier.split("=")[1].strip('"')
+                        elif qualifier.startswith("/strain="):
+                            data["strain"] = qualifier.split("=")[1].strip('"')
+                        elif qualifier.startswith("/isolation_source="):
+                            data["isolation_source"] = qualifier.split("=")[1].strip('"')
+                        elif qualifier.startswith("/host="):
+                            data["host"] = qualifier.split("=")[1].strip('"')
+                        elif qualifier.startswith("/db_xref=") and "taxon:" in qualifier:
+                            taxid = qualifier.split(":")[1].strip('"')
+                            data["taxonomicID"] = int(taxid)
+                        elif qualifier.startswith("/geo_loc_name="):
+                            data["geo_loc_name"] = qualifier.split("=")[1].strip('"')
+                        elif qualifier.startswith("/collection_date="):
+                            data["collection_date"] = qualifier.split("=")[1].strip('"')
+                        elif qualifier.startswith("/note="):
+                            data["note"] = qualifier.split("=")[1].strip('"')
+                    else:
+                        in_source_feature = False
+                elif line.startswith("ORIGIN"):
+                    in_origin = True
+                elif in_origin:
+                    if line.startswith("//"):
+                        in_origin = False
+                        continue
+                    # Remove line numbers and spaces
+                    seq_line = ''.join(line.strip().split()[1:])
+                    sequence_lines.append(seq_line)
+
+            data["genomic_sequence"] = ''.join(sequence_lines)
+            data["fwdxdatabase_import_date"] = datetime.now().strftime("%Y-%m-%d")
+            
+
+            # Fetch GCF number separately
+            #data["gcf"] = NCBIDataFetcher.fetch_gcf_number(data["accessionID"]) or ""
+
+
+            return data
+        except Exception as e:
+            print(f"Error parsing GenBank data: {e}")
+            return None
+
+
+
+
+    @staticmethod
+    def fetch_gcf_number(accession_id):
+        """Fetch the GCF number associated with an accession ID."""
+        try:
+            elink_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi"
+            params = {
+                "dbfrom": "nuccore",
                 "db": "assembly",
-                "term": identifier,
-                "retmode": "json"
+                "id": accession_id,
+                "retmode": "json",
+                "api_key": NCBIDataFetcher.API_KEY
             }
-            esearch_response = requests.get(esearch_url, params=esearch_params)
-            esearch_response.raise_for_status()
-            esearch_data = esearch_response.json()
-            uid_list = esearch_data.get('esearchresult', {}).get('idlist', [])
-            if not uid_list:
-                print(f"No assembly found for identifier '{identifier}'.")
+            response = NCBIDataFetcher.make_request_with_retries(elink_url, params)
+            if not response:
                 return None
-            assembly_uid = uid_list[0]
+            data = response.json()
+            linksets = data.get('linksets', [])
+            if not linksets:
+                return None
+            linksetdbs = linksets[0].get('linksetdbs', [])
+            if not linksetdbs:
+                return None
+            assembly_uids = linksetdbs[0].get('links', [])
+            if not assembly_uids:
+                return None
+            assembly_uid = assembly_uids[0]
 
-            # Fetch summary to get the taxonomic ID
+            # Fetch the assembly accession (GCF number)
             esummary_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
             esummary_params = {
                 "db": "assembly",
                 "id": assembly_uid,
-                "retmode": "json"
+                "retmode": "json",
+                "api_key": NCBIDataFetcher.API_KEY
             }
-            esummary_response = requests.get(esummary_url, params=esummary_params)
-            esummary_response.raise_for_status()
-            esummary_data = esummary_response.json()
-            result = esummary_data.get('result', {})
-            assembly_info = result.get(assembly_uid, {})
-            taxid = assembly_info.get('taxid')
-            if not taxid:
-                print(f"Taxonomic ID not found for assembly '{identifier}'.")
+            esummary_response = NCBIDataFetcher.make_request_with_retries(esummary_url, esummary_params)
+            if not esummary_response:
                 return None
-            print(f"Taxonomic ID fetched: {taxid}")
-            return str(taxid)
+            esummary_data = esummary_response.json()
 
-        except requests.exceptions.HTTPError as e:
-            print(f"HTTP error occurred while fetching taxonomic ID: {e}")
-            return None
-        except requests.exceptions.RequestException as e:
-            print(f"Request error occurred while fetching taxonomic ID: {e}")
-            return None
-        except ValueError as e:
-            print(f"JSON decoding failed: {e}")
-            return None
+            gcf_number = esummary_data['result'][assembly_uid]['assemblyaccession']
+            return gcf_number
         except Exception as e:
-            print(f"An unexpected error occurred: {e}")
+            print(f"Error fetching GCF number: {e}")
             return None

@@ -1,62 +1,97 @@
-"""
-this python code is used to process data fetched and parsed by ncbi_data_fetcher.py
-Last uploaded: Kyle Stagner
-Date: 2024/11/3
-"""
-
 from backend.src.database.mongodb.mongodb_connector import MongoDBConnector
 from backend.src.database.data_fetchers.ncbi_data_fetcher import NCBIDataFetcher
-
+#
+# 
+#from backend.src.database.data_fetchers.gisaid_data_fetcher import GISAIDDataFetcher
+#from backend.src.database.data_fetchers.bv_brc_data_fetcher import BV_BRCDataFetcher
 
 class DataProcessor:
     """
-    Orchestrates the process of fetching data from NCBI, parsing it, and uploading it to MongoDB.
+    Orchestrates the process of fetching data from various databases and uploading it to MongoDB.
+    """
+    def __init__(self, source):
+        self.source = source  # 'NCBI', 'GISAID', or 'BV-BRC'
+        self.connector = MongoDBConnector()
+        if self.connector.database is None:
+            print("Failed to connect to MongoDB. Exiting the process.")
+            exit(1)
+    
+    def process_and_upload(self, accession_id, table):
+        """Fetch data using accession ID from the specified source and upload structured data to MongoDB."""
+        try:
+            # Fetch and parse data based on the source database
+            data = self.fetch_data(accession_id)
+            if not data:
+                print(f"Failed to fetch data from {self.source} for accession ID '{accession_id}'.")
+                return
+
+            # Check for duplicates
+            duplicate_status = self.check_for_duplicates(accession_id, data, table)
+
+            if duplicate_status == 'exact_match':
+                print(f"Duplicate entry found for accession ID '{accession_id}'.")
+            elif duplicate_status == 'discrepancy':
+                print(f"Discrepancy found for accession ID '{accession_id}'. Needs resolution.")
+            elif duplicate_status == 'no_duplicate':
+                # Insert data into MongoDB
+                collection = self.connector.database[table]
+                result = collection.insert_one(data)
+                print(f"Data inserted with ID: {result.inserted_id}")
+            else:
+                print(f"An error occurred while checking duplicates for accession ID '{accession_id}'.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+    
+    def fetch_data(self, accession_id):
+        """Fetch and parse data from the specified source."""
+        if self.source == 'NCBI':
+            return self.fetch_data_from_ncbi(accession_id)
+        elif self.source == 'GISAID':
+            return self.fetch_data_from_gisaid(accession_id)
+        elif self.source == 'BV-BRC':
+            return self.fetch_data_from_bv_brc(accession_id)
+        else:
+            print(f"Unknown source: {self.source}")
+            return None
+
+    def fetch_data_from_ncbi(self, accession_id):
+        """Fetch and parse data from NCBI."""
+        genbank_data = NCBIDataFetcher.fetch_all_data(accession_id)
+        if not genbank_data:
+            return None
+        data = NCBIDataFetcher.parse_genbank(genbank_data)
+        return data
+
+    """
+    def fetch_data_from_gisaid(self, accession_id):        
+        # Placeholder implementation; replace with actual code
+        gisaid_data = GISAIDDataFetcher.fetch_all_data(accession_id)
+        if not gisaid_data:
+            return None
+        data = GISAIDDataFetcher.parse_data(gisaid_data)
+        return data
+
+    def fetch_data_from_bv_brc(self, accession_id):
+        # Placeholder implementation; replace with actual code
+        bv_brc_data = BV_BRCDataFetcher.fetch_all_data(accession_id)
+        if not bv_brc_data:
+            return None
+        data = BV_BRCDataFetcher.parse_data(bv_brc_data)
+        return data
     """
 
-    def __init__(self):
-        self.connector = MongoDBConnector()
-
-    def process_and_upload(self, identifier, table, entry_id, element_to_parse):
-        """Fetch, parse, and upload data to MongoDB under a specified table and entry ID."""
-        try:
-            # Step 1: Fetch data
-            file_path = NCBIDataFetcher.fetch_genomic_data(identifier)
-            if not file_path:
-                print("Fetch step failed.")
-                return
-
-            # Step 2: Parse data
-            parsed_data = NCBIDataFetcher.parse_fasta(file_path)
-            if not parsed_data or element_to_parse not in parsed_data:
-                print(f"Parse step failed: '{element_to_parse}' not found.")
-                return
-
-            parsed_string = parsed_data[element_to_parse]
-
-            # If entry_id is not provided, fetch the taxonomic ID
-            if not entry_id:
-                entry_id = NCBIDataFetcher.fetch_taxonomic_id(identifier)
-                if not entry_id:
-                    print("Failed to fetch taxonomic ID.")
-                    return
-                else:
-                    print(f"Using taxonomic ID '{entry_id}' as entry ID.")
-
-            # Step 3: Upload data to MongoDB
-            collection = self.connector.database[table]
-            result = collection.update_one(
-                {"_id": entry_id},
-                {"$set": {element_to_parse: parsed_string}},
-                upsert=True
-            )
-
-            if result.modified_count > 0:
-                print(f"Document with ID '{entry_id}' in '{table}' updated successfully.")
-            elif result.upserted_id:
-                print(f"Document with ID '{entry_id}' inserted into '{table}' successfully.")
+    def check_for_duplicates(self, accession_id, new_data, table):
+        """Check for duplicates in the database and handle accordingly."""
+        collection = self.connector.database[table]
+        existing_entry = collection.find_one({'accessionID': accession_id})
+        if existing_entry:
+            if existing_entry['genomic_sequence'] == new_data['genomic_sequence']:
+                # Sequences are exactly the same
+                return 'exact_match'
             else:
-                print(f"No changes made to the document with ID '{entry_id}' in '{table}'.")
-
-        finally:
-            # Close connection
-            self.connector.close_connection()
+                # Sequences differ
+                return 'discrepancy'
+        else:
+            # No duplicate found
+            return 'no_duplicate'
