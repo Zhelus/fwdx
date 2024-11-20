@@ -6,3 +6,4 @@ class CollectionType(Enum):
     PATHOGENS: str = 'Pathogens'
     REAGENTS: str = 'Reagents'
     REPORTS: str = 'Reports'
+    OLIGOS: str = 'Oligos'
