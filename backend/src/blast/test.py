@@ -139,15 +139,6 @@ genome = jc_virus['genomic_sequence']
 
 # Example usage
 # fasta_file_path = "testing_data.fasta"  # Update this path to your FASTA file
-primer_list = ["AATGCAACAGTGCAATCTCA",
-"GGCCCAACACCAAATTCATC",
-"TTGGGTTCCTGATCCCACCAG",
-"AAGTACATGCCCATAAGCAA",
-"AGACAGCCATATGCAGTAG",
-"AAACCTGCTTAGTTTCTTCTTGTTCTC"]
-
-sars_cov_2_omi = ["GGACCTTGAAGGAAAACAGGG",
-"TCTACCAATGGTTCTAAAGCCGA"]
 
 output_xml_path = "XML_Outputs/primer_matches.xml"  # Specify your desired output XML file path
 

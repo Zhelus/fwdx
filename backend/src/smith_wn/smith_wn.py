@@ -1,7 +1,6 @@
 import numpy as np
 from Bio.Data import IUPACData
 
-
 def iupac_match_score(a, b, match_score=1, mismatch_score=-1):
     if a == b:
         return match_score

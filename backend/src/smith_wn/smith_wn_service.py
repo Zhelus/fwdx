@@ -10,7 +10,6 @@ from backend.src.helper.collection_type import CollectionType
 
 connector = MongoDBConnector()
 
-
 def convert_np_types(obj):
     if isinstance(obj, np.int64):
         return int(obj)
