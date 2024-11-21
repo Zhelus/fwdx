@@ -1,7 +1,7 @@
 /*
 JavaScript file to define the URL paths for each page (used by the Vue router)
-Last edited by: Blake Good
-Date: 10/30/24
+Last edited by: Michael Nguyen
+Date: 11/21/24
 */
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'

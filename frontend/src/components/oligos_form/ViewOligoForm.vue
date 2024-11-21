@@ -1,3 +1,9 @@
+<!-- 
+Form to view individual oligo details
+Last edited by: Michael Nguyen
+Date: 11/21/24
+-->
+
 <script setup>
 import { ref, onMounted } from 'vue';
 import FormTextInputItem from '@/components/report_form/FormTextInputItem.vue';
@@ -75,7 +81,7 @@ onMounted(() => {
     <!-- Done Button -->
     <div class="form-button-container">
       <FormActionButton 
-        button-text="Done" 
+        button-text="Return" 
         button-class="cancel" 
         @cancelButtonClicked="doneClicked" 
       />
