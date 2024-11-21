@@ -7,7 +7,7 @@ Date: 10/30/24
     const props = defineProps(['cardTitle', 'scheduleId', 'reportFrequency', 'pathogenName', 'reagentName', 'mismatchCount', 'reportDate'])
 </script>
 <template>
-    <div class="card-wrapper">
+    <div class="card-wrapper disabled">
         <div class="card-text">
             <div class="card-header">
                 <h4 class="card-date">{{reportDate}}</h4>
@@ -52,6 +52,10 @@ Date: 10/30/24
         grid-template-rows: 9fr 1fr;
         grid-template-columns: 1fr;
         text-wrap: nowrap;
+    }
+
+    .card-wrapper.disabled {
+        opacity: 0.5;
     }
 
     .card-info-wrapper {
@@ -196,5 +200,9 @@ Date: 10/30/24
     .edit-schedule-button {
         background-color: var(--fwdx-yellow);
         color: var(--yellow-button-text);
+    }
+
+    .card-wrapper.disabled > button:hover {
+        cursor: default;
     }
 </style>

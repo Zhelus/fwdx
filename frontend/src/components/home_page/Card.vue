@@ -5,9 +5,11 @@ Date: 10/30/24
 -->
 <script setup>
     const props = defineProps(['cardTitle', 'cardType', 'pathogenName', 'reportId', 'reportAge', 'pathogenNameFmtd', 'reagentName', 'mismatchCount'])
+    import {useRouter} from 'vue-router'
+    import ViewReportButton from '../misc/ViewReportButton.vue';
+    const router = useRouter();
 
     function getImageUrl() {
-        console.log(props.pathogenName);
         return new URL(`./card_images/${props.pathogenName}.jpg`, import.meta.url)
     }
 </script>
@@ -39,7 +41,7 @@ Date: 10/30/24
                         <p class="card-info">{{ mismatchCount }} total mismatches</p>
                     </div>
                 </div>
-                <button v-if="cardType === 'report'" class="card-button view-report-button">View</button>
+                <ViewReportButton v-if="cardType === 'report'" button-class="card-button" :report-id="reportId" />
                 <button v-if="cardType === 'schedule'" class="card-button edit-schedule-button">Edit</button>
             </div>
         </div>
@@ -255,11 +257,6 @@ Date: 10/30/24
 
     .card-button:hover {
         cursor: pointer;
-    }
-
-    .view-report-button {
-        background-color: var(--fwdx-blue);
-        color: var(--blue-button-text);
     }
 
     .edit-schedule-button {

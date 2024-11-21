@@ -23,7 +23,7 @@ Date: 10/30/24
         width: 40%;
         min-width: 505px;
         background-color: transparent;
-        margin-bottom: 2.5rem;
+        margin-bottom: var(--form-element-spacing);
         margin-top: 0rem;
     }
 
@@ -34,7 +34,7 @@ Date: 10/30/24
         width: 100%;
         color: var(--dark-gray-text);
         font-weight: 500;
-        font-size: 12pt;
+        font-size: var(--body-text-size);
         padding-left: .3rem;
     }
 
@@ -46,9 +46,9 @@ Date: 10/30/24
 
     .section-header {
         color: var(--dark-gray-text);
-        font-size: 15pt;
-        font-weight: 500;
-        line-height: 24px;
+        font-size: var(--subheading-size);
+        font-weight: var(--subheading-weight);
+        line-height: var(--subheading-size);
         text-align: left;
         text-justify: top;
         margin-bottom: 0.25rem;

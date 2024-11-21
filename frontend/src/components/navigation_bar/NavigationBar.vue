@@ -93,7 +93,11 @@ Date: 11/12/24
 <style scoped>
     .nav-bar {
         padding: 0.25rem 1rem;
-        background-color: #FFFFFF;
+        /* background-color: #FFFFFF;
+        border-bottom: 1pt solid #EFF0F1; */
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         border-bottom: 1pt solid #EFF0F1;
         display: flex;
         flex-direction: row;
@@ -107,6 +111,7 @@ Date: 11/12/24
         position: sticky;
         top: 0;
         left: 0;
+        z-index: 100;
     }
 
     @media(min-height: 1080px){

@@ -4,7 +4,6 @@ Last edited by: Blake Good
 Date: 10/30/24
 -->
 <script setup>
-    import CardContainer from '@/components/home_page/CardContainer.vue';
     import Card from '@/components/home_page/Card.vue'
     import ActionPane from '@/components/home_page/ActionPane.vue';
     import UpcomingCard from '@/components/home_page/UpcomingCard.vue';
@@ -28,16 +27,16 @@ Date: 10/30/24
             </div>
             <h4 class="container-title-text">New Reports</h4>
         </div>
-        <Card card-title="RSV Report 3" card-type="report" pathogen-name="rsv" report-age="2 hours ago" pathogen-name-fmtd="RSV" reagent-name="Reagent #00123" mismatch-count="3"></Card>
-        <Card card-title="Influenza Report 1" card-type="report" pathogen-name="influenza" report-age="2 days ago" pathogen-name-fmtd="Influenza" reagent-name="Reagent #00167" mismatch-count="0"></Card>
-        <Card card-title="RSV Report 2" card-type="report" pathogen-name="rsv" report-age="2 weeks ago" pathogen-name-fmtd="RSV" reagent-name="Reagent #00123" mismatch-count="7"></Card>
+        <Card report-id="1234567" card-title="RSV Report 3" card-type="report" pathogen-name="rsv" report-age="2 hours ago" pathogen-name-fmtd="RSV" reagent-name="Reagent #00123" mismatch-count="3"></Card>
+        <Card report-id="1234567" card-title="Influenza Report 1" card-type="report" pathogen-name="influenza" report-age="2 days ago" pathogen-name-fmtd="Influenza" reagent-name="Reagent #00167" mismatch-count="0"></Card>
+        <Card report-id="1234567" card-title="RSV Report 2" card-type="report" pathogen-name="rsv" report-age="2 weeks ago" pathogen-name-fmtd="RSV" reagent-name="Reagent #00123" mismatch-count="7"></Card>
     </div>
     <div class="scheduled-reports-container">
-        <div class="scheduled-title-wrapper">
+        <div class="scheduled-title-wrapper disabled">
             <div class="container-ribbon-wrapper">
                 <div class="container-ribbon yellow-ribbon"></div>
             </div>
-            <h4 class="container-title-text">Upcoming Reports</h4>
+            <h4 class="container-title-text">Scheduled Reports (Coming Soon)</h4>
         </div>
         <div class="upcoming-cards-container">
             <UpcomingCard report-date="Oct. 25th" card-title="RSV Report" pathogen-name="RSV" reagent-name="Reagent #00123" report-frequency="Every 2 weeks" mismatch-count="25" />
@@ -53,8 +52,10 @@ Date: 10/30/24
             <h4 class="container-title-text">Actions</h4>
         </div>
         <ActionPane action-name="Generate New Report" icon-name="lightning-icon" @click="actionPaneClicked('/reports/generate')"/>
-        <ActionPane action-name="Schedule New Report" icon-name="schedule-icon" @click="actionPaneClicked('/reports/schedule')"/>
-        <ActionPane action-name="Edit Existing Schedule" icon-name="pen-icon" @click="actionPaneClicked('/reports/schedule/edit')"/>
+        <!-- <ActionPane action-name="Schedule New Report" icon-name="schedule-icon" @click="actionPaneClicked('/reports/schedule')"/>
+        <ActionPane action-name="Edit Existing Schedule" icon-name="pen-icon" @click="actionPaneClicked('/reports/schedule/edit')"/> -->
+        <ActionPane action-name="Schedule New Report" icon-name="schedule-icon" disabled="true"/>
+        <ActionPane action-name="Edit Existing Schedule" icon-name="pen-icon" disabled="true"/>
         <ActionPane action-name="Browse All Reports" icon-name="search-icon" @click="actionPaneClicked('/reports/browse')"/>
     </div>
 </div>
@@ -92,6 +93,10 @@ Date: 10/30/24
     left: 0;
 }
 
+.scheduled-title-wrapper.disabled {
+    opacity: 0.5;
+}
+
 .placeholder {
     color: var(--fwdx-blue);
     font-weight: 500;
@@ -100,7 +105,7 @@ Date: 10/30/24
 
 .generate-wrapper {
     display: grid;
-    min-height: 100%;
+    min-height: 750px;
     height: 100%;
     max-height: 100%;
     background-color: var(--gray-page-background);

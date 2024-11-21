@@ -4,7 +4,13 @@ Last edited by: Blake Good
 Date: 10/30/24
 -->
 <script setup>
-    const props = defineProps(['actionName', 'iconName'])
+    import { ref } from 'vue'
+    const props = defineProps(['actionName', 'iconName', 'disabled'])
+
+    const classString = ref("action")
+    if(props.disabled){
+        classString.value += " disabled"
+    }
 
     function getImageUrl() {
         console.log(props.iconName);
@@ -12,9 +18,10 @@ Date: 10/30/24
     }
 </script>
 <template>
-    <div class="action">
+    <div :class="classString">
         <img class="action-icon" :src="getImageUrl()"></img>
         <h2 class="action-text">{{ actionName }}</h2>
+        <h2 v-if="disabled" class="action-text">(Coming Soon)</h2>
     </div>
 </template>
 <style scoped>
@@ -43,9 +50,18 @@ Date: 10/30/24
     text-wrap: nowrap;
 }
 
+.action.disabled {
+    opacity: 0.5;
+}
+
 .action:hover {
     cursor: pointer;
     outline: var(--light-gray-outline) solid 1.5pt;
     transition: outline 0.1s;
+}
+
+.action.disabled:hover{
+    cursor: default;
+    outline: none;
 }
 </style>
