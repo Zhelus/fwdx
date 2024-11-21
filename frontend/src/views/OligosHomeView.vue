@@ -13,13 +13,14 @@ const router = useRouter();
 const oligos = ref([]);
 const loading = ref(false);
 
-function actionClicked(path, oligoName) {
-  if (path && oligoName) {
-    router.push({ path, query: { oligoName } });
+function actionClicked(path, oligoId) {
+  if (path && oligoId) {
+    router.push({ path, query: { id: oligoId } }); // Pass the oligo ID as a query parameter
   } else {
     router.push(path);
   }
 }
+
 
 // Fetch active oligos from the API
 async function fetchOligos() {
@@ -101,7 +102,7 @@ const filters = ref({
       <Column header="Actions">
         <template #body="slotProps">
           <div class="action-buttons">
-            <button class="action-button" @click="actionClicked('/oligos/view', slotProps.data.name)">View</button>
+            <button class="action-button" @click="actionClicked('/oligos/view', slotProps.data.id)">View</button>
             <button
               class="action-button delete"
               @click="() => oligosApi.archiveOligo(slotProps.data.id).then(fetchOligos)"

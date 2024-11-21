@@ -1,17 +1,15 @@
-
 <script setup>
 import { ref } from 'vue';
 import FormTextInputItem from '@/components/report_form/FormTextInputItem.vue';
 import FormCheckboxItem from '@/components/report_form/FormCheckboxItem.vue';
 import FormActionButton from '@/components/report_form/FormActionButton.vue';
 import { useRouter } from 'vue-router';
-import oligosApi from '@/services/oligosApiHelper';
 
 const oligoName = ref('');
 const oligoString = ref('');
-const dnaStrandPositive = ref(true); // Bind directly to the checkbox
+const isOligoNegative = ref(false);
 const confirmationText = ref('');
-const props = defineProps(['formTitle', 'isEditReport']);
+const props = defineProps(['formTitle', 'showFrequency', 'isEditReport']);
 const router = useRouter();
 
 function cancelClicked() {
@@ -19,26 +17,13 @@ function cancelClicked() {
   router.push("/oligos");
 }
 
-async function submitClicked() {
-  if (confirmationText.value !== "YES") {
-    console.error("Please type 'YES' to confirm before submitting.");
-    return;
-  }
-
-  const oligoData = {
-    name: oligoName.value,
-    sequence: oligoString.value,
-    archived: false,
-    dna_strand_positive: dnaStrandPositive.value, // Use the directly bound value
-  };
-
-  try {
-    const response = await oligosApi.createOligo(oligoData);
-    console.log("Oligo created successfully:", response);
-    router.push("/oligos"); // Redirect to oligos list after successful creation
-  } catch (error) {
-    console.error("Failed to create oligo:", error);
-  }
+function addOligoClicked() {
+  console.log("Add Oligo clicked with data:", {
+    oligoName: oligoName.value,
+    oligoString: oligoString.value,
+    isOligoNegative: isOligoNegative.value,
+    confirmationText: confirmationText.value,
+  });
 }
 
 function handleFileUpload(event) {
@@ -53,10 +38,6 @@ function handleFileUpload(event) {
     };
     reader.readAsText(file); // Read file content as text
   }
-}
-
-function triggerFileInput() {
-  document.getElementById('file-upload').click();
 }
 </script>
 
@@ -84,36 +65,39 @@ function triggerFileInput() {
         type="file" 
         accept=".txt" 
         class="hidden-file-input" 
-        id="file-upload" 
         @change="handleFileUpload" 
+        id="file-upload"
       />
-      <!-- Styled Button to Trigger File Upload -->
-      <FormActionButton 
-        button-text="Choose File" 
-        button-class="upload-file-button" 
-        @click="triggerFileInput" 
-      />
+      <!-- Styled Choose File Button -->
+      <label for="file-upload">
+        <FormActionButton button-text="Choose File" button-class="upload" />
+      </label>
     </div>
 
-    <!-- DNA Strand Positive Checkbox -->
+    <!-- Oligo Negative Checkbox -->
     <FormCheckboxItem 
-      :options-list="[{ name: 'DNA Strand Positive?', value: true }]" 
-      v-model="dnaStrandPositive" 
+      :options-list="[{ name: 'Oligo Negative?', value: 'negative' }]" 
+      v-model="isOligoNegative" 
     />
-    <FormTextInputItem v-model="confirmationText" section-header="Type 'YES' to confirm the above information is correct" />
 
-    <!-- Confirmation Buttons -->
+    <!-- Confirmation Text Input -->
+    <FormTextInputItem 
+      v-model="confirmationText" 
+      section-header="Type 'YES' to confirm the above information is correct" 
+      placeholder="Type 'YES' here" 
+    />
+
+    <!-- Action Buttons -->
     <div class="form-button-container">
       <FormActionButton 
         button-text="Cancel" 
         button-class="cancel" 
-        @cancelButtonClicked="cancelClicked" 
+        @click="cancelClicked" 
       />
       <FormActionButton 
-        v-model="confirmationText" 
-        button-text="Submit" 
+        button-text="Add Oligo" 
         button-class="submit" 
-        @click="submitClicked" 
+        @click="addOligoClicked" 
       />
     </div>
   </div>
@@ -153,6 +137,12 @@ function triggerFileInput() {
 
 .hidden-file-input {
   display: none; /* Hide the native file input */
+}
+
+.form-button-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 button {

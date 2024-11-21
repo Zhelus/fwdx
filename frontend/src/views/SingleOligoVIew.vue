@@ -1,15 +1,14 @@
 <!-- 
-Page view for adding a new oligo
+Page view for adding a new product
 Last edited by: Michael Nguyen
-Date: 10/30/24
+Date: 11/12/24
 -->
 <script setup>
-    import AddOligoForm from '@/components/oligos_form/AddOligoForm.vue';
-    const formTitle = `Add a new Oligo`;
+    import ViewOligoForm from '@/components/oligos_form/ViewOligoForm.vue';
 </script>
 <template>
 <div class="report-page-wrapper">
-    <AddOligoForm form-title="Add a New Oligo" :show-frequency="false" :is-edit-report="true"/>
+    <ViewOligoForm />
 </div>
 </template>
 <style scoped>
