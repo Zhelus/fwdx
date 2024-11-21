@@ -15,8 +15,8 @@ Date: 10/30/24
     button {
         width: auto;
         min-width: 75px;
-        font-size: 12pt;
-        font-weight: 700;
+        font-size: var(--body-text-size);
+        font-weight: var(--subheading-weight);
         border: none;
         border-radius: 5px;
         padding: 5px;

@@ -23,25 +23,27 @@ Date: 10/30/24
     .checkbox-item-container {
         display: flex;
         flex-direction: column;
-        height: 10%;
+        height: auto;
         width: 40%;
         min-width: 380px;
         background-color: transparent;
-        margin-bottom: 2.5rem;
+        margin-bottom: var(--form-element-spacing);
         margin-top: 0rem;
     }
 
     .checkboxes-container {
         display: flex;
         flex-wrap: wrap;
-        height: 100%;
+        height: auto;
+        align-content: space-between;
+        row-gap: var(--form-checkbox-row-gap);
     }
 
     .section-header {
         color: var(--dark-gray-text);
-        font-size: 16pt;
-        font-weight: 700;
-        line-height: auto;
+        font-size: var(--subheading-size);
+        font-weight: var(--subheading-weight);
+        line-height: var(--subheading-size);
         text-align: left;
         text-justify: top;
         margin-bottom: 0.25rem;
@@ -50,6 +52,7 @@ Date: 10/30/24
     .checkbox-wrapper {
         width: 33%;
         height: 22%;
+        min-height: var(--body-text-size);
         background-color: transparent;
         display: flex;
         justify-content: flex-start;
@@ -69,6 +72,8 @@ Date: 10/30/24
         appearance: none;
         height: 1.5vh;
         width: 1.5vh;
+        min-height: var(--body-text-size); 
+        min-width: var(--body-text-size);
         outline: 0;
         border: 1px solid var(--light-gray-outline);
         border-radius: 2px;
@@ -90,7 +95,7 @@ Date: 10/30/24
     .checkbox-label {
         color: var(--dark-gray-text);
         margin-left: 0.25rem;
-        font-size: 12pt;
+        font-size: var(--body-text-size);
         align-self: flex-end;
         line-height: 1em;
     }

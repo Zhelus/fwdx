@@ -19,6 +19,7 @@ import AddAccountView from "@/views/AddAccountView.vue";
 import EditAccountView from "@/views/EditAccountView.vue";
 import AddOligoView from '@/views/AddOligoView.vue'
 import SingleOligoView from '@/views/SingleOligoView.vue'
+import ViewReportView from '@/views/ViewReportView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,12 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/reports/view/:testProps',
+      name: 'viewReport',
+      component: ViewReportView,
+      props: true
     },
     {
       path: '/reports/generate',
