@@ -1,75 +1,55 @@
+# oligo_service.py
+
 from bson import ObjectId
 from backend.src.database.mongodb.mongodb_connector import MongoDBConnector
 from backend.src.helper.collection_type import CollectionType
+from .oligo import Oligo
 
-connector = MongoDBConnector()
+connector = MongoDBConnector(force_ssl=True)
 
-def create_oligo(product_id, oligo_data):
+def create_oligo(oligo_data):
+    return connector.upload_document(oligo_data, CollectionType.OLIGOS)
+
+
+def archive_oligo(oligo_id):
     """
-    Creates a new oligo and adds it to a new version of the specified product.
-    :param product_id: ID of the product to which the oligo is added.
-    :param oligo_data: Dictionary with oligo details.
-    :return: Result of the MongoDB update operation.
+    Archives (soft deletes) an oligo by setting its 'archived' field to True.
+    :param oligo_id: The ID of the oligo to archive.
+    :return: A dictionary indicating the success of the operation and the number of documents modified.
     """
-    # Filter to find the product by its ID
-    product_filter = {"_id": ObjectId(product_id)}
+    try:
+        oligo_filter = {"_id": ObjectId(oligo_id)}
+        update = {"$set": {"archived": True}}
+        result = connector.update_document(oligo_filter, update, CollectionType.OLIGOS)
 
-    # Retrieve the current product document
-    product = connector.fetch_document(product_filter, CollectionType.REAGENTS)
-    if not product:
-        return {"error": "Product not found"}, 404
-
-    # Copy the current active version and add the new oligo
-    current_version = product["versions"][product["active_version_index"]]
-    new_version = current_version + [oligo_data]  # Append the new oligo to the copied version
-
-    # Prepare the update payload
-    update_operations = {
-        "$push": {"versions": new_version},
-        "$set": {"active_version_index": len(product["versions"])}
-    }
-
-    # Perform the update operation
-    result = connector.update_document(product_filter, update_operations, CollectionType.REAGENTS)
-
-    return result
-
-def update_oligo(product_id, oligo_id, oligo_data):
-    """
-    Updates an existing oligo by creating a new version with the modified oligo data.
-    :param product_id: ID of the product containing the oligo.
-    :param oligo_id: ID of the oligo to update.
-    :param oligo_data: Dictionary with updated oligo details.
-    :return: Result of the MongoDB update operation.
-    """
-    # Filter to find the product by its ID
-    product_filter = {"_id": ObjectId(product_id)}
-
-    # Retrieve the current product document
-    product = connector.fetch_document(product_filter, CollectionType.REAGENTS)
-    if not product:
-        return {"error": "Product not found"}, 404
-
-    # Copy the current active version
-    current_version = product["versions"][product["active_version_index"]]
-    new_version = []
-
-    # Update the oligo if it matches oligo_id, otherwise keep it unchanged
-    for oligo in current_version:
-        if oligo.get("oligo_id") == oligo_id:
-            # Update the oligo with provided data
-            updated_oligo = {**oligo, **oligo_data}
-            new_version.append(updated_oligo)
+        # Process the UpdateResult
+        if result.matched_count == 0:
+            return {"success": False, "message": f"Oligo with ID {oligo_id} not found"}
+        elif result.modified_count == 0:
+            return {"success": False, "message": f"Oligo with ID {oligo_id} was already archived"}
         else:
-            new_version.append(oligo)
+            return {"success": True, "message": f"Oligo with ID {oligo_id} archived successfully"}
+    except Exception as e:
+        raise RuntimeError(f"An error occurred while archiving the oligo: {str(e)}")
 
-    # Prepare the update payload to append the new version and update active_version_index
-    update_operations = {
-        "$push": {"versions": new_version},
-        "$set": {"active_version_index": len(product["versions"])}
-    }
 
-    # Perform the update operation
-    result = connector.update_document(product_filter, update_operations, CollectionType.REAGENTS)
+def get_all_active_oligos():
+    """
+    Fetches all oligos that are not archived.
+    :return: List of active (non-archived) oligos.
+    """
+    query = {"archived": False}
+    # Use fetch_all_documents to retrieve all non-archived oligos
+    return list(connector.fetch_all_documents(CollectionType.OLIGOS, query))
 
-    return result
+def get_all_oligos():
+    return list(connector.fetch_all_documents(CollectionType.OLIGOS))
+
+def get_oligo_by_id(oligo_id):
+    """
+    Fetches a single oligo by its ID.
+    :param oligo_id: The ID of the oligo to fetch.
+    :return: The oligo document if found.
+    """
+    return connector.fetch_document({"_id": ObjectId(oligo_id)}, CollectionType.OLIGOS)
+

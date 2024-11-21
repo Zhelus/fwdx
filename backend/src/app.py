@@ -6,6 +6,7 @@ from backend.src.pathogens import pathogen_controller
 from backend.src.users import user_controller
 from backend.src.reports import report_controller
 from backend.src.reagents import product_controller
+from backend.src.reagents import oligo_controller
 
 """
 Entry point for Flask application.
@@ -38,7 +39,7 @@ def create_app():
     app.register_blueprint(report_controller.bp)
     app.register_blueprint(product_controller.bp)
     app.register_blueprint(smith_wn_controller.bp)
-
+    app.register_blueprint(oligo_controller.bp)
 
     return app
 
