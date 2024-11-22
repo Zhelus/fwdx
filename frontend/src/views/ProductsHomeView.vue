@@ -3,91 +3,114 @@ import { useRouter } from 'vue-router';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import InputText from 'primevue/inputtext';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
+import productsApi from '@/services/productsApiHelper';
 
 const router = useRouter();
+
+// State for products and loading indicator
+const products = ref([]);
+const loading = ref(false);
 
 function actionClicked(path, productName) {
   if (path && productName) {
     router.push({ path, query: { productName } });
-  }
-  else{ 
+  } else {
     router.push(path);
   }
 }
 
-// Sample data for the table with Active Version
-const reagents = [
-  { id: 1, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #001", activeVersion: 1, numberOfOligos: 3 },
-  { id: 2, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #002", activeVersion: 2, numberOfOligos: 6 },
-  { id: 3, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #003", activeVersion: 3, numberOfOligos: 7 },
-  { id: 4, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #004", activeVersion: 2, numberOfOligos: 5 },
-  { id: 5, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #005", activeVersion: 1, numberOfOligos: 3 },
-  { id: 6, taxonomicName: "Disease Taxonomic Name", productName: "FWDX #006", activeVersion: 4, numberOfOligos: 4 },
-];
+// Fetch products from the API
+async function fetchProducts() {
+  loading.value = true;
+  try {
+    const fetchedProducts = await productsApi.getAllProducts();
+    // Transform the API response to match the table format
+    products.value = fetchedProducts.map((product) => ({
+      id: product._id,
+      productName: product.name,
+      activeVersion: product.active_version_index + 1, // Convert to 1-based index
+      versions: product.versions.length,
+      numberOfOligos: product.versions[product.active_version_index]?.length || 0 // Active version oligos
+    }));
+  } catch (error) {
+    console.error('Failed to fetch products:', error);
+  } finally {
+    loading.value = false;
+  }
+}
 
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  taxonomicName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-  productName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-  activeVersion: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-  numberOfOligos: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+// Fetch data on component mount
+onMounted(() => {
+  fetchProducts();
 });
 
+// Filters for the table
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  productName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+  activeVersion: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+  versions: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+  numberOfOligos: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+});
 </script>
 
 <template>
-  <div class="reagents-wrapper">
+  <div class="products-wrapper">
     <div class="header-container">
-      <h2 class="page-title">Reagents</h2>
-      <button class="add-product-button" @click="actionClicked('/reagents/addProduct',Null)">Add Reagent Product</button>
+      <h2 class="page-title">Products</h2>
+      <button class="add-product-button" @click="actionClicked('/reagents/add', null)">Add Product</button>
     </div>
 
-    <DataTable 
-      :value="reagents"  
-      :rows="10" 
+    <!-- Show loading indicator -->
+    <div v-if="loading" class="loading-indicator">Loading...</div>
+
+    <DataTable
+      v-else
+      :value="products"
+      :rows="10"
       :rowsPerPageOptions="[5, 10, 15]"
       paginator
       v-model:filters="filters"
       filter-display="menu"
-      :globalFilterFields="['taxonomicName', 'productName', 'activeVersion']"
+      :globalFilterFields="['productName', 'activeVersion', 'versions', 'numberOfOligos']"
       removableSort
       currentPageReportTemplate="{currentPage} / {totalPages}"
       paginatorTemplate="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
     >
       <!-- Column Definitions -->
-      <Column field="taxonomicName" header="Taxonomic Name" sortable>
-        <template #filter="{ filterModel }">
-          <InputText v-model="filterModel.value" placeholder="Search by taxonomic name"/>
-        </template>
-      </Column>
-      
       <Column field="productName" header="Product Name" sortable>
         <template #filter="{ filterModel }">
-          <InputText v-model="filterModel.value" placeholder="Search by product name"/>
+          <InputText v-model="filterModel.value" placeholder="Search by product name" />
         </template>
       </Column>
 
       <Column field="activeVersion" header="Active Version" sortable dataType="numeric">
         <template #filter="{ filterModel }">
-          <InputText v-model="filterModel.value" placeholder="Search by version"/>
-        </template>
-      </Column>
-      
-      <Column field="numberOfOligos" header="Number of Oligos" sortable dataType="numeric">
-        <template #filter="{ filterModel }">
-          <InputText v-model="filterModel.value" placeholder="Search by oligos"/>
+          <InputText v-model="filterModel.value" placeholder="Search by version" />
         </template>
       </Column>
 
-      <!-- Actions Column with Buttons -->
+      <Column field="versions" header="Number of Versions" sortable dataType="numeric">
+        <template #filter="{ filterModel }">
+          <InputText v-model="filterModel.value" placeholder="Search by versions" />
+        </template>
+      </Column>
+
+      <Column field="numberOfOligos" header="Number of Oligos" sortable dataType="numeric">
+        <template #filter="{ filterModel }">
+          <InputText v-model="filterModel.value" placeholder="Search by oligos" />
+        </template>
+      </Column>
+
+      <!-- Actions Column -->
       <Column header="Actions">
         <template #body="slotProps">
           <div class="action-buttons">
-          <button class="action-button" @click="actionClicked('/reagents/add', slotProps.data.productName)">Add</button>
-          <button class="action-button edit" @click="actionClicked('/reagents/edit', slotProps.data.productName)">Edit</button>
-        </div>
+            <button class="action-button" @click="actionClicked('/products/view', slotProps.data.productName)">View</button>
+            <button class="action-button edit" @click="actionClicked('/products/edit', slotProps.data.productName)">Edit</button>
+          </div>
         </template>
       </Column>
     </DataTable>
@@ -95,7 +118,7 @@ const filters = ref({
 </template>
 
 <style scoped>
-.reagents-wrapper {
+.products-wrapper {
   padding: 2rem;
   background-color: #f8f9fa;
   border-radius: 10px;
@@ -130,10 +153,16 @@ const filters = ref({
   background-color: #e0a800;
 }
 
-/* Style for the action buttons container to add space */
+.loading-indicator {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+}
+
 .action-buttons {
   display: flex;
-  gap: 10px; /* Space between Add and Edit buttons */
+  gap: 10px;
 }
 
 .action-button {
@@ -143,11 +172,10 @@ const filters = ref({
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
-  padding: 8px 20px; /* Broader button width */
+  padding: 8px 20px;
   transition: background-color 0.3s;
-  width: 100px; /* Set a fixed width for both buttons */
+  width: 100px;
 }
-
 
 .action-button:hover {
   background-color: #e0a800;

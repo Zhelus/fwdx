@@ -1,7 +1,7 @@
 <!-- 
 Component for the navigation bar shown on the top of the page
-Last edited by: Nicholas Tullbane
-Date: 11/12/24
+Last edited by: Michael Nguyen
+Date: 11/21/24
 -->
 <script setup>
     import NavigationButton from './NavigationButton.vue';
@@ -49,7 +49,14 @@ Date: 11/12/24
         standard: accountIsStandard,
         'nav-button': true
     });
-
+    
+    const oligoIsActive = ref(false);
+    const oligoIsStandard = ref(true);
+    const oligoClassObject = reactive({
+        active: oligoIsActive,
+        standard: oligoIsStandard,
+        'nav-button': true
+    });
     
 
     function navigateToPage(path, buttonName){
@@ -62,13 +69,14 @@ Date: 11/12/24
         reagentIsActive.value = buttonName === 'reagents-nav';
         flaskExampleIsActive.value = buttonName === 'flaskExample-nav';
         accountIsActive.value = buttonName === "accounts-nav"
-
+        oligoIsActive.value = buttonName === "oligos-nav"
 
         homeIsStandard.value = buttonName !== 'home-nav';
         pathogenIsStandard.value = buttonName !== 'pathogens-nav';
         reagentIsStandard.value = buttonName !== 'reagents-nav';
         flaskExampleIsStandard.value = buttonName !== 'flaskExample-nav';
         accountIsStandard.value = buttonName !== 'accounts-nav';
+        oligoIsStandard.value = buttonName !== 'oligos-nav';
     }
 </script>
 
@@ -80,7 +88,8 @@ Date: 11/12/24
         <div id="navbar-main-buttons">
             <NavigationButton text="Home" :class-object="homeClassObject" routerPath="/" button-name="home-nav" @nav-button-clicked="navigateToPage"/>
             <NavigationButton text="Pathogens" :class-object="pathogenClassObject" routerPath="/pathogens" button-name="pathogens-nav" @nav-button-clicked="navigateToPage"/>
-            <NavigationButton text="Reagents" :class-object="reagentClassObject" routerPath="/reagents" button-name="reagents-nav" @nav-button-clicked="navigateToPage"/>
+            <NavigationButton text="Oligos" :class-object="oligoClassObject" routerPath="/oligos" button-name="oligos-nav" @nav-button-clicked="navigateToPage"/>
+            <NavigationButton text="Products" :class-object="reagentClassObject" routerPath="/reagents" button-name="reagents-nav" @nav-button-clicked="navigateToPage"/>
             <NavigationButton text="Flask Example" :class-object="flaskExampleClassObject" routerPath="/flaskExample" button-name="flaskExample-nav" @nav-button-clicked="navigateToPage"/>
         </div>
         <div id="navbar-account-buttons">

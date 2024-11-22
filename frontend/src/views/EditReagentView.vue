@@ -4,7 +4,7 @@ Last edited by: Michael Nguyen
 Date: 11/05/24
 -->
 <script setup>
-    import EditReagentForm from '@/components/reagents_form/EditReagentForm.vue';
+    import EditReagentForm from '@/components/oligos_form/EditOligoForm.vue';
     import { useRoute } from 'vue-router';
     const route = useRoute();
     const productName = route.query.productName || "Product Name";

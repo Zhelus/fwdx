@@ -41,5 +41,38 @@ export default {
     getAllReports() {
         var url = '/v1/report/all';
         return apiClient.get(url);
+    },
+    getAllProducts() {
+        return apiClient.get('/v1/products');
+    },
+    getProductById(productId) {
+        var url = '/v1/products/' + productId;
+        return apiClient.get(url);
+    },
+    createProduct(productData) {
+        return apiClient.post('/v1/products', productData);
+    },
+    updateProductById(productId, updatedProductData) {
+        var url = '/v1/products/' + productId;
+        return apiClient.put(url, updatedProductData);
+    },
+    deleteProduct(productId) {
+        var url = '/v1/products/' + productId;
+        return apiClient.delete(url);
+    }, 
+    getAllOligos() {
+        return apiClient.get('/v1/oligos/all');
+    },
+    getActiveOligos() {
+        return apiClient.get('/v1/oligos');
+    },
+    getOligoById(oligoId) {
+        return apiClient.get(`/v1/oligos/${oligoId}`);
+    },
+    createOligo(oligoData) {
+        return apiClient.post('/v1/oligos', oligoData);
+    },
+    archiveOligo(oligoId) {
+        return apiClient.delete(`/v1/oligos/${oligoId}/archive`);
     }
 };
