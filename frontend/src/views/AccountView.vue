@@ -11,21 +11,17 @@
         <th>Last Name</th>
         <th>Phone Number</th>
         <th>Email</th>
-        <th>Role</th>
-        <th>Department</th>
         <th>Access Level</th>
         <th>Actions</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="account in accounts" :key="account.id">
-        <td>{{ account.firstName }}</td>
-        <td>{{ account.lastName }}</td>
-        <td>{{ account.phoneNumber }}</td>
+      <tr v-for="account in filteredAccounts" :key="account.id">
+        <td>{{ account.first_name }}</td>
+        <td>{{ account.last_name }}</td>
+        <td>{{ account.phone_number }}</td>
         <td>{{ account.email }}</td>
-        <td>{{ account.role }}</td>
-        <td>{{ account.department }}</td>
-        <td>{{ account.accessLevel }}</td>
+        <td>{{ account.access_level }}</td>
         <td class="action-buttons">
           <button class="edit-button" @click="navigateTo('/accounts/edit', account.email)">Edit</button>
           <button class="delete-button" @click="promptDelete(account)">Delete</button>
@@ -40,7 +36,7 @@
             <h3>Delete Account</h3>
           </div>
           <div class="modal-body">
-            <p>Do you want to delete "{{ currentAccount.firstName }} {{ currentAccount.lastName }}" ({{ currentAccount.email }}) from account list?</p>
+            <p>Do you want to delete "{{ currentAccount.first_name }} {{ currentAccount.last_name }}" ({{ currentAccount.email }}) from account list?</p>
           </div>
           <div class="modal-footer">
             <button @click="showModal = false" class="modal-default-button">Cancel</button>
@@ -53,20 +49,88 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import usersApiHelper from "@/services/usersApiHelper.js";
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const showModal = ref(false);
 const currentAccount = ref({});
-const accounts = ref([
-  { id: 1, firstName: "Alice", lastName: "Smith", phoneNumber: "123-456-7890", email: "alice@example.com", role: "Manager", department: "Marketing", accessLevel: "High" },
-  { id: 2, firstName: "Bob", lastName: "Johnson", phoneNumber: "123-456-7891", email: "bob@example.com", role: "Staff", department: "Sales", accessLevel: "Medium" },
-  { id: 3, firstName: "Carol", lastName: "Williams", phoneNumber: "123-456-7892", email: "carol@example.com", role: "Admin", department: "IT", accessLevel: "Admin" },
-]);
+const accounts = ref([]);
+const filters = ref({
+  global: { value: null, matchMode: "contains" },
+  first_name: { value: null, matchMode: "startsWith" },
+  last_name: { value: null, matchMode: "startsWith" },
+  phone_number: { value: null, matchMode: "contains" },
+  email: { value: null, matchMode: "contains" },
+  access_level: { value: null, matchMode: "equals" }
+});
 
-function navigateTo(path, username) {
-  router.push({ path, query: { username } });
+
+const filteredAccounts = computed(() => {
+  return accounts.value.filter(account => {
+    // Here you can implement more complex filtering based on above filter settings
+    return Object.keys(filters.value).every(key => {
+      const filter = filters.value[key];
+      if (!filter.value) return true;
+      const accountValue = account[key] && account[key].toString().toLowerCase();
+      const filterValue = filter.value.toLowerCase();
+      switch (filter.matchMode) {
+        case "contains": return accountValue.includes(filterValue);
+        case "startsWith": return accountValue.startsWith(filterValue);
+        case "equals": return accountValue === filterValue;
+        default: return true;
+      }
+    });
+  });
+});
+
+
+onMounted(async () => {
+  await fetchUsers();
+})
+
+async function fetchUsers() {
+    usersApiHelper.getAllUsers()
+        .then(response => {
+          //console.log("API Response: ", response);
+          if (response.status === 'success'  && Array.isArray(response.data)) {
+            //console.log(response.data)
+            accounts.value = response.data.map(user => ({
+              ...user,
+              id: user._id,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              phone_number: user.phone_number,
+              email: user.email,
+              access_level: user.access_level,
+            }));
+            //console.log("Successfully loaded user accounts.")
+          } else {
+            alert(response.data.message)
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.error('Error:', error.response.data);
+            alert(error.response.data.message || 'User accounts retrieval failed, please try again.');
+          } else if (error.request) {
+            // The request was made but no response was received
+            console.error('Error:', error.request);
+            alert('No response from server. Check your network connection.');
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            console.error('Error:', error.message);
+            alert('Error, please try again.');
+          }
+        });
+}
+
+
+function navigateTo(path, userId) {
+  router.push({ path, query: { userId } });
 }
 
 function promptDelete(account) {
@@ -74,16 +138,38 @@ function promptDelete(account) {
   showModal.value = true;
 }
 
-function deleteAccount(id) {
-  // Implement deletion logic here
-  console.log("Deleting account with ID:", id);
-  showModal.value = false;
-  // Update accounts list after deletion
-  const index = accounts.value.findIndex(acc => acc.id === id);
-  if (index !== -1) {
-    accounts.value.splice(index, 1);
-  }
+async function deleteAccount(userId) {
+  console.log("Deleting account with ID:", userId);
+  showModal.value = false; // Hide modal independently of the result
+
+  usersApiHelper.deleteUser(userId)
+      .then(response => {
+        console.log("Delete response:", response);
+        if (response.status === 'success') {
+          // Find index of the user in the local list and remove it
+          const index = accounts.value.findIndex(acc => acc.id === userId);
+          if (index !== -1) {
+            accounts.value.splice(index, 1);
+          }
+        } else {
+          alert('Failed to delete the account: ' + response.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error deleting account:', error);
+        alert('Error during account deletion: ' + error.message);
+      });
 }
+
+// async function editAccount(userId) {
+//   try{
+//     const response = await axios.get(`/users/${userId}`);
+//     currentAccount.value = response.data;
+//     navigateTo('/accounts/edit', userId);
+//   } catch (error) {
+//     console.error("Failed to fetch account details: ", error);
+//   }
+// }
 </script>
 
 <style scoped>

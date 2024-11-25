@@ -5,7 +5,7 @@
       <img src="/Users/ntull/IdeaProjects/fwdx/frontend/src/assets/DNA_Background_FWDX.jpg" alt="Login Illustration">
     </div>
     <div class="login-container">
-      <img id="fwdx-image" src="@/assets/bioblade.svg" />
+      <img id="fwdx-image" src="@/assets/bioblade.svg"  alt="BioBlade Logo"/>
       <h2>Sign in</h2>
       <form @submit.prevent="submitLogin">
         <div class="input-group">
@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import usersApiHelper from "@/services/usersApiHelper";
+
 export default {
   name: 'LoginView',
   data() {
@@ -36,32 +38,40 @@ export default {
   },
   methods: {
     submitLogin() {
-      fetch('/api/v1/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: this.email, password: this.password })
-      })
-          .then(response => response.json())
+      usersApiHelper.loginUser({ email: this.email, password: this.password })
           .then(data => {
+            console.log(data.status)       // this is showing undefined still and not success
+            // const data = response.data;  // axios wraps the response data in `data` object
             if (data.status === 'success') {
-              this.$router.push('/home');
+              this.$router.push('/reports');  // Navigate on success
             } else {
-              alert(data.message);
+              alert(data.message);  // Show error message from server
             }
           })
           .catch(error => {
-            console.error('Error:', error);
-            alert('Login failed, please try again.');
+            if (error.response) {
+              // The request was made and the server responded with a status code
+              // that falls out of the range of 2xx
+              console.error('Error:', error.response.data);
+              alert(error.response.data.message || 'Login failed, please try again.');
+            } else if (error.request) {
+              // The request was made but no response was received
+              console.error('Error:', error.request);
+              alert('No response from server. Check your network connection.');
+            } else {
+              // Something happened in setting up the request that triggered an Error
+              console.error('Error:', error.message);
+              alert('Login failed, please try again.');
+            }
           });
     },
     navigate(path) {
-      this.$router.push(path);
+      this.$router.push(path);  // Navigate to other paths as needed
     }
   }
 };
 </script>
+
 
 <style scoped>
 .login-page {

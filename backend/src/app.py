@@ -1,9 +1,12 @@
+import os
+
 from flask import Flask
 from flask_cors import CORS
 from backend.src.pathogens import pathogen_routes
 from backend.src.users import user_controller
 from backend.src.reports import report_controller
 from backend.src.reagents import product_controller
+from dotenv import load_dotenv
 
 
 """
@@ -28,10 +31,16 @@ def create_app():
     cors_config = {
         "methods":["GET", "POST", "PUT", "DELETE", "PATCH"]
     }
+    # Load the environment variables from 'config.env'
+    load_dotenv('config.env')
 
-    app.secret_key = 'shhhhh, its a secret'  # Set a secure random secret key
+    # Access the API key
+    app.secret_key = os.getenv('API_KEY')
 
-    CORS(app, resources={r"/*": cors_config})
+    if not app.secret_key:
+        raise RuntimeError("Runtime error with API key")
+
+    CORS(app, supports_credentials=True, resources={r"/*": cors_config})
 
     # register blueprints (routes in other files)
     app.register_blueprint(pathogen_routes.bp)

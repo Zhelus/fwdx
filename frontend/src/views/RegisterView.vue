@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <img id="fwdx-image" src="@/assets/bioblade.svg" />
+    <img id="fwdx-image" src="@/assets/bioblade.svg"  alt="DNA Sequence image"/>
     <form @submit.prevent="submitRegistration">
       <h2>Register</h2>
       <p>Please fill in this form to create an account.</p>
@@ -18,7 +18,7 @@
       </div>
       <div>
         <label for="phone_number">Phone Number:</label>
-        <input type="phone_number" id="phone_number" v-model="phone_number" required placeholder="Enter your phone number"
+        <input type="phone_number" id="phone_number" v-model="phone_number" required placeholder="Enter your phone number">
       </div>
       <div>
         <label for="password">Password:</label>
@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import usersApiHelper from "@/services/usersApiHelper.js";
+
 export default {
   name: 'RegisterView',
   data() {
@@ -58,19 +60,44 @@ export default {
         alert("Passwords do not match.");
         return;
       }
-      // Here you'd typically make an API call to your backend to register the user
-      console.log("Registration attempted with:", this.firstName, this.lastName, this.email, this.phone_number, this.password);
-      alert("Registration successful, please check your email to verify your account after admin approval.");
-      // Optionally clear the form or redirect the user
-      this.firstName = '';
-      this.lastName = '';
-      this.email = '';
-      this.phone_number = '';
-      this.password = '';
-      this.confirmPassword = '';
+      usersApiHelper.registerUser()
+          .then(data => {
+            console.log(data.status)
+            if (data.status === 'success') {
+              console.log("Registration attempted with:", this.firstName, this.lastName, this.email, this.phone_number, this.password);
+              alert("Registration successful, please check your email to verify your account after admin approval.");
+              // Optionally clear the form or redirect the user
+              this.firstName = '';
+              this.lastName = '';
+              this.email = '';
+              this.phone_number = '';
+              this.password = '';
+              this.confirmPassword = '';
+              this.$router.push('/');
+
+            } else {
+              alert(data.message);
+            }
+          })
+          .catch(error => {
+            if (error.response) {
+              // The request was made and the server responded with a status code
+              // that falls out of the range of 2xx
+              console.error('Error:', error.response.data);
+              alert(error.response.data.message || 'Registration failed, please try again.');
+            } else if (error.request) {
+              // The request was made but no response was received
+              console.error('Error:', error.request);
+              alert('No response from server. Check your network connection.');
+            } else {
+              // Something happened in setting up the request that triggered an Error
+              console.error('Error:', error.message);
+              alert('Registration failed, please try again.');
+            }
+          });
     },
-    returnToLogin() {
-      this.$router.push('/'); // Navigate to login page
+    returnToLogin(path) {
+      this.$router.push(path)
     }
   }
 };

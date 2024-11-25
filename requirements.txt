@@ -5,8 +5,12 @@ requests~=2.32.3
 mongoengine~=0.29.1
 bio~=1.7.1
 biopython~=1.84
+bcrypt~=4.2.0
 
 # Frontend Requirements
 certifi~=2024.8.30
 Flask~=3.0.3
 Flask-Cors~=5.0.0
+Flask-Testing~=0.8.1
+pytest~=8.3.3
+mongomock~=4.2.0.post1

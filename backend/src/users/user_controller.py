@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from .user_service import create_user, get_user, update_user, delete_user, change_password, register_user, login_user, logout_user
+from .user_service import create_user, get_user, update_user, delete_user, change_password, register_user, login_user, \
+    logout_user, get_all_users
 from ...definitions import API_VERSION
 
 bp = Blueprint('users', __name__)
@@ -11,6 +12,27 @@ def api_create_user():
     document = create_user(user_data)
     return f"User created is: {document}"
 
+
+@bp.route(f'/{API_VERSION}/users/get_all_users', methods=['GET'])
+def api_get_all_users():
+    try:
+        cursor = get_all_users()
+        returned_users = []
+        for user in cursor:
+            user = _object_id_to_string(user)
+            returned_users.append(user)
+        # Return all users formatted as JSON
+        return jsonify({'users': returned_users})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+"""
+Helper method to tranlsate a user's MongoDB 'ObjectId' to a string
+ - Inputs: user (dict with '_id' as an ObjectId)
+ - Outputs: user (dict with '_id' as a String
+"""
+def _object_id_to_string(user):
+    user['_id'] = str (user['_id'])
+    return user
 
 #example query: http://127.0.0.1:5000/v1/users/get/6722541f635480d44cf29db4
 @bp.route(f'/{API_VERSION}/users/get/<string:user_id>', methods=['GET'])
@@ -38,13 +60,17 @@ def api_delete_user(user_id):
 def api_login_user():
     email = request.json['email']
     password = request.json['password']
-    document = login_user(email, password)
-    return f"User logged in is: {document}"
+    success, message, status = login_user(email, password)
+
+    if success:
+        return jsonify({"message": message}), status
+    else:
+        return jsonify({"error": message}), status
 
 
-@bp.route(f'/{API_VERSION}/users/logout', methods=['POST'])
-def api_logout_user():
-    logout_user()
+@bp.route(f'/{API_VERSION}/users/logout/<string:user_id>', methods=['POST'])
+def api_logout_user(user_id):
+    logout_user(user_id)
     return f"User is logged out"
 
 
@@ -56,7 +82,7 @@ def api_register_user():
 
 
 # example query: http://127.0.0.1:5000/v1/users/changepassword/6722541f635480d44cf29db4
-@bp.route(f'/{API_VERSION}/users/changepassword/<string:user_id>', methods=['PATCH'])
+@bp.route(f'/{API_VERSION}/users/changepassword/<string:user_id>', methods=['PUT'])
 def api_change_password(user_id):
     new_password = request.get_json().get('newPassword')
     return change_password(user_id, new_password)

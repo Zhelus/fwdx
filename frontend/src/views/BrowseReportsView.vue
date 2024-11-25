@@ -21,6 +21,7 @@ Date: 11/11/24
         // GET all reports from MongoDB
         await reportsApiHelper.getAllReports()
                 .then(data => {
+                    console.log(data);
                     reports.value = data;
                     for(let i=0; i<reports.value.length; i++){
                         reports.value[i]['mismatchCount'] = reports.value[i]['mismatches'].length;
