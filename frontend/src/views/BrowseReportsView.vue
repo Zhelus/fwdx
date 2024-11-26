@@ -12,6 +12,8 @@ Date: 11/11/24
     import reportsApiHelper from "@/services/reportsApiHelper"
     import Report from "@/entities/Report"
     import { onBeforeMount } from 'vue';
+    import LoadingIcon from '@/components/misc/LoadingIcon.vue';
+    import ViewReportButton from '@/components/misc/ViewReportButton.vue';
 
     // Work to be done before the page is displayed
     // We only show the table after all reports are fetched (initComplete = true)
@@ -90,20 +92,53 @@ Date: 11/11/24
 
     // Update a single report with new data
     function updateReport(){
-        const report = new Report(
-            "8877665",
-            "Test Report 6",
-            "9876543",
-            "6730f02aec38fbfe063398da",
-            "10632",
-            "11/17/24",
-            ["Mismatch 1", "Mismatch 2"]
-        );
         var updatedReportData = {
-            'report_title': "Test Report 5 Update",
-            'creation_date': "11/18/24"
+            'mismatches': [
+                {
+                    oligoID: '67366cb26b5f81586e616809',
+                    oligoName: "Forward Primer",
+                    oligoSequence: 'AATGCAACAGTGCAATCTCA',
+                    mismatchLines: '|||||X||||||||||||||',
+                    pathogenSequence: 'AATGCCACAGTGCAATCTCA',
+                    pathogenAccessionID: 'KJ643523.1',
+                    pathogenCommonName: 'Respiratory syncytial virus type A',
+                    pathogenCollectionDate: '2015',
+                    pathogenLocation: 'USA',
+                    genomicPosition: '1987',
+                    mismatchIndex: [5],
+                    mismatchCount: 1
+                },
+                {
+                    oligoID: '67366cb26b5f81586e616809',
+                    oligoName: "Reverse Primer",
+                    oligoSequence: 'GGCCCAACACCAAATTCATC',
+                    mismatchLines: '||||XX||X||XX|XX|||X',
+                    pathogenSequence: 'GGCCTTACTCCTGAAACATA',
+                    pathogenAccessionID: 'MF001052.1',
+                    pathogenCommonName: 'Respiratory syncytial virus type A',
+                    pathogenCollectionDate: '2015',
+                    pathogenLocation: 'USA',
+                    genomicPosition: '708',
+                    mismatchIndex: [4, 5, 8, 11, 12, 14, 15, 19],
+                    mismatchCount: 8
+                },
+                {
+                    oligoID: '67366cb26b5f81586e616809',
+                    oligoName: "Probe 1",
+                    oligoSequence: 'AAACCTGCTTAGTTTCTTCTTGTTCTC',
+                    mismatchLines: '||||||||||||||||||||X|||||X',
+                    pathogenSequence: 'AAACCTGCTTAGTTTCTTCTGGTTCTT',
+                    pathogenAccessionID: 'MG027862.1',
+                    pathogenCommonName: 'Respiratory syncytial virus type A',
+                    pathogenCollectionDate: '2015',
+                    pathogenLocation: 'USA',
+                    genomicPosition: '3861',
+                    mismatchIndex: [21, 27],
+                    mismatchCount: 2
+                }
+            ]
         }
-        reportsApiHelper.updateReport(report.getId(), updatedReportData).catch( error => { console.error(error) } );
+        reportsApiHelper.updateReport('1234567', updatedReportData).catch( error => { console.error(error) } );
     }
 
     // Delete a single report 
@@ -128,8 +163,9 @@ Date: 11/11/24
 </script>
 <template>
 <div class="browse-reports-wrapper">
-    <div class="loader" v-if="!initComplete"></div>
-    <h1 class="form-header">Browse Reports</h1>
+    <!-- <div class="loader" v-if="!initComplete"></div> -->
+     <LoadingIcon :init-complete="initComplete" />
+    <h1 class="form-header">All Reports</h1>
     <!-- Use to add a new data table component to the page -->
     <DataTable 
         v-if="initComplete"
@@ -184,18 +220,14 @@ Date: 11/11/24
                 placeholder="Search by mismatches"/>
              </template> 
         </Column>
-        <Column header="Actions">
+        <Column field="report_id" header="Actions">
             <!-- Use to pass custom content to a cell of the data table -->
             <template #body="slotProps">
-                <button class="view-report-button">View</button>
+                 <ViewReportButton button-class="table-button" :report-id="slotProps.data.report_id" />
             </template>
         </Column>
     </DataTable>
-    <button @click="createReport">Create Report</button>
-    <button @click="getReport">Get Report</button>
-    <button @click="updateReport">Update Report</button>
-    <button @click="deleteReport">Delete Report</button>
-    <button @click="getAllReports">Get All Reports</button>
+    <!-- <button @click="updateReport()">Update Mismatches</button> -->
 </div>
 </template>
 <style scoped>
@@ -213,26 +245,9 @@ Date: 11/11/24
         font-weight: 700;
         vertical-align:top;
         letter-spacing: -2%;
-        font-size: 26pt;
+        font-size: var(--page-header-size);
         line-height: 0.95em;
-        margin-bottom: 2.5rem;
-    }
-
-    .view-report-button {
-        background-color: var(--fwdx-blue);
-        color: var(--blue-button-text);
-        border-radius: 5px;
-        height: 25px;
-        width: 60%;
-        border: none;
-        outline: none;
-        font-size: 11pt;
-        font-weight: 500;
-    }
-
-    .view-report-button:hover {
-        cursor: pointer;
-        background-color: var(--fwdx-blue-button-hover);
+        margin-bottom: 1rem;
     }
 
     .loader {

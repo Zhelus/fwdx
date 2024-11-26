@@ -18,6 +18,8 @@ Date: 11/5/24
   --blue-button-text: #F5F5F5;
   --yellow-button-text: var(--fwdx-blue);
   --light-gray-button-text: var(--fwdx-blue);
+  --red-text: #f45050;
+  --green-text: #37de74;
   /* Button background colors */
   --transparent-button-hover: #F3F3F3;
   --light-gray-active-button: #D8D8D8;
@@ -34,6 +36,21 @@ Date: 11/5/24
   --dark-box-shadow: rgba(0, 0, 0, 0.05);
   --light-gray-outline: #E0E0E0;
   --disabled-button-opacity: 0.35;
+  --container-box-shadow: 0 4px 12px -12px var(--fwdx-blue);
+  /* Font Sizes and Weights*/
+  --page-header-size: 1.6em;
+  --page-header-weight: 700;
+  --page-header-line-height: 1.65rem;
+  --subheading-size: 1.25em;
+  --subheading-weight: 700;
+  --body-text-size: 1em;
+  --mismatch-body-weight: 500;
+  /* Form Section Styles */
+  --form-element-spacing: 2em;
+  --form-header-margin: 0.625em;
+  --form-checkbox-row-gap: 0.5em;
+  --form-button-col-gap: 1em;
+
 
   /* 
   Below are all default variables included with the Vue applicaiton setup

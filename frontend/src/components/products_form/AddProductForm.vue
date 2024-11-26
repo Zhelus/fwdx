@@ -6,11 +6,11 @@ Date: 11/05/24
 
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 
 const confirmationText = ref('');
-const props = defineProps(['formTitle', 'showFrequency', 'isEditReport'])
-const router = useRouter();
+// const props = defineProps(['formTitle', 'showFrequency', 'isEditReport'])
+// const router = useRouter();
 
 const oligoOptions = [
   { name: "Oligo Name 1", id: 1 },

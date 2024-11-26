@@ -1,19 +1,15 @@
 <!-- 
-Page view for adding a new reagent
+Page view for adding a new oligo
 Last edited by: Michael Nguyen
 Date: 10/30/24
 -->
 <script setup>
-    import AddReagentForm from '@/components/reagents_form/ReagentForm.vue';
-    import { useRoute } from 'vue-router';
-    const route = useRoute();
-    const productName = route.query.productName || "Product Name";
-
-    const formTitle = `Add a new Oligo - ${productName}`;
+    import AddOligoForm from '@/components/oligos_form/AddOligoForm.vue';
+    const formTitle = `Add a new Oligo`;
 </script>
 <template>
 <div class="report-page-wrapper">
-    <AddReagentForm :form-title=formTitle :show-frequency="false" :is-edit-report="false"/>
+    <AddOligoForm form-title="Add a New Oligo" :show-frequency="false" :is-edit-report="true"/>
 </div>
 </template>
 <style scoped>

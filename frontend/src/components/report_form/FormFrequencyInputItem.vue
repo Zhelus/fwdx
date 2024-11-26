@@ -41,15 +41,15 @@ Date: 10/30/24
         width: 40%;
         min-width: 380px;
         background-color: transparent;
-        margin-bottom: 2.5rem;
+        margin-bottom: var(--form-element-spacing);
         margin-top: 0rem;
     }
 
     .section-header {
         color: var(--dark-gray-text);
-        font-size: 16pt;
-        font-weight: 700;
-        line-height: 24px;
+        font-size: var(--subheading-size);
+        font-weight: var(--subheading-weight);
+        line-height: var(--subheading-size);
         text-align: left;
         text-justify: top;
         margin-bottom: 0.25rem;
@@ -69,7 +69,7 @@ Date: 10/30/24
         border: 1pt solid var(--light-gray-outline);
         border-radius: var(--input-border-radius);
         color: var(--dark-gray-text);
-        font-size: 12pt;
+        font-size: var(--body-text-size);
         padding-left: .3rem;
         background-color: var(--fwdx-white);
     }
@@ -84,7 +84,7 @@ Date: 10/30/24
         height: 100%;
         width: 100%;
         color: var(--dark-gray-text);
-        font-size: 12pt;
+        font-size: var(--body-text-size);
         background-color: var(--fwdx-white);
         outline: 1pt solid var(--light-gray-outline);
         display: grid;

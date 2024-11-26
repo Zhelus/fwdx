@@ -1,7 +1,7 @@
 /*
 JavaScript file to define the URL paths for each page (used by the Vue router)
-Last edited by: Blake Good
-Date: 10/30/24
+Last edited by: Nicholas Tullbane
+Date: 11/25/24
 */
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
@@ -10,16 +10,19 @@ import ScheduleReportView from '@/views/ScheduleReportView.vue'
 import EditScheduleView from '@/views/EditScheduleView.vue'
 import BrowseReportsView from '@/views/BrowseReportsView.vue'
 import PathogensView from '@/views/PathogensView.vue'
-import ReagentsView from '@/views/ReagentsView.vue'
+import ReagentsView from '@/views/ProductsHomeView.vue'
 import FlaskExampleView from "@/views/FlaskExampleView.vue";
-import AddReagentView from '@/views/AddReagentView.vue'
-import EditReagentView from '@/views/EditReagentView.vue'
+import AddProductView from '@/views/AddProductView.vue'
+import OligosHomeView from '@/views/OligosHomeView.vue'
 import AccountView from "@/views/AccountView.vue";
 import AddAccountView from "@/views/AddAccountView.vue";
 import EditAccountView from "@/views/EditAccountView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ForgotPasswordView from "@/views/ForgotPasswordView.vue";
+import AddOligoView from '@/views/AddOligoView.vue'
+import SingleOligoView from '@/views/SingleOligoView.vue'
+import ViewReportView from '@/views/ViewReportView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +46,12 @@ const router = createRouter({
       path: '/reports',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/reports/view/:testProps',
+      name: 'viewReport',
+      component: ViewReportView,
+      props: true
     },
     {
       path: '/reports/generate',
@@ -77,13 +86,29 @@ const router = createRouter({
     { 
       path: '/reagents/add', 
       name:'addReagent',
-      component: AddReagentView
+      component: AddProductView
     },
     {
-      path:'/reagents/edit',
-      name:'editReagent',
-      component: EditReagentView
+      path: '/reagents/addProduct',
+      name: 'addProduct',
+      component: AddProductView
     },
+    {
+      path: '/oligos',
+      name: 'oligos',
+      component: OligosHomeView
+    },
+    {
+      path: '/oligos/add',
+      name: 'addOligo',
+      component: AddOligoView
+    },
+    {
+      path: '/oligos/view',
+      name: 'viewOligo',
+      component: () => import('@/views/SingleOligoView.vue'), // Lazy load the component
+      props: route => ({ id: route.query.id }) // Pass the 'id' from the query as a prop
+    },        
     {
       path: '/flaskExample',
       name: 'flaskExample',

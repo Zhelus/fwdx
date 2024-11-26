@@ -130,26 +130,28 @@ Date: 10/30/24
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        height: 90%;
+        height: auto;
         width: 90%;
         background-color: var(--light-gray-container-background);
         border-radius: 5px;
         padding: 25px;
         overflow-x: scroll;
+        /* box-shadow: var(--container-box-shadow); */
+        outline: 0.5pt solid var(--light-gray-outline);
     }
 
     .form-header {
         color: var(--fwdx-blue);
-        font-weight: 700;
-        vertical-align:top;
+        font-weight: var(--page-header-weight);
+        vertical-align: top;
         letter-spacing: -2%;
-        font-size: 26pt;
-        line-height: 0.95em;
-        margin-bottom: 2.5rem;
+        font-size: var(--page-header-size);
+        line-height: var(--page-header-line-height);
+        margin-bottom: var(--form-header-margin);
     }
 
     .form-button-container {
         display: flex;
-        column-gap: 15px;
+        column-gap: var(--form-button-col-gap);
     }
 </style>

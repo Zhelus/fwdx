@@ -8,6 +8,7 @@ Date: 2024/11/03
 import os
 
 import certifi
+import pymongo
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
@@ -28,6 +29,9 @@ class MongoDBConnector:
         self.env = Environment()
 
         self.uri = self.env.DB_CONNECTION_STRING
+
+        if self.uri is None:
+            raise ValueError("[MongoDB_Connector] URI not set, check config.env file")
 
         if force_ssl:
             self._connect_ssl()
@@ -61,18 +65,16 @@ class MongoDBConnector:
 
     def upload_document(self, document: dict, collection: CollectionType):
         collection = self.database[collection.value]
-        result = collection.insert_one(document)
-
-        if result.acknowledged == "False":
-            print(f"[MongoDBConnector] Error uploading document: {document}")
+        return collection.insert_one(document)
 
     def fetch_document(self, document: dict, collection: CollectionType):
         collection = self.database[collection.value]
         result = collection.find_one(document)
+        return result
 
-        # if result.acknowledged == "None":
-        #     print(f"[MongoDBConnector] Error uploading document: {document}")
-
+    def fetch_documents(self, limit: int, collection: CollectionType):
+        collection = self.database[collection.value]
+        result = collection.find().sort('_id', pymongo.DESCENDING).limit(limit)
         return result
 
     def delete_document(self, document: dict, collection: CollectionType):
@@ -84,9 +86,6 @@ class MongoDBConnector:
         result = self.database[collection.value].update_one(filter, update)
         return result
 
-        # if result.acknowledged == "False":
-        #     print(f"[MongoDBConnector] Error updating document {document}")
-
     def fetch_all_documents(self, collection: CollectionType, filter: dict = {}):
         result = self.database[collection.value].find(filter)
         return result
@@ -94,7 +93,6 @@ class MongoDBConnector:
     def create_collection(self, collection: CollectionType):
         collection = self.database.create_collection(collection.value)
         print(f"Created New Collection:\n{collection}\n{collection.name}")
-
 
     def ping(self):
         try:

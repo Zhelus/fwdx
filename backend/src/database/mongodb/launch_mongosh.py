@@ -15,7 +15,7 @@ def main():
     uri = connector.get_connection_uri()
 
     #   Print the URI for verification
-    #   print(f"Launching mongosh with URI: {uri}")
+    
 
     # Run the mongosh command with the URI
     try:

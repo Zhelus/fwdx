@@ -5,6 +5,7 @@ from ...definitions import API_VERSION
 
 bp = Blueprint('users', __name__)
 
+
 #example query: http://127.0.0.1:5000/v1/users/create
 @bp.route(f'/{API_VERSION}/users/create', methods=['POST'])
 def api_create_user():
@@ -25,6 +26,8 @@ def api_get_all_users():
         return jsonify({'users': returned_users})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+      
+      
 """
 Helper method to tranlsate a user's MongoDB 'ObjectId' to a string
  - Inputs: user (dict with '_id' as an ObjectId)
@@ -49,7 +52,7 @@ def api_update_user(user_id):
     return f"User updated to: {document}"
 
 
-#example query: http://127.0.0.1:5000/v1/users/delete/6722541f635480d44cf29db4
+# example query: http://127.0.0.1:5000/v1/users/delete/6722541f635480d44cf29db4
 @bp.route(f'/{API_VERSION}/users/delete/<string:user_id>', methods=['DELETE'])
 def api_delete_user(user_id):
     document = delete_user(user_id)
@@ -80,11 +83,9 @@ def api_register_user():
     document = register_user(user_data)
     return f"User is registered is: {document}"
 
-
+  
 # example query: http://127.0.0.1:5000/v1/users/changepassword/6722541f635480d44cf29db4
 @bp.route(f'/{API_VERSION}/users/changepassword/<string:user_id>', methods=['PUT'])
 def api_change_password(user_id):
     new_password = request.get_json().get('newPassword')
     return change_password(user_id, new_password)
-
-

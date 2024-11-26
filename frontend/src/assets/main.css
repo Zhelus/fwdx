@@ -13,7 +13,7 @@ Date: 11/5/24
   padding: 0 0;
   font-weight: normal;
   display: grid;
-  grid-template-rows: 5vh 95vh;
+  grid-template-rows: max(40px, 5vh) 95vh;
 }
 
 a,
