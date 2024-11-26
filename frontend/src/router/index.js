@@ -1,7 +1,7 @@
 /*
 JavaScript file to define the URL paths for each page (used by the Vue router)
-Last edited by: Michael Nguyen
-Date: 11/21/24
+Last edited by: Nicholas Tullbane
+Date: 11/25/24
 */
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
@@ -17,6 +17,9 @@ import OligosHomeView from '@/views/OligosHomeView.vue'
 import AccountView from "@/views/AccountView.vue";
 import AddAccountView from "@/views/AddAccountView.vue";
 import EditAccountView from "@/views/EditAccountView.vue";
+import LoginView from "@/views/LoginView.vue";
+import RegisterView from "@/views/RegisterView.vue";
+import ForgotPasswordView from "@/views/ForgotPasswordView.vue";
 import AddOligoView from '@/views/AddOligoView.vue'
 import SingleOligoView from '@/views/SingleOligoView.vue'
 import ViewReportView from '@/views/ViewReportView.vue'
@@ -25,7 +28,22 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path:'/',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView
+    },
+    {
+      path: '/forgot_password',
+      name: 'forgot_password',
+      component: ForgotPasswordView
+    },
+    {
+      path: '/reports',
       name: 'home',
       component: HomeView
     },
