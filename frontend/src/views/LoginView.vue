@@ -2,7 +2,7 @@
   <div class="login-page">
     <div class="illustration-section">
       <!-- Placeholder for image, replace with actual image URL -->
-      <img src="/Users/ntull/IdeaProjects/fwdx/frontend/src/assets/DNA_Background_FWDX.jpg" alt="Login Illustration">
+      <img src="@/assets/DNA_Background_FWDX.jpg" alt="Login Illustration">
     </div>
     <div class="login-container">
       <img id="fwdx-image" src="@/assets/bioblade.svg"  alt="BioBlade Logo"/>
