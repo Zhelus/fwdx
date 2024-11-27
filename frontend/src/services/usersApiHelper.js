@@ -6,9 +6,11 @@ export default {
             api.getUser(user_id)
                 .then(response => {
                     console.log("API call was successful");
-                    console.log(response.data);
-                    let userJson = response.data['user'];
-                    resolve(userJson);
+                    resolve({
+                        status: 'success',
+                        message: response.data.message || 'Fetch successful',
+                        data: response.data['user']
+                    });
                 })
                 .catch(error => {
                     console.error("API called failed:", error);
@@ -33,7 +35,7 @@ export default {
                 });
         });
     },
-    updateUser(user_id) {
+    updateUser(user_id, updatedUserData) {
         return new Promise(function(resolve, reject){
             api.updateUser(user_id,updatedUserData)
                 .then(response => {

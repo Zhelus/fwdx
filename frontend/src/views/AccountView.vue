@@ -23,7 +23,7 @@
         <td>{{ account.email }}</td>
         <td>{{ account.access_level }}</td>
         <td class="action-buttons">
-          <button class="edit-button" @click="navigateTo('/accounts/edit', account.email)">Edit</button>
+          <button class="edit-button" @click="editAccount(account)">Edit</button>
           <button class="delete-button" @click="promptDelete(account)">Delete</button>
         </td>
       </tr>
@@ -95,7 +95,7 @@ async function fetchUsers() {
         .then(response => {
           //console.log("API Response: ", response);
           if (response.status === 'success'  && Array.isArray(response.data)) {
-            //console.log(response.data)
+            console.log(response.data)
             accounts.value = response.data.map(user => ({
               ...user,
               id: user._id,
@@ -138,6 +138,10 @@ function promptDelete(account) {
   showModal.value = true;
 }
 
+function editAccount(account){
+  router.push({ name: 'editAccount', params: {userId: account.id}});
+}
+
 async function deleteAccount(userId) {
   console.log("Deleting account with ID:", userId);
   showModal.value = false; // Hide modal independently of the result
@@ -157,19 +161,8 @@ async function deleteAccount(userId) {
       })
       .catch(error => {
         console.error('Error deleting account:', error);
-        alert('Error during account deletion: ' + error.message);
       });
 }
-
-// async function editAccount(userId) {
-//   try{
-//     const response = await axios.get(`/users/${userId}`);
-//     currentAccount.value = response.data;
-//     navigateTo('/accounts/edit', userId);
-//   } catch (error) {
-//     console.error("Failed to fetch account details: ", error);
-//   }
-// }
 </script>
 
 <style scoped>

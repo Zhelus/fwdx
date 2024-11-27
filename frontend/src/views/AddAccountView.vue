@@ -27,21 +27,6 @@ Date: 11/12/24
         <input type="email" id="email" v-model="account.email" required>
       </div>
       <div class="form-group">
-        <label for="role">Role:</label>
-        <select id="role" v-model="account.role" required>
-          <option value="Technician">Technician</option>
-          <option value="Scientist">Scientist</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="department">Department:</label>
-        <select id="department" v-model="account.department" required>
-          <option value="Lab">Lab</option>
-          <option value="Administration">Administration</option>
-          <option value="Quality Control">Quality Control</option>
-        </select>
-      </div>
-      <div class="form-group">
         <label for="accessLevel">Access Level:</label>
         <select id="accessLevel" v-model="account.accessLevel" required>
           <option value="Admin">Admin</option>

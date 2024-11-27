@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from bson.objectid import ObjectId
 from .user_service import create_user, get_user, update_user, delete_user, change_password, register_user, login_user, \
     logout_user, get_all_users
 from ...definitions import API_VERSION
@@ -37,18 +38,31 @@ def _object_id_to_string(user):
     user['_id'] = str (user['_id'])
     return user
 
+def _string_to_object_id(user_id):
+    user_id = ObjectId(user_id)
+    return user_id
+
 #example query: http://127.0.0.1:5000/v1/users/get/6722541f635480d44cf29db4
 @bp.route(f'/{API_VERSION}/users/get/<string:user_id>', methods=['GET'])
 def api_get_user(user_id):
-    document = get_user(user_id)
-    return f"User returned is: {document}"
+    try:
+        user = get_user(user_id)
+        user = _object_id_to_string(user)
+        return jsonify({'user': user})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 
 #example query: http://127.0.0.1:5000/v1/users/update/6722541f635480d44cf29db4
 @bp.route(f'/{API_VERSION}/users/update/<string:user_id>', methods=['PUT'])
 def api_update_user(user_id):
-    user_data = request.get_json()
-    document = update_user(user_id, user_data)
+
+    #user_id = _string_to_object_id(user_id)
+    filter = { 'user_id': user_id}
+    updated_user_data = request.get_json()
+    update = { "$set": updated_user_data}
+    document = update_user(filter, update)
     return f"User updated to: {document}"
 
 

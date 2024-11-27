@@ -33,11 +33,8 @@ def get_user(user_id):
     return connector.fetch_document({"_id":ObjectId(user_id)}, CollectionType.ACCOUNTS)
 
 
-def update_user(user_id, user_data):
-    user_filter = {"_id": ObjectId(user_id)}
-    # Prepare the update statement, using $set to specify the fields to update
-    update = {"$set": user_data}
-    return connector.update_document(user_filter, update, CollectionType.ACCOUNTS)
+def update_user(filter, update):
+    return connector.update_document(filter, update, CollectionType.ACCOUNTS)
 
 
 def delete_user(user_id):
