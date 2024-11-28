@@ -107,7 +107,7 @@ const filters = ref({
               class="action-button delete"
               @click="() => oligosApi.archiveOligo(slotProps.data.id).then(fetchOligos)"
             >
-              Delete
+              Archive
             </button>
           </div>
         </template>

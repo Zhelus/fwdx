@@ -10,6 +10,9 @@ import FormCheckboxItem from './OligoFormCheckBoxItem.vue'; // Import the custom
 import FormActionButton from '@/components/report_form/FormActionButton.vue';
 import { useRouter } from 'vue-router';
 import oligosApi from '@/services/oligosApiHelper';
+import { useToast } from 'vue-toast-notification'; // Import the toast notification
+import 'vue-toast-notification/dist/theme-bootstrap.css';
+
 
 const oligoName = ref('');
 const oligoString = ref('');
@@ -17,6 +20,7 @@ const dnaStrandPositive = ref(true); // Bind directly to the checkbox
 const confirmationText = ref('');
 const props = defineProps(['formTitle', 'isEditReport']);
 const router = useRouter();
+const $toast = useToast(); // Initialize the toast
 
 function cancelClicked() {
   console.log("Clicked cancel button");
@@ -39,8 +43,17 @@ async function submitClicked() {
   try {
     const response = await oligosApi.createOligo(oligoData);
     console.log("Oligo created successfully:", response);
+    // Show success toast
+    $toast.success('Oligo created successfully!', {
+      position: 'top-right',
+      duration: 3000,
+    });
     router.push("/oligos"); // Redirect to oligos list after successful creation
   } catch (error) {
+    $toast.error('Failed to create oligo. Please try again.', {
+      position: 'top-right',
+      duration: 3000,
+    });
     console.error("Failed to create oligo:", error);
   }
 }
@@ -106,7 +119,7 @@ function triggerFileInput() {
     <FormTextInputItem v-model="confirmationText" section-header="Type 'YES' to confirm the above information is correct" />
 
     <!-- Confirmation Buttons -->
-    <div class="form-button-container">
+    <div class="action-buttons">
       <FormActionButton 
         button-text="Cancel" 
         button-class="cancel" 
@@ -156,6 +169,11 @@ function triggerFileInput() {
 
 .hidden-file-input {
   display: none; /* Hide the native file input */
+}
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
 }
 
 button {

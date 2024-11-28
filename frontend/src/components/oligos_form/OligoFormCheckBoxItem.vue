@@ -8,6 +8,10 @@ const props = defineProps({
     type: Boolean,
     default: false, // Default to `false` if not provided
   },
+  readonly: {
+    type: Boolean,
+    default: false, // Allow checkbox to be interactive unless explicitly readonly
+  },
 });
 const emit = defineEmits(['update:modelValue']); // Emit event for v-model binding
 
@@ -25,6 +29,7 @@ function onCheckboxChange(event) {
         class="form-checkbox"
         type="checkbox"
         :checked="modelValue"
+        :disabled="readonly" 
         @change="onCheckboxChange"
         id="single-checkbox"
       />
