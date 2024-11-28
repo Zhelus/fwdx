@@ -1,9 +1,10 @@
 from flask import Blueprint, jsonify, request
 from .product_service import (
     create_product, get_product, update_product, delete_product,
-    add_product_version, set_active_version, get_all_products
+    add_product_version, set_active_version, get_all_products,get_all_products_with_oligo_names
 )
 from ...definitions import API_VERSION
+
 
 bp = Blueprint('products', __name__)
 
@@ -16,11 +17,15 @@ def api_create_product():
     """
     try:
         product_data = request.get_json()
+        if not product_data or "name" not in product_data:
+            return jsonify({"error": "Product name is required"}), 400
+
         document = create_product(product_data)
         document = _object_id_to_string(document)
         return jsonify({"message": "Product created successfully", "product": document}), 201
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
 
 
 # Endpoint to get a product by its ID
@@ -50,6 +55,22 @@ def api_get_all_products():
     for product in products:
         product = _object_id_to_string(product)
     return jsonify({'products': products}), 200
+
+
+@bp.route(f'/{API_VERSION}/products_by_oligo_names', methods=['GET'])
+def api_get_all_products_with_oligo_names():
+    """
+    Fetch all products with oligo names instead of IDs.
+    """
+    try:
+        products = get_all_products_with_oligo_names()
+        # Convert ObjectIds to strings for JSON serialization
+        products = [_object_id_to_string(product) for product in products]
+        return jsonify({"products": products}), 200
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+
 # Endpoint to update a product by its ID
 # Example query: PUT http://127.0.0.1:5000/v1/products/<product_id>
 @bp.route(f'/{API_VERSION}/products/<string:product_id>', methods=['PUT'])

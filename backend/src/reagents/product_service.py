@@ -1,6 +1,8 @@
 from bson import ObjectId
 from backend.src.database.mongodb.mongodb_connector import MongoDBConnector
 from backend.src.helper.collection_type import CollectionType
+from bson.errors import InvalidId
+
 
 connector = MongoDBConnector(force_ssl=True)
 
@@ -14,15 +16,24 @@ def create_product(product_data):
     :param product_data: Dictionary containing product details.
     :return: The created product document.
     """
-    # Ensure versions is initialized as an empty list if not provided
-    product_data.setdefault("versions", [])
-    product_data.setdefault("active_version_index", 0)
+    oligos = product_data.get("oligos", [])
+    if oligos:
+        # Initialize versions with the provided oligos
+        product_data["versions"] = [oligos]
+        product_data["active_version_index"] = 0
+        # Remove 'oligos' from product_data to prevent duplication
+        product_data.pop("oligos", None)
+    else:
+        # Ensure versions is initialized as an empty list if not provided
+        product_data.setdefault("versions", [])
+        product_data.setdefault("active_version_index", 0)
 
     # Insert the document into the database
     result = connector.upload_document(product_data, CollectionType.REAGENTS)
 
     # Fetch and return the inserted document
     return connector.fetch_document({"_id": result.inserted_id}, CollectionType.REAGENTS)
+
 
 
 def get_product(product_id):
@@ -39,6 +50,33 @@ def get_all_products():
        :return: All products
        """
     return list(connector.fetch_all_documents(CollectionType.REAGENTS))
+
+def get_all_products_with_oligo_names():
+    """
+    Retrieves all products and replaces oligo IDs with their names.
+    """
+    products = list(connector.fetch_all_documents(CollectionType.REAGENTS))
+    oligo_ids = set()
+
+    # Collect all oligo IDs from product versions
+    for product in products:
+        for version in product.get("versions", []):
+            oligo_ids.update(version)
+
+    # Fetch oligo documents and create a mapping of ID to name
+    oligos = connector.fetch_all_documents_by_filter(
+        {"_id": {"$in": [ObjectId(oligo_id) for oligo_id in oligo_ids if ObjectId.is_valid(oligo_id)]}},
+        CollectionType.OLIGOS
+    )
+    oligo_map = {str(oligo["_id"]): oligo["name"] for oligo in oligos}
+
+    # Replace oligo IDs with names in product versions
+    for product in products:
+        for i, version in enumerate(product.get("versions", [])):
+            product["versions"][i] = [oligo_map.get(oligo_id, oligo_id) for oligo_id in version]
+
+    return products
+
 
 def update_product(product_id, product_data):
     """
