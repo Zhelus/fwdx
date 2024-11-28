@@ -6,7 +6,7 @@ Date: 11/21/24
 <script setup>
 import { ref } from 'vue';
 import FormTextInputItem from '@/components/report_form/FormTextInputItem.vue';
-import FormCheckboxItem from '@/components/report_form/FormCheckboxItem.vue';
+import FormCheckboxItem from './OligoFormCheckBoxItem.vue'; // Import the custom checkbox component
 import FormActionButton from '@/components/report_form/FormActionButton.vue';
 import { useRouter } from 'vue-router';
 import oligosApi from '@/services/oligosApiHelper';
@@ -101,8 +101,7 @@ function triggerFileInput() {
 
     <!-- DNA Strand Positive Checkbox -->
     <FormCheckboxItem 
-      :options-list="[{ name: 'DNA Strand Positive?', value: true }]" 
-      v-model="dnaStrandPositive" 
+    v-model="dnaStrandPositive"  
     />
     <FormTextInputItem v-model="confirmationText" section-header="Type 'YES' to confirm the above information is correct" />
 

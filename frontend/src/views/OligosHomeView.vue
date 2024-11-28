@@ -59,7 +59,7 @@ const filters = ref({
 <template>
   <div class="oligos-wrapper">
     <div class="header-container">
-      <h2 class="page-title">Oligos</h2>
+      <h2 class="page-title">Active Oligos</h2>
       <button class="add-oligo-button" @click="actionClicked('/oligos/add', null)">Add Oligo</button>
     </div>
 

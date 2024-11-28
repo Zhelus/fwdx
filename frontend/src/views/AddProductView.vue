@@ -8,7 +8,7 @@ Date: 11/12/24
 </script>
 <template>
 <div class="report-page-wrapper">
-    <AddProductForm />
+    <AddProductForm form-title="Add a New Product" :show-frequency="false" :is-edit-report="true" />
 </div>
 </template>
 <style scoped>

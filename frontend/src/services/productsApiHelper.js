@@ -30,10 +30,23 @@ export default {
                 });
         });
     },
-    saveNewProduct(product) {
+    getAllProductsWithOligoNames() {
         return new Promise(function (resolve, reject) {
-            const productJson = product.getJson();
-            api.createProduct(productJson)
+            api.getAllProductsByOligoNames()
+                .then(response => {
+                    console.log("Successful API call: Fetch all products with oligo names.");
+                    const productsData = response.data['products'];
+                    resolve(productsData);
+                })
+                .catch(error => {
+                    console.error("API call failed:", error);
+                    reject(Error("Error fetching all products with oligo names."));
+                });
+        });
+    },
+    saveNewProduct(productData) {
+        return new Promise(function (resolve, reject) {
+            api.createProduct(productData)
                 .then(response => {
                     console.log("API call was successful: Save new product.");
                     resolve(response.data);
