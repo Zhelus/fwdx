@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from .product_service import (
     create_product, get_product, update_product, delete_product,
-    add_product_version, set_active_version, get_all_products,get_all_products_with_oligo_names
+    add_product_version, set_active_version, get_all_products,get_products_with_oligo_details
 )
 from ...definitions import API_VERSION
 
@@ -56,20 +56,23 @@ def api_get_all_products():
         product = _object_id_to_string(product)
     return jsonify({'products': products}), 200
 
-
-@bp.route(f'/{API_VERSION}/products_by_oligo_names', methods=['GET'])
-def api_get_all_products_with_oligo_names():
+@bp.route('/v1/products_with_oligo_details', methods=['GET'])
+def api_get_products_with_oligo_details():
     """
-    Fetch all products with oligo names instead of IDs.
+    API endpoint to retrieve all products with detailed oligo information in their versions.
     """
     try:
-        products = get_all_products_with_oligo_names()
-        # Convert ObjectIds to strings for JSON serialization
+        # Call the service function to fetch products with oligo details
+        products = get_products_with_oligo_details()
+
+        # Convert '_id' fields in all products to string
         products = [_object_id_to_string(product) for product in products]
+
+        # Return the products as a JSON response
         return jsonify({"products": products}), 200
     except Exception as e:
+        # Handle any errors and return an appropriate message
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-
 
 # Endpoint to update a product by its ID
 # Example query: PUT http://127.0.0.1:5000/v1/products/<product_id>

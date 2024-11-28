@@ -51,10 +51,12 @@ def get_all_products():
        """
     return list(connector.fetch_all_documents(CollectionType.REAGENTS))
 
-def get_all_products_with_oligo_names():
+def get_products_with_oligo_details():
     """
-    Retrieves all products and replaces oligo IDs with their names.
+    Retrieves all products and replaces oligo IDs in their versions with detailed oligo information.
+    :return: List of products with parsed oligo details.
     """
+    # Fetch all products from the REAGENTS collection
     products = list(connector.fetch_all_documents(CollectionType.REAGENTS))
     oligo_ids = set()
 
@@ -63,17 +65,27 @@ def get_all_products_with_oligo_names():
         for version in product.get("versions", []):
             oligo_ids.update(version)
 
-    # Fetch oligo documents and create a mapping of ID to name
+    # Fetch oligo documents based on collected IDs
     oligos = connector.fetch_all_documents_by_filter(
         {"_id": {"$in": [ObjectId(oligo_id) for oligo_id in oligo_ids if ObjectId.is_valid(oligo_id)]}},
         CollectionType.OLIGOS
     )
-    oligo_map = {str(oligo["_id"]): oligo["name"] for oligo in oligos}
 
-    # Replace oligo IDs with names in product versions
+    # Create a mapping of oligo ID to oligo details
+    oligo_map = {
+        str(oligo["_id"]): {
+            "name": oligo.get("name"),
+            "sequence": oligo.get("sequence"),
+            "archived": oligo.get("archived", False),
+            "dna_strand_positive": oligo.get("dna_strand_positive", False),
+        }
+        for oligo in oligos
+    }
+
+    # Replace oligo IDs in product versions with full oligo details
     for product in products:
         for i, version in enumerate(product.get("versions", [])):
-            product["versions"][i] = [oligo_map.get(oligo_id, oligo_id) for oligo_id in version]
+            product["versions"][i] = [oligo_map.get(oligo_id, {"_id": oligo_id}) for oligo_id in version]
 
     return products
 
