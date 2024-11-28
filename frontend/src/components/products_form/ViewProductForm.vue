@@ -63,13 +63,14 @@ onMounted(() => {
 
     <!-- Oligo Details -->
     <div v-for="(oligo, index) in oligos" :key="index" class="oligo-item">
-      <FormTextInputItem
-        :model-value="oligo.sequence"
-        :section-header="oligo.name"
-        placeholder="Oligo Sequence"
-        readonly
-      />
-    </div>
+        <FormTextInputItem
+          :model-value="oligo.sequence"
+          :section-header="oligo.archived ? `${oligo.name} (Archived)` : oligo.name"
+          placeholder="Oligo Sequence"
+          readonly
+          :style="{ color: oligo.archived ? 'red' : 'inherit' }"
+        />
+      </div>
 
     <!-- Return Button -->
     <div class="action-buttons">
