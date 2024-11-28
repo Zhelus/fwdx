@@ -1,7 +1,7 @@
 <!-- 
-Page view for adding a new product
+Page view for viewing a single oligo
 Last edited by: Michael Nguyen
-Date: 11/12/24
+Date: 11/28/24
 -->
 <script setup>
     import ViewOligoForm from '@/components/oligos_form/ViewOligoForm.vue';

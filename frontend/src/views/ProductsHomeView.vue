@@ -13,12 +13,8 @@ const router = useRouter();
 const products = ref([]);
 const loading = ref(false);
 
-function actionClicked(path, productName) {
-  if (path && productName) {
-    router.push({ path, query: { productName } });
-  } else {
-    router.push(path);
-  }
+function actionClicked(path) {
+  router.push(path);
 }
 
 // Fetch products from the API
@@ -28,16 +24,16 @@ async function fetchProducts() {
     const fetchedProducts = await productsApi.getAllProductsWithOligoNames();
     // Transform the API response to match the table format
     products.value = fetchedProducts.map((product) => {
-  const activeVersionIndex = product.active_version_index;
-  const activeVersionOligos = product.versions[activeVersionIndex] || [];
-  return {
-    id: product._id,
-    productName: product.name,
-    activeVersion: activeVersionIndex + 1, // Convert to 1-based index
-    versions: product.versions.length,
-    oligoNames: activeVersionOligos, // Pass full oligo details, including 'archived'
-  };
-});
+      const activeVersionIndex = product.active_version_index;
+      const activeVersionOligos = product.versions[activeVersionIndex] || [];
+      return {
+        id: product._id,
+        productName: product.name,
+        activeVersion: activeVersionIndex + 1, // Convert to 1-based index
+        versions: product.versions.length,
+        oligoNames: activeVersionOligos, // Pass full oligo details, including 'archived'
+      };
+    });
 
   } catch (error) {
     console.error('Failed to fetch products:', error);
@@ -71,19 +67,10 @@ const filters = ref({
     <!-- Show loading indicator -->
     <div v-if="loading" class="loading-indicator">Loading...</div>
 
-    <DataTable
-      v-else
-      :value="products"
-      :rows="10"
-      :rowsPerPageOptions="[5, 10, 15]"
-      paginator
-      v-model:filters="filters"
-      filter-display="menu"
-      :globalFilterFields="['productName', 'activeVersion', 'versions', 'numberOfOligos']"
-      removableSort
-      currentPageReportTemplate="{currentPage} / {totalPages}"
-      paginatorTemplate="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-    >
+    <DataTable v-else :value="products" :rows="10" :rowsPerPageOptions="[5, 10, 15]" paginator v-model:filters="filters"
+      filter-display="menu" :globalFilterFields="['productName', 'activeVersion', 'versions', 'numberOfOligos']"
+      removableSort currentPageReportTemplate="{currentPage} / {totalPages}"
+      paginatorTemplate="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink">
       <!-- Column Definitions -->
       <Column field="productName" header="Product Name" sortable>
         <template #filter="{ filterModel }">
@@ -110,11 +97,8 @@ const filters = ref({
         </template>
         <template #body="slotProps">
           <ul>
-            <li
-              v-for="(oligo, index) in slotProps.data.oligoNames"
-              :key="index"
-              :style="{ color: oligo.archived ? 'red' : 'inherit' }"
-            >
+            <li v-for="(oligo, index) in slotProps.data.oligoNames" :key="index"
+              :style="{ color: oligo.archived ? 'red' : 'inherit' }">
               {{ oligo.name }}
             </li>
           </ul>
@@ -124,8 +108,12 @@ const filters = ref({
       <Column header="Actions">
         <template #body="slotProps">
           <div class="action-buttons">
-            <button class="action-button" @click="actionClicked('/products/view', slotProps.data.productName)">View</button>
-            <button class="action-button edit" @click="actionClicked('/products/edit', slotProps.data.productName)">Edit</button>
+            <button class="action-button" @click="actionClicked(`/reagents/view/${slotProps.data.id}`)">
+              View
+            </button>
+            <button class="action-button edit" @click="actionClicked('/products/edit', slotProps.data.productName)">
+              Edit
+            </button>
           </div>
         </template>
       </Column>

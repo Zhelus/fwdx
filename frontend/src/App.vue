@@ -10,8 +10,7 @@ import NavigationBar from './components/navigation_bar/NavigationBar.vue'
 
 <template>
   <!-- Navigation bar component-->
-  <NavigationBar/>
-  <!-- 
+  <NavigationBar  />  <!-- 
   The rest of the page is displayed here 
       - The '.vue' files for each page are contained in the '/src/views' folder 
       - Components used for each page are contained in the '/src/components folder

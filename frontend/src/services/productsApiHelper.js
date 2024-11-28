@@ -19,7 +19,7 @@ export default {
                     reject(Error(`Error fetching product with ID: ${productId}`));
                 });
         });
-    },
+    },    
     getAllProducts() {
         return new Promise(function (resolve, reject) {
             api.getAllProducts()
