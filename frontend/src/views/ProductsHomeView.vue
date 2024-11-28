@@ -28,17 +28,17 @@ async function fetchProducts() {
     const fetchedProducts = await productsApi.getAllProductsWithOligoNames();
     // Transform the API response to match the table format
     products.value = fetchedProducts.map((product) => {
-      const activeVersionIndex = product.active_version_index;
-      const activeVersionOligos = product.versions[activeVersionIndex] || [];
-      return {
-        id: product._id,
-        productName: product.name,
-        activeVersion: activeVersionIndex + 1, // Convert to 1-based index
-        versions: product.versions.length,
-        oligoNames: activeVersionOligos, // Now contains oligo names
-        oligoNamesString: activeVersionOligos.join(', ') // For filtering purposes
-      };
-    });
+  const activeVersionIndex = product.active_version_index;
+  const activeVersionOligos = product.versions[activeVersionIndex] || [];
+  return {
+    id: product._id,
+    productName: product.name,
+    activeVersion: activeVersionIndex + 1, // Convert to 1-based index
+    versions: product.versions.length,
+    oligoNames: activeVersionOligos, // Pass full oligo details, including 'archived'
+  };
+});
+
   } catch (error) {
     console.error('Failed to fetch products:', error);
   } finally {
@@ -110,7 +110,13 @@ const filters = ref({
         </template>
         <template #body="slotProps">
           <ul>
-            <li v-for="(oligoName, index) in slotProps.data.oligoNames" :key="index">{{ oligoName }}</li>
+            <li
+              v-for="(oligo, index) in slotProps.data.oligoNames"
+              :key="index"
+              :style="{ color: oligo.archived ? 'red' : 'inherit' }"
+            >
+              {{ oligo.name }}
+            </li>
           </ul>
         </template>
       </Column>
