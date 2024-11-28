@@ -6,10 +6,7 @@ import { useRouter } from 'vue-router';
 import FormActionButton from '@/components/report_form/FormActionButton.vue';
 import FormCheckboxItem from './ProductFormCheckBoxItem.vue';
 import FormTextInputItem from '@/components/report_form/FormTextInputItem.vue';
-import { useToast } from 'vue-toast-notification'; // Import the toast notification
-import 'vue-toast-notification/dist/theme-bootstrap.css';
 const router = useRouter();
-const $toast = useToast(); // Initialize the toast
 
 // Bindings for the form
 const productName = ref('');
@@ -46,18 +43,9 @@ async function handleSubmit() {
     };
     const response = await productsApi.saveNewProduct(productData);
     console.log('Product created successfully:', response);
-     // Show success toast
-     $toast.success('Product created successfully!', {
-      position: 'top-right',
-      duration: 3000,
-    });
     router.push('/reagents'); // Redirect to the products list
   } catch (error) {
     console.error('Failed to create product:', error);
-    $toast.error('Failed to create product. Please try again.', {
-      position: 'top-right',
-      duration: 3000,
-    });
   }
 }
 

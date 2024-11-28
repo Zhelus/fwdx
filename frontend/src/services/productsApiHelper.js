@@ -1,4 +1,8 @@
 import api from "@/services/apiClient.js";
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+const $toast = useToast(); // Initialize toast\
+
 
 export default {
     getProductById(productId) {
@@ -49,10 +53,18 @@ export default {
             api.createProduct(productData)
                 .then(response => {
                     console.log("API call was successful: Save new product.");
+                    $toast.success('Product created successfully!', {
+                        position: 'top-right',
+                        duration: 3000,
+                      });
                     resolve(response.data);
                 })
                 .catch(error => {
                     console.error("API call failed:", error);
+                    $toast.error('Failed to create product. Please try again.', {
+                        position: 'top-right',
+                        duration: 3000,
+                      });
                     reject(Error("Error creating new product."));
                 });
         });

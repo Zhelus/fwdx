@@ -81,4 +81,27 @@ function onCheckboxChange(event) {
   color: var(--dark-gray-text);
   font-size: var(--body-text-size);
 }
+
+.form-checkbox:disabled:checked {
+  appearance: none;
+  background-color: var(--fwdx-yellow);
+  border: 1px solid var(--fwdx-yellow);
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  position: relative;
+  cursor: not-allowed;
+}
+
+.form-checkbox:disabled:checked::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 7px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
 </style>
