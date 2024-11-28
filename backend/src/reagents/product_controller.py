@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from .product_service import (
-    create_product, get_product, update_product, delete_product,
-    add_product_version, set_active_version, get_all_products,get_products_with_oligo_details
+    create_product, update_product, delete_product,
+    add_product_version, set_active_version, get_all_products,get_products_with_oligo_details,get_product_with_oligo_details
 )
 from ...definitions import API_VERSION
 
@@ -36,9 +36,9 @@ def api_get_product(product_id):
     Retrieves a product by its ID.
     """
     try:
-        document = get_product(product_id)
+        document = get_product_with_oligo_details(product_id)
         if document:
-            document =_object_id_to_string(document)
+            document = _object_id_to_string(document)
             return jsonify({"message": "Product retrieved successfully", "product": document}), 200
         else:
             return jsonify({"error": "Product not found"}), 404
