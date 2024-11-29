@@ -3,7 +3,8 @@ from flask import Blueprint, request, jsonify
 from backend.definitions import API_VERSION
 from .pathogen_service import create_pathogen_document, update_pathogen_document, \
     delete_pathogen_document, get_pathogen_document, get_all_pathogens, \
-    get_unique_taxonomic_ids, _object_id_to_string, get_pathogen_by_taxonomic_id
+    get_unique_taxonomic_ids, _object_id_to_string, get_pathogen_by_taxonomic_id, \
+    process_pathogen_data
 
 """
 This file defines the API endpoints for pathogen use cases.
@@ -61,11 +62,12 @@ def api_get_all_pathogens():
         pathogens_without_geneSeq = [
         {key: value for key, value in pathogen.items() if key != "genomic_sequence"}
         for pathogen in pathogens ]
-        pathogenTable = pathogens_without_geneSeq
+        pathogenTable = process_pathogen_data(pathogens_without_geneSeq)
+        #pathogenTable = pathogens_without_geneSeq
         #uniqueTaxIDs = get_unique_taxonomic_ids(pathogens_without_geneSeq)
         #pathogenTable = uniqueTaxIDs
     # Print the modified list
-    #    print(f"Returning pathogens: {pathogens_without_geneSeq}")
+        #print(f"Returning pathogens: {pathogenTable}")
         return jsonify({"pathogens": pathogenTable}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

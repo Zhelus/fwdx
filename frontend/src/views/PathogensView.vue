@@ -16,7 +16,7 @@
             paginator
             :filters="filters"
             filter-display="menu"
-            :globalFilterFields="['taxonomicID', 'commonName', 'collectionDate']"
+            :globalFilterFields="['taxonomicID', 'commonName', 'countTotal']"
             removableSort
         >
         <!-- Column Definitions -->
@@ -32,9 +32,15 @@
             </template>
         </Column>
 
-        <Column field="collectionDate" header="Collection Date" sortable>
+        <Column field="countTotal" header="Cached Sequences" sortable>
             <template #filter="{ filterModel }">
-                <InputText v-model="filterModel.value" placeholder="YYYY-MM-DD" />
+                <InputText v-model="filterModel.value" placeholder="NA" />
+            </template>
+        </Column>
+
+        <Column field="variants" header="Variants" sortable>
+            <template #filter="{ filterModel }">
+                <InputText v-model="filterModel.value" placeholder="NA" />
             </template>
         </Column>
 
@@ -75,11 +81,13 @@ async function fetchPathogens() {
     loading.value = true;
     try {
         const fetchedPathogens = await pathogensApi.getAllPathogens();
+        
         if (Array.isArray(fetchedPathogens.pathogens)) {
             pathogens.value = fetchedPathogens.pathogens.map((pathogen) => ({
                 taxonomicID: pathogen.taxonomicID,
                 commonName: pathogen.common_name,
-                collectionDate: pathogen.collection_date,
+                countTotal: pathogen.count,
+//                variants: pathogen.variant_count 
             }));
         } else {
             console.error("Unexpected API response format:", fetchedPathogens);
@@ -91,7 +99,7 @@ async function fetchPathogens() {
         pathogens.value = fetchedPathogens.map((pathogen) => ({
             taxonomicID: pathogen.taxonomicID,
             commonName: pathogen.common_name,
-            collectionDate: pathogen.collection_date,
+            countTotal: pathogen.count,
         }));
         console.log("Transformed Pathogens for Table:", pathogens.value);
         */
@@ -121,7 +129,8 @@ const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     taxonomicID: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
     commonName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-    collectionDate: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+    countTotal: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+    variants: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
 });
 </script>
 

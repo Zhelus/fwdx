@@ -90,6 +90,28 @@ def get_unique_taxonomic_ids(pathogens):
             unique_pathogens.append(pathogen)
     return unique_pathogens
 
+def process_pathogen_data(pathogens):
+
+    taxonomic_counts = {}
+    
+    # Loop through pathogens to count taxonomicID occurrences and store common_name
+    for pathogen in pathogens:
+        taxonomicID = pathogen.get('taxonomicID')
+        common_name = pathogen.get('common_name', 'Unknown')
+
+        if taxonomicID in taxonomic_counts:
+            taxonomic_counts[taxonomicID]['count'] += 1
+        else:
+            taxonomic_counts[taxonomicID] = {
+                'taxonomicID': taxonomicID,
+                'common_name': common_name,
+                'count': 1
+            }
+    
+    # Convert the dictionary to a list
+    unique_taxonomic_data = list(taxonomic_counts.values())
+    return unique_taxonomic_data
+
 def get_pathogen_by_taxonomic_id(taxonomic_id):
     connector = MongoDBConnector()  # Initialize database connection (if not global)
     pathogen = connector.fetch_one_document('pathogens', {'taxonomicID': int(taxonomic_id)})

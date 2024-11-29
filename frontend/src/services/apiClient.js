@@ -32,6 +32,7 @@ export default {
     getAllPathogens() {
         return apiClient.get('/v1/pathogens/all');
     },
+    
     createPathogen(accessionID) {
         return apiClient.post('/v1/pathogens', accessionID)
     },
