@@ -70,14 +70,6 @@ const router = useRouter();
 const pathogens = ref([]);
 const loading = ref(false);
 
-function actionClicked(path, pathogenId) {
-    if (path && pathogenId) {
-        router.push({ path, query: { id: pathogenId } }); // Pass the pathogen ID as a query parameter
-    } else {
-        router.push(path);
-    }
-}
-
 // Fetch pathogens from the API
 async function fetchPathogens() {
     loading.value = true;
@@ -109,6 +101,13 @@ async function fetchPathogens() {
         console.error('Failed to fetch pathogens:', error);
     } finally {
         loading.value = false;
+    }
+}
+function actionClicked(path, taxonomicID) {
+    if (path && taxonomicID) {
+        router.push({ path, query: { id: taxonomicID } });
+    } else {
+        console.error("Invalid path or taxonomicID");
     }
 }
 

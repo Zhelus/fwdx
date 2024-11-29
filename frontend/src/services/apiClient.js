@@ -23,6 +23,9 @@ export default {
     getPathogenByID(accessionID) {
         return apiClient.get(`/v1/pathogens/${accessionID}`);
     },
+    getPathogenByTaxID(taxID) {
+        return apiClient.get(`/v1/pathogens/${taxID}`);
+    },
     getPathogens() {
         return apiClient.get('/v1/pathogens');
     },

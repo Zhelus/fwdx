@@ -65,6 +65,19 @@ export default {
                 });
         });
     },
+
+
+    async getPathogenByTaxonomicID(taxonomicID) {
+        try {
+            const response = await api.get(`/v1/pathogens/${taxonomicID}`);
+            console.log("API Response for taxonomicID:", response.data);
+            return response.data.pathogen; // Adjust based on your backend response
+        } catch (error) {
+            console.error(`Error fetching pathogen by taxonomicID:`, error);
+            throw error;
+        }
+    },
+    
     
     getAllPathogens() {
         return new Promise((resolve, reject) => {
@@ -80,6 +93,8 @@ export default {
                 });
         });
     },
+
+
 
     createPathogen(pathogenID) {
         return new Promise((resolve, reject) => {

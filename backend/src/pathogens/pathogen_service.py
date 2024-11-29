@@ -90,6 +90,14 @@ def get_unique_taxonomic_ids(pathogens):
             unique_pathogens.append(pathogen)
     return unique_pathogens
 
+def get_pathogen_by_taxonomic_id(taxonomic_id):
+    connector = MongoDBConnector()  # Initialize database connection (if not global)
+    pathogen = connector.fetch_one_document('pathogens', {'taxonomicID': int(taxonomic_id)})
+    
+    if pathogen:
+        # Convert MongoDB ObjectId to string for JSON serialization
+        pathogen = _object_id_to_string(pathogen)
+    return pathogen
 
 def _object_id_to_string(pathogen):
         pathogen['_id'] = str(pathogen['_id'])
