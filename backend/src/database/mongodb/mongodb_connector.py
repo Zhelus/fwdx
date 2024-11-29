@@ -95,9 +95,6 @@ class MongoDBConnector:
         print(f"Created New Collection:\n{collection}\n{collection.name}")
 
     def fetch_all_documents_by_filter(self, filter: dict, collection: CollectionType):
-        """
-        Fetch all documents matching the filter.
-        """
         collection = self.database[collection.value]
         return list(collection.find(filter))
 
