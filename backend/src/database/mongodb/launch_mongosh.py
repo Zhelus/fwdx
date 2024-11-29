@@ -1,5 +1,5 @@
 import subprocess
-from backend.src.database.mongodb.mongodb_connector import MongoDBConnector
+from .mongodb_connector import MongoDBConnector
 
 """
 Launches a mongosh session using the connection URI from MongoDBConnector.

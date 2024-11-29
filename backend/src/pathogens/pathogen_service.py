@@ -81,4 +81,17 @@ def get_all_pathogens():
     # Convert MongoDB cursor to a list
     return list(cursor)
 
+def get_unique_taxonomic_ids(pathogens):
+    seen = set()
+    unique_pathogens = []
+    for pathogen in pathogens:
+        if pathogen['taxonomicID'] not in seen:
+            seen.add(pathogen['taxonomicID'])
+            unique_pathogens.append(pathogen)
+    return unique_pathogens
+
+
+def _object_id_to_string(pathogen):
+        pathogen['_id'] = str(pathogen['_id'])
+        return pathogen
 

@@ -1,126 +1,153 @@
 <template>
     <div class="pathogens-wrapper">
-      <div class="header-container">
-        <h2 class="page-title">Pathogens</h2>
-        <button class="add-pathogen-button" @click="actionClicked('/pathogens/add', null)">Add Pathogen</button>
-      </div>
-  
-      <!-- Show loading indicator -->
-      <div v-if="loading" class="loading-indicator">Loading...</div>
-  
-      <DataTable
-          v-else
-          :value="pathogens"
-          :rows="10"
-          :rowsPerPageOptions="[5, 10, 15]"
-          paginator
-          :filters="filters"
-          filter-display="menu"
-          :globalFilterFields="['taxonomicID', 'commonName', 'collectionDate']"
-          removableSort
-      >
-          <!-- Columns -->
-          <Column field="taxonomicID" header="Taxonomic ID" sortable />
-          <Column field="commonName" header="Common Name" sortable />
-          <Column field="collectionDate" header="Collection Date" sortable />
-      </DataTable>
+        <div class="header-container">
+            <h2 class="page-title">Pathogens</h2>
+            <button class="add-pathogen-button" @click="actionClicked('/pathogens/add', null)">Add Pathogen</button>
+        </div>
+
+        <!-- Show loading indicator -->
+        <div v-if="loading" class="loading-indicator">Loading...</div>
+
+        <DataTable
+            v-else
+            :value="pathogens"
+            :rows="10"
+            :rowsPerPageOptions="[5, 10, 15]"
+            paginator
+            :filters="filters"
+            filter-display="menu"
+            :globalFilterFields="['taxonomicID', 'commonName', 'collectionDate']"
+            removableSort
+        >
+        <!-- Column Definitions -->
+        <Column field="taxonomicID" header="Taxonomic ID" sortable>
+            <template #filter="{ filterModel }">
+                <InputText v-model="filterModel.value" placeholder="Search by Taxonomic ID" />
+            </template>
+        </Column>
+
+        <Column field="commonName" header="Common Name" sortable>
+            <template #filter="{ filterModel }">
+                <InputText v-model="filterModel.value" placeholder="Search by Common Name" />
+            </template>
+        </Column>
+
+        <Column field="collectionDate" header="Collection Date" sortable>
+            <template #filter="{ filterModel }">
+                <InputText v-model="filterModel.value" placeholder="YYYY-MM-DD" />
+            </template>
+        </Column>
+
+        <!-- Actions Column -->
+        <Column header="Actions">
+            <template #body="slotProps">
+                <div class="action-buttons">
+                    <button
+                        class="action-button"
+                        @click="actionClicked('/pathogens/view', slotProps.data.taxonomicID)"
+                    >
+                        View
+                    </button>
+                </div>
+            </template>
+        </Column>
+        </DataTable>
     </div>
-  </template>
-  
-  <script setup>
-  import { useRouter } from 'vue-router';
-  import DataTable from 'primevue/datatable';
-  import Column from 'primevue/column';
-  import InputText from 'primevue/inputtext';
-  import { ref, onMounted } from 'vue';
-  import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
-  import pathogensApi from '@/services/pathogensApiHelper'; // Updated service import
-  
-  const router = useRouter();
-  
-  // State for pathogens and loading indicator
-  const pathogens = ref([]);
-  const loading = ref(false);
-  
-  function actionClicked(path, pathogenId) {
+</template>
+
+<script setup>
+import { useRouter } from 'vue-router';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import InputText from 'primevue/inputtext';
+import { ref, onMounted } from 'vue';
+import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
+import pathogensApi from '@/services/pathogensApiHelper'; // Updated service import
+
+const router = useRouter();
+
+// State for pathogens and loading indicator
+const pathogens = ref([]);
+const loading = ref(false);
+
+function actionClicked(path, pathogenId) {
     if (path && pathogenId) {
-      router.push({ path, query: { id: pathogenId } }); // Pass the pathogen ID as a query parameter
+        router.push({ path, query: { id: pathogenId } }); // Pass the pathogen ID as a query parameter
     } else {
-      router.push(path);
+        router.push(path);
     }
-  }
-  
-  // Fetch pathogens from the API
-  async function fetchPathogens() {
+}
+
+// Fetch pathogens from the API
+async function fetchPathogens() {
     loading.value = true;
     try {
-      const fetchedPathogens = await pathogensApi.getAllPathogens();
-      if (Array.isArray(fetchedPathogens.pathogens)) {
-        pathogens.value = fetchedPathogens.pathogens.map((pathogen) => ({
-        taxonomicID: pathogen.taxonomicID,
-        commonName: pathogen.common_name,
-        collectionDate: pathogen.collection_date,
+        const fetchedPathogens = await pathogensApi.getAllPathogens();
+        if (Array.isArray(fetchedPathogens.pathogens)) {
+            pathogens.value = fetchedPathogens.pathogens.map((pathogen) => ({
+                taxonomicID: pathogen.taxonomicID,
+                commonName: pathogen.common_name,
+                collectionDate: pathogen.collection_date,
+            }));
+        } else {
+            console.error("Unexpected API response format:", fetchedPathogens);
+        }
+
+        /*
+        console.log("Transformed Pathogens for Table:", fetchedPathogens);
+        // Transform the API response to match the table format
+        pathogens.value = fetchedPathogens.map((pathogen) => ({
+            taxonomicID: pathogen.taxonomicID,
+            commonName: pathogen.common_name,
+            collectionDate: pathogen.collection_date,
         }));
-      } else {
-        console.error("Unexpected API response format:", fetchedPathogens);
-      }
+        console.log("Transformed Pathogens for Table:", pathogens.value);
+        */
 
-
-      /*
-      console.log("Transformed Pathogens for Table:", fetchedPathogens);
-      // Transform the API response to match the table format
-      pathogens.value = fetchedPathogens.map((pathogen) => ({
-        taxonomicID: pathogen.taxonomicID,
-        commonName: pathogen.common_name,
-        collectionDate: pathogen.collection_date,
-      }));
-      console.log("Transformed Pathogens for Table:", pathogens.value);
-      */
-      
-      totalRecords.value = fetchedPathogens.length;
+        totalRecords.value = fetchedPathogens.length;
     } catch (error) {
-      console.error('Failed to fetch pathogens:', error);
+        console.error('Failed to fetch pathogens:', error);
     } finally {
-      loading.value = false;
+        loading.value = false;
     }
-  }
-  
-  // Fetch data on component mount
-  onMounted(() => {
+}
+
+// Fetch data on component mount
+onMounted(() => {
     fetchPathogens();
-  });
-  
-  // Filters for the table
-  const filters = ref({
+});
+
+// Filters for the table
+const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     taxonomicID: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
     commonName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
     collectionDate: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-  });
-  </script>
-  
-  <style scoped>
-  .pathogens-wrapper {
+});
+</script>
+
+<style scoped>
+.pathogens-wrapper {
     padding: 2rem;
     background-color: #f8f9fa;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  .header-container {
+}
+
+.header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
-  }
-  
-  .page-title {
+}
+
+.page-title {
     font-size: 24px;
     font-weight: bold;
     color: var(--fwdx-blue);
-  }
-  
-  .add-pathogen-button {
+}
+
+.add-pathogen-button {
     background-color: #FFC107;
     color: #000;
     border: none;
@@ -129,25 +156,25 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
-  }
-  
-  .add-pathogen-button:hover {
+}
+
+.add-pathogen-button:hover {
     background-color: #e0a800;
-  }
-  
-  .loading-indicator {
+}
+
+.loading-indicator {
     text-align: center;
     font-size: 18px;
     font-weight: bold;
     color: #007bff;
-  }
-  
-  .action-buttons {
+}
+
+.action-buttons {
     display: flex;
     gap: 10px;
-  }
-  
-  .action-button {
+}
+
+.action-button {
     background-color: #FFC107;
     color: #000;
     border: none;
@@ -157,18 +184,18 @@
     padding: 8px 20px;
     transition: background-color 0.3s;
     width: 100px;
-  }
-  
-  .action-button:hover {
+}
+
+.action-button:hover {
     background-color: #e0a800;
-  }
-  
-  .action-button.delete {
+}
+
+.action-button.delete {
     background-color: #dc3545;
     color: #FFF;
-  }
-  
-  .action-button.delete:hover {
+}
+
+.action-button.delete:hover {
     background-color: #a71d2a;
-  }
-  </style>
+}
+</style>
