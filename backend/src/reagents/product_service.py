@@ -125,29 +125,55 @@ def get_products_with_oligo_details():
 def update_product(product_id, product_data):
     """
     Updates an existing product in the database.
-    :param product_id: ID of the product to update.
-    :param product_data: Dictionary with updated product data, including name or versions.
-    :return: The updated product document.
     """
     product_filter = {"_id": ObjectId(product_id)}
     update_operations = {}
+    update_set = {}
+    update_push = {}
+
+    # Fetch the existing product
+    existing_product = connector.fetch_document(product_filter, CollectionType.REAGENTS)
+    if not existing_product:
+        return None
 
     # Update the name if provided
     if "name" in product_data:
-        update_operations["$set"] = {"name": product_data["name"]}
+        update_set["name"] = product_data["name"]
 
-    # Append a new version if provided
+    # Append a new version if oligos are provided
     if "oligos" in product_data:
         new_version = product_data["oligos"]
-        if "$set" not in update_operations:
-            update_operations["$set"] = {}
-        update_operations["$push"] = {"versions": new_version}
 
-    # Perform the update operation
+        # Validate oligo IDs without converting them to ObjectId instances
+        for oligo_id in new_version:
+            if not ObjectId.is_valid(oligo_id):
+                raise ValueError(f"Invalid Oligo ID provided: {oligo_id}")
+
+        # Store the oligo IDs as strings to maintain consistency
+        update_push["versions"] = [str(oligo_id) for oligo_id in new_version]
+
+        # Update the active_version_index
+        new_active_version_index = len(existing_product["versions"])
+        update_set["active_version_index"] = new_active_version_index
+
+    # Build the update operations
+    if update_set:
+        update_operations["$set"] = update_set
+    if update_push:
+        update_operations["$push"] = update_push
+
+    if not update_operations:
+        # Nothing to update
+        return existing_product
+
+    # Perform the update
     result = connector.update_document(product_filter, update_operations, CollectionType.REAGENTS)
 
-    # Fetch and return the updated document
-    return connector.fetch_document(product_filter, CollectionType.REAGENTS)
+    # Fetch and return the updated document with oligo details
+    updated_product = get_product_with_oligo_details(product_id)
+    return updated_product
+
+
 
 
 def delete_product(product_id):

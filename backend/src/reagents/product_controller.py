@@ -83,6 +83,14 @@ def api_update_product(product_id):
     """
     try:
         product_data = request.get_json()
+
+        # Validate input
+        if not isinstance(product_data, dict):
+            return jsonify({"error": "Invalid input data format. Must be a JSON object."}), 400
+
+        if "oligos" in product_data and not all(isinstance(oligo, str) for oligo in product_data["oligos"]):
+            return jsonify({"error": "Invalid oligos field. Must be a list of string IDs."}), 400
+
         document = update_product(product_id, product_data)
         document = _object_id_to_string(document)
         return jsonify({"message": "Product updated successfully", "product": document}), 200
@@ -158,3 +166,19 @@ Helper method to translate a report's MongoDB 'ObjectId' to a string (needed to 
 def _object_id_to_string(product):
         product['_id'] = str(product['_id'])
         return product
+
+def _object_id_to_string_update_product(doc):
+    """
+    Recursively converts all ObjectId fields in a document to strings.
+    """
+    if isinstance(doc, dict):
+        for key, value in doc.items():
+            if isinstance(value, ObjectId):
+                doc[key] = str(value)
+            elif isinstance(value, list):
+                doc[key] = [_object_id_to_string(item) for item in value]
+            elif isinstance(value, dict):
+                doc[key] = _object_id_to_string(value)
+    elif isinstance(doc, list):
+        doc = [_object_id_to_string(item) for item in doc]
+    return doc
