@@ -62,9 +62,9 @@ export default {
         var url = 'v1/users/get_all_users'
         return apiClient.get(url)
     },
-    updateUser(user_id, user_data) {
+    updateUser(user_id, updatedUserData) {
         var url = 'v1/users/update/' + user_id;
-        return apiClient.put(url, user_data)
+        return apiClient.put(url, updatedUserData)
     },
     deleteUser(user_id){
         var url = 'v1/users/delete/' + user_id;
