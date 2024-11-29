@@ -97,7 +97,6 @@ class MongoDBConnector:
         collection = self.database.create_collection(collection.value)
         print(f"Created New Collection:\n{collection}\n{collection.name}")
 
-
     def ping(self):
         try:
             self.client.admin.command("ping")
