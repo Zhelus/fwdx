@@ -4,7 +4,7 @@ from flask import request, jsonify
 from backend.src.database.mongodb.mongodb_connector import MongoDBConnector
 from backend.src.helper.collection_type import CollectionType
 
-connector = MongoDBConnector()
+connector = MongoDBConnector(force_ssl=True)
 
 
 def create_pathogen_document(flask_request: request):
@@ -72,3 +72,13 @@ def delete_pathogen_document(flask_request: request):
         return f"Successfully deleted pathogen with accession_id: {id_arg}", 200
     else:
         return "Failed to delete pathogen document", 400
+    
+
+def get_all_pathogens():
+
+    # Call fetch_all_documents from MongoDBConnector
+    cursor = connector.fetch_all_documents(CollectionType.PATHOGENS)
+    # Convert MongoDB cursor to a list
+    return list(cursor)
+
+

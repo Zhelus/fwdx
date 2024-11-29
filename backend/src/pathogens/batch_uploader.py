@@ -31,15 +31,6 @@ def main():
         print("No accession IDs to process.")
         return
     
-    """
-    processor = DataProcessor()
-    for accession_id in accession_ids:
-        print(f"\nProcessing accession ID: {accession_id}")
-        try:
-            processor.process_and_upload(accession_id, table)
-        except Exception as e:
-            print(f"An error occurred while processing {accession_id}: {e}")
-    """
 
     processor = DataProcessor(source)
     for accession_id in accession_ids:
