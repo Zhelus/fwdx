@@ -134,7 +134,7 @@ const router = createRouter({
       component: AddAccountView
     },
     {
-      path: '/accounts/edit',
+      path: '/accounts/edit/:userId',
       name: 'editAccount',
       component: EditAccountView
     }

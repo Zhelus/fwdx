@@ -9,8 +9,10 @@ import NavigationBar from './components/navigation_bar/NavigationBar.vue'
 </script>
 
 <template>
+  <!-- Conditionally render the navigation bar if the route is not '/' (LoginView) -->
   <!-- Navigation bar component-->
-  <NavigationBar  />  <!-- 
+  <NavigationBar v-if="$route.path !== '/'" />
+  <!-- 
   The rest of the page is displayed here 
       - The '.vue' files for each page are contained in the '/src/views' folder 
       - Components used for each page are contained in the '/src/components folder

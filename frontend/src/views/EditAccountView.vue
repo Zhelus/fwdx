@@ -5,39 +5,24 @@
     </div>
     <form @submit.prevent="updateAccount">
       <div class="form-group">
-        <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" v-model="account.firstName" required>
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" v-model="currentAccount.first_name" required>
       </div>
       <div class="form-group">
-        <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" v-model="account.lastName" required>
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" v-model="currentAccount.last_name" required>
       </div>
       <div class="form-group">
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="tel" id="phoneNumber" v-model="account.phoneNumber" required>
+        <label for="phone_number">Phone Number:</label>
+        <input type="tel" id="phone_number" v-model="currentAccount.phone_number" required>
       </div>
       <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" id="email" v-model="account.email" required>
+        <input type="email" id="email" v-model="currentAccount.email" required>
       </div>
       <div class="form-group">
-        <label for="role">Role:</label>
-        <select id="role" v-model="account.role" required>
-          <option value="Technician">Technician</option>
-          <option value="Scientist">Scientist</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="department">Department:</label>
-        <select id="department" v-model="account.department" required>
-          <option value="Lab">Lab</option>
-          <option value="Administration">Administration</option>
-          <option value="Quality Control">Quality Control</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="accessLevel">Access Level:</label>
-        <select id="accessLevel" v-model="account.accessLevel" required>
+        <label for="access_level">Access Level:</label>
+        <select id="access_level" v-model="currentAccount.access_level" required>
           <option value="Admin">Admin</option>
           <option value="User">User</option>
         </select>
@@ -51,36 +36,71 @@
   </div>
 </template>
 <script setup>
+import usersApiHelper from "@/services/usersApiHelper.js";
 import { ref, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import axios from 'axios';
+import {useRoute, useRouter} from 'vue-router';
 
+const route = useRoute(); //Gives access to the current route
 const router = useRouter();
-const route = useRoute();
-const accountId = route.params.id; // Get the account ID from the route parameter
-const account = ref({});
+const currentAccount = ref({});
 
-const API_URL = 'your-api-url'; // Adjust this to your actual API URL
+onMounted(async () => {
+  const userId = route.params.userId;
+  await fetchUser(userId);
+})
 
 // Fetch account details
-async function fetchAccount() {
-  try {
-    const response = await axios.get(`${API_URL}/accounts/${accountId}`);
-    account.value = response.data; // Assume the API returns the full account object
-  } catch (error) {
-    console.error('Failed to fetch account:', error);
-  }
+async function fetchUser(userId) {
+  usersApiHelper.getUser(userId)
+      .then(user => {
+        console.log("API Response: ", user);
+        if(user.status === 'success'){
+          currentAccount.value = {
+            first_name: user.data.first_name,
+            last_name: user.data.last_name,
+            phone_number: user.data.phone_number,
+            email: user.data.email,
+            access_level: user.data.access_level
+          };
+        } else {
+          alert(user.data.message)
+        }
+      })
+      .catch(error => {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error('Error:', error.response.data);
+          alert(error.response.data.message || 'User accounts retrieval failed, please try again.');
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('Error:', error.request);
+          alert('No response from server. Check your network connection.');
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error('Error:', error.message);
+          alert('Error, please try again.');
+        }
+      })
 }
 
 // Update account details
-async function updateAccount() {
-  try {
-    await axios.put(`${API_URL}/accounts/${accountId}`, account.value);
-    alert('Account updated successfully');
-    router.push('/accounts');
-  } catch (error) {
-    alert('Failed to update account: ' + (error.response ? error.response.data.message : error.message));
-  }
+function updateAccount(userId) {
+  usersApiHelper.updateUser(userId, currentAccount.value)
+      .then(response => {
+        console.log(typeof userId)
+        console.log(response.data)
+        if(response.status === 'success'){
+          router.push("/accounts");
+          console.log("Update is successful in EditAccountView")
+        } else {
+          alert('Failed to update the account: ' + response.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error updating account:', error)
+        alert('Error during updating account: ' + error.message);
+      });
 }
 
 function resetPassword() {
@@ -97,8 +117,6 @@ function resetPassword() {
 function cancelAction() {
   router.push('/accounts'); // Navigate back to accounts view
 }
-
-onMounted(fetchAccount);
 </script>
 <style scoped>
 .edit-account-wrapper {
