@@ -1,79 +1,77 @@
 <template>
     <div class="pathogen-detail-wrapper">
         <div class="header-container">
-            <h2 class="page-title">Pathogen Details</h2>
+            <h2 class="page-title">{{ pageTitle }}</h2>
             <button class="back-button" @click="goBack">Back</button>
         </div>
 
         <!-- Show loading indicator -->
         <div v-if="loading" class="loading-indicator">Loading...</div>
 
-        <!-- Show error message if no data -->
-        <div v-else-if="!pathogenDetails">
-            <p class="error-message">No details found for the selected pathogen.</p>
-        </div>
+        <!-- DataTable to show pathogen details -->
+        <DataTable
+            v-else
+            :value="pathogenDetails"
+            :rows="10"
+            :rowsPerPageOptions="[5, 10, 15]"
+            paginator
+            removableSort
+        >
+            <!-- Column Definitions -->
+            <Column field="accessID" header="Pathogen ID" sortable />
+            <Column field="isolate" header="Isolate" sortable />
+            <Column field="length" header="Completeness" sortable />
+            <Column field="collectionDate" header="Collection Date" sortable />
+            <Column field="locationName" header="Sample Origin" sortable />
 
-        <!-- Show the table -->
-        <div v-else class="detail-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Field</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Common Name</td>
-                        <td>{{ pathogenDetails.common_name }}</td>
-                    </tr>
-                    <tr>
-                        <td>Accession ID</td>
-                        <td>{{ pathogenDetails.accessionID }}</td>
-                    </tr>
-                    <tr>
-                        <td>Collection Date</td>
-                        <td>{{ pathogenDetails.collection_date }}</td>
-                    </tr>
-                    <tr>
-                        <td>Isolate</td>
-                        <td>{{ pathogenDetails.isolate }}</td>
-                    </tr>
-                    <tr>
-                        <td>Geo Location Name</td>
-                        <td>{{ pathogenDetails.geo_loc_name }}</td>
-                    </tr>
-                    <tr>
-                        <td>Sequence Length</td>
-                        <td>{{ pathogenDetails.sequence_length }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+
+        </DataTable>
     </div>
 </template>
 
 <script setup>
+import { useRoute,useRouter } from 'vue-router';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import InputText from 'primevue/inputtext';
 import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import pathogensApi from '@/services/pathogensApiHelper';
-
+import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
+import pathogensApi from '@/services/pathogensApiHelper'; // Updated service import
 // Router and state variables
-const route = useRoute();
+const route = useRoute(); // Use `useRoute` to access query parameters
 const router = useRouter();
 const pathogenDetails = ref(null);
 const loading = ref(true);
+const pageTitle = ref(''); // Correctly declare pageTitle as a reactive variable
 
 // Fetch pathogen details
 async function fetchPathogenDetails(taxonomicID) {
     try {
         console.log("Fetching details for taxonomicID:", taxonomicID);
         const fetchedDetails = await pathogensApi.getPathogenByTaxonomicID(taxonomicID);
-        console.log("Fetched Pathogen Details:", fetchedDetails);
-        pathogenDetails.value = fetchedDetails;
+
+        if (!fetchedDetails || !fetchedDetails.length) {
+            console.error("No details found for taxonomicID:", taxonomicID);
+            pathogenDetails.value = [];
+        } else {
+            console.log("Fetched Pathogen Details:", fetchedDetails);
+
+            // Avoid directly modifying reactive dependencies
+            const transformedDetails = fetchedDetails.map((pathogen) => ({
+                accessID: pathogen.accessionID,
+                //commonName: pathogenDetails.common_name || 'N/A',
+                collectionDate: pathogen.collection_date || 'Unavailable',
+                isolate: pathogen.isolate || 'Unavailable',
+                locationName: pathogen.geo_loc_name || 'Unavailable',
+                length: pathogen.sequence_length || 'Unknown'
+
+            }));
+
+            pathogenDetails.value = Object.freeze(transformedDetails); // Use frozen data
+        }
     } catch (error) {
         console.error("Error fetching pathogen details:", error);
-        pathogenDetails.value = null;
+        pathogenDetails.value = [];
     } finally {
         loading.value = false;
     }
@@ -87,12 +85,14 @@ function goBack() {
 // Fetch data on component mount
 onMounted(() => {
     const taxonomicID = route.query.id; // Get taxonomicID from query params
+    const commonName = route.query.name; // Get common name from query params
     if (taxonomicID) {
         fetchPathogenDetails(taxonomicID);
     } else {
         console.error("Taxonomic ID is missing in the route.");
         loading.value = false;
     }
+    pageTitle.value = commonName || 'Pathogen Details';
 });
 </script>
 

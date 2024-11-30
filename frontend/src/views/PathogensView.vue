@@ -50,7 +50,7 @@
                 <div class="action-buttons">
                     <button
                         class="action-button"
-                        @click="actionClicked('/pathogens/view', slotProps.data.taxonomicID)"
+                        @click="actionClicked('/pathogens/view', slotProps.data.taxonomicID, slotProps.data.commonName)"
                     >
                         View
                     </button>
@@ -104,13 +104,14 @@ async function fetchPathogens() {
         console.log("Transformed Pathogens for Table:", pathogens.value);
         */
 
-        totalRecords.value = fetchedPathogens.length;
+//        totalRecords.value = fetchedPathogens.length;
     } catch (error) {
         console.error('Failed to fetch pathogens:', error);
     } finally {
         loading.value = false;
     }
 }
+/*
 function actionClicked(path, taxonomicID) {
     if (path && taxonomicID) {
         router.push({ path, query: { id: taxonomicID } });
@@ -118,6 +119,15 @@ function actionClicked(path, taxonomicID) {
         console.error("Invalid path or taxonomicID");
     }
 }
+*/    
+function actionClicked(path, taxonomicID, commonName) {
+    if (path && taxonomicID && commonName) {
+        router.push({ path, query: { id: taxonomicID, name: commonName} });
+    } else {
+        console.error("Invalid path, taxonomicID, or commonName");
+    }
+}
+
 
 // Fetch data on component mount
 onMounted(() => {

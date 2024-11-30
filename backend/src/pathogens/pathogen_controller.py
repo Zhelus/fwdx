@@ -4,7 +4,7 @@ from backend.definitions import API_VERSION
 from .pathogen_service import create_pathogen_document, update_pathogen_document, \
     delete_pathogen_document, get_pathogen_document, get_all_pathogens, \
     get_unique_taxonomic_ids, _object_id_to_string, get_pathogen_by_taxonomic_id, \
-    process_pathogen_data
+    process_pathogen_data, remove_genomic_sequence
 
 """
 This file defines the API endpoints for pathogen use cases.
@@ -73,26 +73,22 @@ def api_get_all_pathogens():
         return jsonify({"error": str(e)}), 500
     
 
-@bp.route(f'/{API_VERSION}/pathogens/<taxonomic_id>', methods=['GET'])
+# this is called by pathogenDetailedView.vue
+@bp.route(f'/{API_VERSION}/pathogens/<string:taxonomic_id>', methods=['GET'])
 def api_get_pathogen_by_taxonomic_id(taxonomic_id):
-    """
-    Flask endpoint to get pathogen details by taxonomicID
-    """
     try:
         # Fetch pathogen details from the service layer
         pathogen = get_pathogen_by_taxonomic_id(taxonomic_id)
-
+        
         if not pathogen:
             return jsonify({"error": f"No pathogen found with taxonomicID {taxonomic_id}"}), 404
 
         # Remove unwanted fields (if needed) and return pathogen
-        pathogen = {key: value for key, value in pathogen.items() if key != "genomic_sequence"}
+        # pathogen = {key: value for key, value in pathogen.items() if key != "genomic_sequence"}
 
         return jsonify({"pathogen": pathogen}), 200
     except Exception as e:
+        print(f"DEBUG: Error in API endpoint: {e}")
         return jsonify({"error": str(e)}), 500
-
-
-
 
 
