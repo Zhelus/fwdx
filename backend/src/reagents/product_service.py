@@ -61,6 +61,7 @@ def get_product_with_oligo_details(product_id):
     # Create a mapping of oligo ID to oligo details
     oligo_map = {
         str(oligo["_id"]): {
+            "_id": str(oligo["_id"]),
             "name": oligo.get("name"),
             "sequence": oligo.get("sequence"),
             "archived": oligo.get("archived", False),
