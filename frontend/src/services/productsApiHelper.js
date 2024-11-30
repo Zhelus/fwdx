@@ -87,10 +87,18 @@ export default {
           api.updateProductById(productId, updatedProductData)
             .then(response => {
               console.log("API call was successful: Update product.");
+              $toast.success('Product updated successfully!', {
+                position: 'top-right',
+                duration: 3000,
+              });
               resolve(response.data);
             })
             .catch(error => {
               console.error("API call failed:", error);
+              $toast.error('Failed to update product. Please try again.', {
+                position: 'top-right',
+                duration: 3000,
+              });
               reject(Error("Error updating product data."));
             });
         });
