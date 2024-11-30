@@ -124,7 +124,7 @@ function actionClicked(path, taxonomicID, commonName) {
     if (path && taxonomicID && commonName) {
         router.push({ path, query: { id: taxonomicID, name: commonName} });
     } else {
-        console.error("Invalid path, taxonomicID, or commonName");
+        router.push(path);
     }
 }
 

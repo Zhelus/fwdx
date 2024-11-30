@@ -24,6 +24,7 @@ import AddOligoView from '@/views/AddOligoView.vue'
 import SingleOligoView from '@/views/SingleOligoView.vue'
 import ViewReportView from '@/views/ViewReportView.vue'
 import PathogensDetailedView from '@/views/PathogensDetailedView.vue'
+import AddPathogenView from '@/views/AddPathogenView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -80,14 +81,14 @@ const router = createRouter({
       component: PathogensView
     },
     {
-        path: '/pathogens/view', // Path for the detailed view
-        name: 'PathogenDetailView',
-        component: PathogensDetailedView,
+      path: '/pathogens/view', // Path for the detailed view
+      name: 'PathogenDetailView',
+      component: PathogensDetailedView,
     },
     {
-        path: '/pathogen/details',
-        name: 'PathogenDetails',
-        component: PathogensDetailedView
+      path: '/pathogens/add',
+      name: 'addPathogen',
+      component: AddPathogenView
     },
     {
       path: '/reagents',

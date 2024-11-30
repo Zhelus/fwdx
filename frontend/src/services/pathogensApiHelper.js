@@ -66,10 +66,11 @@ export default {
         });
     },
 
-
+//Call specifically from PathogenDetailedView.vue to produce the table
     async getPathogenByTaxonomicID(taxonomicID) {
         try {
             const response = await api.getPathogenByTaxID(taxonomicID);
+            
             console.log("API Response for taxonomicID:", response.data);
             return response.data.pathogen; // Adjust based on your backend response
         } catch (error) {
