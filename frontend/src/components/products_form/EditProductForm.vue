@@ -124,7 +124,6 @@ function handleCancel() {
           v-model="confirmationText" 
           buttonText="Submit"
           buttonClass="submit"
-          @click="handleSubmit"
         />
         <FormActionButton
           buttonText="Cancel"
