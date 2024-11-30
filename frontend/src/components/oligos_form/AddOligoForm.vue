@@ -106,18 +106,19 @@ function triggerFileInput() {
     />
     <FormTextInputItem v-model="confirmationText" section-header="Type 'YES' to confirm the above information is correct" />
 
+
     <!-- Confirmation Buttons -->
     <div class="action-buttons">
+      <FormActionButton 
+      v-model="confirmationText" 
+      button-text="Submit" 
+      button-class="submit" 
+      @click="submitClicked" 
+    />
       <FormActionButton 
         button-text="Cancel" 
         button-class="cancel" 
         @cancelButtonClicked="cancelClicked" 
-      />
-      <FormActionButton 
-        v-model="confirmationText" 
-        button-text="Submit" 
-        button-class="submit" 
-        @click="submitClicked" 
       />
     </div>
   </div>

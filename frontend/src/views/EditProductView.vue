@@ -1,19 +1,18 @@
 <!-- 
-Page view for edit an oligo reagent
+Page view for edit a product
 Last edited by: Michael Nguyen
 Date: 11/05/24
 -->
 <script setup>
-    import EditReagentForm from '@/components/oligos_form/EditOligoForm.vue';
+    import EditProductForm from '@/components/products_form/EditProductForm.vue';
     import { useRoute } from 'vue-router';
     const route = useRoute();
-    const productName = route.query.productName || "Product Name";
 
-    const formTitle = `Edit an Oligo - ${productName}`;
+    const formTitle = `Edit a Product`;
 </script>
 <template>
 <div class="report-page-wrapper">
-    <EditReagentForm :form-title=formTitle :show-frequency="false" :is-edit-report="false"/>
+    <EditProductForm :form-title=formTitle :show-frequency="false" :is-edit-report="false"/>
 </div>
 </template>
 <style scoped>

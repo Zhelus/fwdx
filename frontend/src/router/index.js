@@ -24,6 +24,7 @@ import AddOligoView from '@/views/AddOligoView.vue'
 import SingleOligoView from '@/views/ViewOligoVIew.vue'
 import ViewReportView from '@/views/ViewReportView.vue'
 import ViewProductView from '@/views/ViewProductView.vue'
+import EditProductView from '@/views/EditProductView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -93,6 +94,12 @@ const router = createRouter({
       path: '/reagents/view/:productId',
       name: 'viewProduct',
       component: ViewProductView,
+      props: true,
+    },
+    {
+      path: '/reagents/edit/:productId',
+      name: 'editProduct',
+      component: EditProductView,
       props: true,
     },
     {

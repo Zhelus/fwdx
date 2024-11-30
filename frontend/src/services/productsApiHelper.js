@@ -84,15 +84,15 @@ export default {
     },
     updateProduct(productId, updatedProductData) {
         return new Promise(function (resolve, reject) {
-            api.updateProductById(productId, updatedProductData)
-                .then(response => {
-                    console.log("API call was successful: Update product.");
-                    resolve(response.data);
-                })
-                .catch(error => {
-                    console.error("API call failed:", error);
-                    reject(Error("Error updating product data."));
-                });
+          api.updateProductById(productId, updatedProductData)
+            .then(response => {
+              console.log("API call was successful: Update product.");
+              resolve(response.data);
+            })
+            .catch(error => {
+              console.error("API call failed:", error);
+              reject(Error("Error updating product data."));
+            });
         });
-    }
+      }      
 };
