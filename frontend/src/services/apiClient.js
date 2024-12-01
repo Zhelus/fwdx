@@ -20,8 +20,21 @@ export default {
     getDebug() {
         return apiClient.get('/v1/debug');
     },
-    getPathogen() {
-        return apiClient.get('/v1/pathogen/10632');
+    getPathogenByID(accessionID) {
+        return apiClient.get(`/v1/pathogens/${accessionID}`);
+    },
+    getPathogenByTaxID(taxID) {
+        return apiClient.get(`/v1/pathogens/${taxID}`);
+    },
+    getPathogens() {
+        return apiClient.get('/v1/pathogens');
+    },
+    getAllPathogens() {
+        return apiClient.get('/v1/pathogens/all');
+    },
+    
+    createPathogen(accessionID) {
+        return apiClient.post('/v1/pathogens', accessionID)
     },
     getReportById(reportId) {
         var url = '/v1/report/' + reportId;
@@ -106,6 +119,4 @@ export default {
     archiveOligo(oligoId) {
         return apiClient.delete(`/v1/oligos/${oligoId}/archive`);
     }
-
-
 };
