@@ -6,10 +6,15 @@ Date: 10/30/24
 <script setup>
     const props = defineProps(['buttonText', 'buttonClass']);
     const emit = defineEmits(['submitButtonClicked', 'cancelButtonClicked']);
-    const confirmationModel = defineModel();
+    const confirmationModel = defineModel('confirmationText');
+    const pathogenModel = defineModel('pathogenSelection');
+    const productModel = defineModel('productModel');
+    const buttonDisabledModel = defineModel('buttonIsDisabled');
+
+
 </script>
 <template>
-    <button :class="buttonClass" @click="emit(`${buttonClass}ButtonClicked`)" :disabled="buttonClass == 'submit' && confirmationModel != 'YES'">{{ buttonText }}</button>
+    <button :class="buttonClass" @click="emit(`${buttonClass}ButtonClicked`)" :disabled="buttonDisabledModel">{{ buttonText }} {{ pathogenModel }}</button>
 </template>
 <style scoped>
     button {

@@ -5,17 +5,27 @@ Date: 10/30/24
 -->
 <script setup>
     import {ref} from 'vue'
-    const props = defineProps(['sectionHeader', 'optionsList', 'selectionVar', 'selectField']);
+    const props = defineProps(['sectionHeader', 'optionsList', 'selectionVar', 'selectField', 'inputType']);
+    const emit = defineEmits(['confirmationTextChanged', 'inputTextChanged']);
+
     const confirmationModel = defineModel();
-    const localSelectionVar = ref();
 </script>
 <template>
-    <div class="text-input-container">
-        <h3 class="section-header">{{ sectionHeader }}</h3>
-        <input class="text-input" type="text" v-model="confirmationModel"/>
+    <div :class="`text-input-container ${inputType}`">
+        <h3 class="section-header">{{ sectionHeader }}<span v-if="(inputType !== 'title' && confirmationModel !== 'YES') || (inputType === 'title' && confirmationModel === '')" class="requirementMark">*</span></h3>
+        <input v-if="inputType !== 'title'" class="text-input" type="text" v-model="confirmationModel" @keyup="emit('confirmationTextChanged')"/>
+        <input v-else class="text-input" type="text" v-model="confirmationModel" @keyup="emit('inputTextChanged')"/>
     </div>
 </template>
 <style scoped>
+    .requirementMark {
+        color: var(--fwdx-yellow);
+        font-size: var(--subheading-size);
+        line-height: 0em;
+        font-weight: 800;
+        margin-left: 0.1em;
+    }
+
     .text-input-container {
         display: flex;
         flex-direction: column;
@@ -25,6 +35,10 @@ Date: 10/30/24
         background-color: transparent;
         margin-bottom: var(--form-element-spacing);
         margin-top: 0rem;
+    }
+
+    .text-input-container.confirmation {
+        margin-top: calc(3 * var(--form-element-spacing));
     }
 
     .text-input {
