@@ -21,8 +21,10 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ForgotPasswordView from "@/views/ForgotPasswordView.vue";
 import AddOligoView from '@/views/AddOligoView.vue'
-import SingleOligoView from '@/views/SingleOligoView.vue'
+import SingleOligoView from '@/views/ViewOligoVIew.vue'
 import ViewReportView from '@/views/ViewReportView.vue'
+import ViewProductView from '@/views/ViewProductView.vue'
+import EditProductView from '@/views/EditProductView.vue'
 import PathogensDetailedView from '@/views/PathogensDetailedView.vue'
 import AddPathogenView from '@/views/AddPathogenView.vue'
 
@@ -101,9 +103,16 @@ const router = createRouter({
       component: AddProductView
     },
     {
-      path: '/reagents/addProduct',
-      name: 'addProduct',
-      component: AddProductView
+      path: '/reagents/view/:productId',
+      name: 'viewProduct',
+      component: ViewProductView,
+      props: true,
+    },
+    {
+      path: '/reagents/edit/:productId',
+      name: 'editProduct',
+      component: EditProductView,
+      props: true,
     },
     {
       path: '/oligos',
@@ -118,7 +127,7 @@ const router = createRouter({
     {
       path: '/oligos/view',
       name: 'viewOligo',
-      component: () => import('@/views/SingleOligoView.vue'), // Lazy load the component
+      component: () => import('@/views/ViewOligoVIew.vue'), // Lazy load the component
       props: route => ({ id: route.query.id }) // Pass the 'id' from the query as a prop
     },        
     {

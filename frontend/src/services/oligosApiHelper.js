@@ -1,4 +1,7 @@
 import api from "@/services/apiClient.js";
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+const $toast = useToast(); // Initialize toast
 
 export default {
     getAllOligos() {
@@ -48,10 +51,18 @@ export default {
             api.createOligo(oligoData)
                 .then(response => {
                     console.log("API call successful: Create oligo.");
+                    $toast.success('Oligo created successfully!', {
+                        position: 'top-right',
+                        duration: 3000,
+                      });
                     resolve(response.data);
                 })
                 .catch(error => {
                     console.error("API call failed:", error);
+                    $toast.error('Failed to create oligo. Please try again.', {
+                        position: 'top-right',
+                        duration: 3000,
+                      });
                     reject(Error("Error creating new oligo."));
                 });
         });
@@ -61,10 +72,18 @@ export default {
             api.archiveOligo(oligoId)
                 .then(response => {
                     console.log("API call successful: Archive oligo.");
+                    $toast.success('Oligo successfully archived!', {
+                        position: 'top-right',
+                        duration: 3000,
+                      });
                     resolve(response.data);
                 })
                 .catch(error => {
                     console.error("API call failed:", error);
+                    $toast.error('Failed to archive product. Please try again.', {
+                        position: 'top-right',
+                        duration: 3000,
+                      });
                     reject(Error(`Error archiving oligo with ID: ${oligoId}`));
                 });
         });

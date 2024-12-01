@@ -86,6 +86,9 @@ export default {
     getAllProducts() {
         return apiClient.get('/v1/products');
     },
+    getAllProductsByOligoNames() {
+        return apiClient.get('/v1/products_with_oligo_details');
+    },
     getProductById(productId) {
         var url = '/v1/products/' + productId;
         return apiClient.get(url);

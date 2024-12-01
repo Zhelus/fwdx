@@ -7,7 +7,7 @@ Date: 11/21/24
 <script setup>
 import { ref, onMounted } from 'vue';
 import FormTextInputItem from '@/components/report_form/FormTextInputItem.vue';
-import FormCheckboxItem from '@/components/report_form/FormCheckboxItem.vue';
+import OligoCheckboxForm from '@/components/oligos_form/OligoFormCheckBoxItem.vue';
 import FormActionButton from '@/components/report_form/FormActionButton.vue';
 import { useRoute, useRouter } from 'vue-router';
 import oligosApi from '@/services/oligosApiHelper';
@@ -72,10 +72,10 @@ onMounted(() => {
     </div>
 
     <!-- DNA Strand Positive Checkbox -->
-    <FormCheckboxItem 
-      :options-list="[{ name: 'DNA Strand Positive?', value: true }]" 
-      v-model="dnaStrandPositive" 
-      readonly 
+    <OligoCheckboxForm
+      section-header="DNA Strand Positive?"
+      v-model="dnaStrandPositive"
+      :readonly="true" 
     />
 
     <!-- Done Button -->

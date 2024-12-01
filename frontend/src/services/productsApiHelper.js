@@ -1,4 +1,8 @@
 import api from "@/services/apiClient.js";
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+const $toast = useToast(); // Initialize toast\
+
 
 export default {
     getProductById(productId) {
@@ -15,7 +19,7 @@ export default {
                     reject(Error(`Error fetching product with ID: ${productId}`));
                 });
         });
-    },
+    },    
     getAllProducts() {
         return new Promise(function (resolve, reject) {
             api.getAllProducts()
@@ -30,16 +34,37 @@ export default {
                 });
         });
     },
-    saveNewProduct(product) {
+    getAllProductsWithOligoNames() {
         return new Promise(function (resolve, reject) {
-            const productJson = product.getJson();
-            api.createProduct(productJson)
+            api.getAllProductsByOligoNames()
+                .then(response => {
+                    console.log("Successful API call: Fetch all products with oligo names.");
+                    const productsData = response.data['products'];
+                    resolve(productsData);
+                })
+                .catch(error => {
+                    console.error("API call failed:", error);
+                    reject(Error("Error fetching all products with oligo names."));
+                });
+        });
+    },
+    saveNewProduct(productData) {
+        return new Promise(function (resolve, reject) {
+            api.createProduct(productData)
                 .then(response => {
                     console.log("API call was successful: Save new product.");
+                    $toast.success('Product created successfully!', {
+                        position: 'top-right',
+                        duration: 3000,
+                      });
                     resolve(response.data);
                 })
                 .catch(error => {
                     console.error("API call failed:", error);
+                    $toast.error('Failed to create product. Please try again.', {
+                        position: 'top-right',
+                        duration: 3000,
+                      });
                     reject(Error("Error creating new product."));
                 });
         });
@@ -59,15 +84,23 @@ export default {
     },
     updateProduct(productId, updatedProductData) {
         return new Promise(function (resolve, reject) {
-            api.updateProductById(productId, updatedProductData)
-                .then(response => {
-                    console.log("API call was successful: Update product.");
-                    resolve(response.data);
-                })
-                .catch(error => {
-                    console.error("API call failed:", error);
-                    reject(Error("Error updating product data."));
-                });
+          api.updateProductById(productId, updatedProductData)
+            .then(response => {
+              console.log("API call was successful: Update product.");
+              $toast.success('Product updated successfully!', {
+                position: 'top-right',
+                duration: 3000,
+              });
+              resolve(response.data);
+            })
+            .catch(error => {
+              console.error("API call failed:", error);
+              $toast.error('Failed to update product. Please try again.', {
+                position: 'top-right',
+                duration: 3000,
+              });
+              reject(Error("Error updating product data."));
+            });
         });
-    }
+      }      
 };

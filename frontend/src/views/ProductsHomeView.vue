@@ -13,27 +13,28 @@ const router = useRouter();
 const products = ref([]);
 const loading = ref(false);
 
-function actionClicked(path, productName) {
-  if (path && productName) {
-    router.push({ path, query: { productName } });
-  } else {
-    router.push(path);
-  }
+function actionClicked(path) {
+  router.push(path);
 }
 
 // Fetch products from the API
 async function fetchProducts() {
   loading.value = true;
   try {
-    const fetchedProducts = await productsApi.getAllProducts();
+    const fetchedProducts = await productsApi.getAllProductsWithOligoNames();
     // Transform the API response to match the table format
-    products.value = fetchedProducts.map((product) => ({
-      id: product._id,
-      productName: product.name,
-      activeVersion: product.active_version_index + 1, // Convert to 1-based index
-      versions: product.versions.length,
-      numberOfOligos: product.versions[product.active_version_index]?.length || 0 // Active version oligos
-    }));
+    products.value = fetchedProducts.map((product) => {
+  const activeVersionIndex = product.active_version_index;
+  const activeVersionOligos = product.versions[activeVersionIndex] || [];
+  return {
+    id: product._id,
+    productName: product.name,
+    activeVersion: activeVersionIndex + 1, // Convert to 1-based index
+    versions: product.versions.length,
+    oligoNames: activeVersionOligos, // Pass full oligo details, including 'archived'
+  };
+});
+
   } catch (error) {
     console.error('Failed to fetch products:', error);
   } finally {
@@ -52,7 +53,7 @@ const filters = ref({
   productName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
   activeVersion: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
   versions: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-  numberOfOligos: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+  oligoNamesString: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
 });
 </script>
 
@@ -98,21 +99,42 @@ const filters = ref({
         </template>
       </Column>
 
-      <Column field="numberOfOligos" header="Number of Oligos" sortable dataType="numeric">
+      <!-- Oligo Names Column -->
+      <Column field="oligoNamesString" header="Oligo Names">
         <template #filter="{ filterModel }">
-          <InputText v-model="filterModel.value" placeholder="Search by oligos" />
+          <InputText v-model="filterModel.value" placeholder="Search by oligo names" />
         </template>
-      </Column>
-
-      <!-- Actions Column -->
-      <Column header="Actions">
         <template #body="slotProps">
-          <div class="action-buttons">
-            <button class="action-button" @click="actionClicked('/products/view', slotProps.data.productName)">View</button>
-            <button class="action-button edit" @click="actionClicked('/products/edit', slotProps.data.productName)">Edit</button>
-          </div>
+          <ul>
+            <li
+              v-for="(oligo, index) in slotProps.data.oligoNames"
+              :key="index"
+              :style="{ color: oligo.archived ? 'red' : 'inherit' }"
+            >
+              {{ oligo.name }}
+            </li>
+          </ul>
         </template>
       </Column>
+      <!-- Actions Column -->
+<Column header="Actions">
+  <template #body="slotProps">
+    <div class="action-buttons">
+      <button
+        class="action-button"
+        @click="actionClicked(`/reagents/view/${slotProps.data.id}`)"
+      >
+        View
+      </button>
+      <button
+        class="action-button edit"
+        @click="actionClicked(`/reagents/edit/${slotProps.data.id}`)"
+      >
+        Edit
+      </button>
+    </div>
+  </template>
+</Column>
     </DataTable>
   </div>
 </template>

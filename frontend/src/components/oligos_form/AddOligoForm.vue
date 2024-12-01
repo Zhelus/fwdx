@@ -6,10 +6,11 @@ Date: 11/21/24
 <script setup>
 import { ref } from 'vue';
 import FormTextInputItem from '@/components/report_form/FormTextInputItem.vue';
-import FormCheckboxItem from '@/components/report_form/FormCheckboxItem.vue';
+import FormCheckboxItem from './OligoFormCheckBoxItem.vue'; // Import the custom checkbox component
 import FormActionButton from '@/components/report_form/FormActionButton.vue';
 import { useRouter } from 'vue-router';
 import oligosApi from '@/services/oligosApiHelper';
+
 
 const oligoName = ref('');
 const oligoString = ref('');
@@ -101,23 +102,23 @@ function triggerFileInput() {
 
     <!-- DNA Strand Positive Checkbox -->
     <FormCheckboxItem 
-      :options-list="[{ name: 'DNA Strand Positive?', value: true }]" 
-      v-model="dnaStrandPositive" 
+    v-model="dnaStrandPositive"  
     />
     <FormTextInputItem v-model="confirmationText" section-header="Type 'YES' to confirm the above information is correct" />
 
+
     <!-- Confirmation Buttons -->
-    <div class="form-button-container">
+    <div class="action-buttons">
+      <FormActionButton 
+      v-model="confirmationText" 
+      button-text="Submit" 
+      button-class="submit" 
+      @click="submitClicked" 
+    />
       <FormActionButton 
         button-text="Cancel" 
         button-class="cancel" 
         @cancelButtonClicked="cancelClicked" 
-      />
-      <FormActionButton 
-        v-model="confirmationText" 
-        button-text="Submit" 
-        button-class="submit" 
-        @click="submitClicked" 
       />
     </div>
   </div>
@@ -157,6 +158,11 @@ function triggerFileInput() {
 
 .hidden-file-input {
   display: none; /* Hide the native file input */
+}
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
 }
 
 button {

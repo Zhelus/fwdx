@@ -1,14 +1,18 @@
 <!-- 
-Page view for adding a new product
+Page view for edit a product
 Last edited by: Michael Nguyen
-Date: 11/12/24
+Date: 11/05/24
 -->
 <script setup>
-    import ViewOligoForm from '@/components/oligos_form/ViewOligoForm.vue';
+    import EditProductForm from '@/components/products_form/EditProductForm.vue';
+    import { useRoute } from 'vue-router';
+    const route = useRoute();
+
+    const formTitle = `Edit a Product`;
 </script>
 <template>
 <div class="report-page-wrapper">
-    <ViewOligoForm />
+    <EditProductForm :form-title=formTitle :show-frequency="false" :is-edit-report="false"/>
 </div>
 </template>
 <style scoped>

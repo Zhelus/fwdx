@@ -1,14 +1,14 @@
 <!-- 
-Page view for adding a new product
+Page view for viewing a single oligo
 Last edited by: Michael Nguyen
-Date: 11/12/24
+Date: 11/28/24
 -->
 <script setup>
-    import AddProductForm from '@/components/products_form/AddProductForm.vue';
+    import ViewProductForm from '@/components/products_form/ViewProductForm.vue';
 </script>
 <template>
 <div class="report-page-wrapper">
-    <AddProductForm form-title="Add a New Product" :show-frequency="false" :is-edit-report="true" />
+    <ViewProductForm />
 </div>
 </template>
 <style scoped>
