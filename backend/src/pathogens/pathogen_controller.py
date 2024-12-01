@@ -1,8 +1,10 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 
 from backend.definitions import API_VERSION
-from backend.src.pathogens.pathogen_service import create_pathogen_document, update_pathogen_document, \
-    delete_pathogen_document, get_pathogen_document
+from .pathogen_service import create_pathogen_document, update_pathogen_document, \
+    delete_pathogen_document, get_pathogen_document, get_all_pathogens, \
+    get_unique_taxonomic_ids, _object_id_to_string, get_pathogen_by_taxonomic_id, \
+    process_pathogen_data, remove_genomic_sequence
 
 """
 This file defines the API endpoints for pathogen use cases.
@@ -46,3 +48,47 @@ def update_pathogen():
 @bp.route(f'/{API_VERSION}/pathogen/', methods=['DELETE'])
 def delete_pathogen():
     return delete_pathogen_document(request)
+##
+@bp.route(f'/{API_VERSION}/pathogens/all', methods=['GET'])
+def api_get_all_pathogens():
+    #flask endpoint constructor to get all pathogens
+    try:
+        pathogens = get_all_pathogens()
+        for pathogen in pathogens:
+            pathogen = _object_id_to_string(pathogen)
+        
+        #this removes the genomic_sequence to make reading logs easier
+        #Should be removed in next sprint along with geneSequences
+        pathogens_without_geneSeq = [
+        {key: value for key, value in pathogen.items() if key != "genomic_sequence"}
+        for pathogen in pathogens ]
+        pathogenTable = process_pathogen_data(pathogens_without_geneSeq)
+        #pathogenTable = pathogens_without_geneSeq
+        #uniqueTaxIDs = get_unique_taxonomic_ids(pathogens_without_geneSeq)
+        #pathogenTable = uniqueTaxIDs
+    # Print the modified list
+        #print(f"Returning pathogens: {pathogenTable}")
+        return jsonify({"pathogens": pathogenTable}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+# this is called by pathogenDetailedView.vue
+@bp.route(f'/{API_VERSION}/pathogens/<string:taxonomic_id>', methods=['GET'])
+def api_get_pathogen_by_taxonomic_id(taxonomic_id):
+    try:
+        # Fetch pathogen details from the service layer
+        pathogen = get_pathogen_by_taxonomic_id(taxonomic_id)
+        
+        if not pathogen:
+            return jsonify({"error": f"No pathogen found with taxonomicID {taxonomic_id}"}), 404
+
+        # Remove unwanted fields (if needed) and return pathogen
+        # pathogen = {key: value for key, value in pathogen.items() if key != "genomic_sequence"}
+
+        return jsonify({"pathogen": pathogen}), 200
+    except Exception as e:
+        print(f"DEBUG: Error in API endpoint: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
