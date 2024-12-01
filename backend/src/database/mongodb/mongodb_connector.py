@@ -76,6 +76,9 @@ class MongoDBConnector:
         collection = self.database[collection.value]
         result = collection.find().sort('_id', pymongo.DESCENDING).limit(limit)
         return result
+    def fetch_all_documents_by_filter(self, filter: dict, collection: CollectionType):
+        collection = self.database[collection.value]
+        return list(collection.find(filter))
 
     def delete_document(self, document: dict, collection: CollectionType):
         collection = self.database[collection.value]
@@ -93,6 +96,7 @@ class MongoDBConnector:
     def create_collection(self, collection: CollectionType):
         collection = self.database.create_collection(collection.value)
         print(f"Created New Collection:\n{collection}\n{collection.name}")
+
 
     def ping(self):
         try:

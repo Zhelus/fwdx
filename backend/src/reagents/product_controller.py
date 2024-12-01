@@ -1,9 +1,10 @@
 from flask import Blueprint, jsonify, request
 from .product_service import (
-    create_product, get_product, update_product, delete_product,
-    add_product_version, set_active_version, get_all_products
+    create_product, update_product, delete_product,
+    add_product_version, set_active_version, get_all_products,get_products_with_oligo_details,get_product_with_oligo_details
 )
 from ...definitions import API_VERSION
+
 
 bp = Blueprint('products', __name__)
 
@@ -16,11 +17,15 @@ def api_create_product():
     """
     try:
         product_data = request.get_json()
+        if not product_data or "name" not in product_data:
+            return jsonify({"error": "Product name is required"}), 400
+
         document = create_product(product_data)
         document = _object_id_to_string(document)
         return jsonify({"message": "Product created successfully", "product": document}), 201
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
 
 
 # Endpoint to get a product by its ID
@@ -31,9 +36,9 @@ def api_get_product(product_id):
     Retrieves a product by its ID.
     """
     try:
-        document = get_product(product_id)
+        document = get_product_with_oligo_details(product_id)
         if document:
-            document =_object_id_to_string(document)
+            document = _object_id_to_string(document)
             return jsonify({"message": "Product retrieved successfully", "product": document}), 200
         else:
             return jsonify({"error": "Product not found"}), 404
@@ -50,6 +55,25 @@ def api_get_all_products():
     for product in products:
         product = _object_id_to_string(product)
     return jsonify({'products': products}), 200
+
+@bp.route('/v1/products_with_oligo_details', methods=['GET'])
+def api_get_products_with_oligo_details():
+    """
+    API endpoint to retrieve all products with detailed oligo information in their versions.
+    """
+    try:
+        # Call the service function to fetch products with oligo details
+        products = get_products_with_oligo_details()
+
+        # Convert '_id' fields in all products to string
+        products = [_object_id_to_string(product) for product in products]
+
+        # Return the products as a JSON response
+        return jsonify({"products": products}), 200
+    except Exception as e:
+        # Handle any errors and return an appropriate message
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
 # Endpoint to update a product by its ID
 # Example query: PUT http://127.0.0.1:5000/v1/products/<product_id>
 @bp.route(f'/{API_VERSION}/products/<string:product_id>', methods=['PUT'])
@@ -59,6 +83,14 @@ def api_update_product(product_id):
     """
     try:
         product_data = request.get_json()
+
+        # Validate input
+        if not isinstance(product_data, dict):
+            return jsonify({"error": "Invalid input data format. Must be a JSON object."}), 400
+
+        if "oligos" in product_data and not all(isinstance(oligo, str) for oligo in product_data["oligos"]):
+            return jsonify({"error": "Invalid oligos field. Must be a list of string IDs."}), 400
+
         document = update_product(product_id, product_data)
         document = _object_id_to_string(document)
         return jsonify({"message": "Product updated successfully", "product": document}), 200
@@ -134,3 +166,19 @@ Helper method to translate a report's MongoDB 'ObjectId' to a string (needed to 
 def _object_id_to_string(product):
         product['_id'] = str(product['_id'])
         return product
+
+def _object_id_to_string_update_product(doc):
+    """
+    Recursively converts all ObjectId fields in a document to strings.
+    """
+    if isinstance(doc, dict):
+        for key, value in doc.items():
+            if isinstance(value, ObjectId):
+                doc[key] = str(value)
+            elif isinstance(value, list):
+                doc[key] = [_object_id_to_string(item) for item in value]
+            elif isinstance(value, dict):
+                doc[key] = _object_id_to_string(value)
+    elif isinstance(doc, list):
+        doc = [_object_id_to_string(item) for item in doc]
+    return doc
