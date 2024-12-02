@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, request
 from backend.src.database.mongodb.mongodb_connector import MongoDBConnector
 from backend.src.helper.collection_type import CollectionType
 from backend.src.reports.report import Report
+from bson.objectid import ObjectId
 
 
 
@@ -22,7 +23,9 @@ def get_report(id: str):
     print("connecting to MongoDB...")
     # Get the report with the corresponding report ID
     mongodb_connector = MongoDBConnector(force_ssl=True)
-    report = mongodb_connector.fetch_document({"report_id": id}, CollectionType.REPORTS)
+    obj_id = ObjectId(id)
+    print(obj_id)
+    report = mongodb_connector.fetch_document({"_id": obj_id}, CollectionType.REPORTS)
     report = _object_id_to_string(report)
     return jsonify({'report': report})
 
@@ -95,6 +98,41 @@ def get_all_reports():
         returned_reports.append(report)
     # Return all reports formatted as JSON
     return jsonify({'reports': returned_reports})
+
+
+@bp.route('/v1/report/pathogenOptions', methods=['GET'])
+def get_unique_pathogens():
+    print("connecting to MongoDB...")
+    # Get all reports from the collection
+    mongodb_connector = MongoDBConnector(force_ssl=True)
+
+    pathogen_id_list = mongodb_connector.get_unique_values(CollectionType.PATHOGENS, field="taxonomicID")
+    if None in pathogen_id_list:
+        pathogen_id_list.remove(None)
+        
+    unique_pathogens = []
+    for id in pathogen_id_list:
+        pathogen_doc = mongodb_connector.fetch_document(document={"taxonomicID": id}, collection=CollectionType.PATHOGENS)
+        pathogen_doc = _object_id_to_string(pathogen_doc)
+        sample_count = mongodb_connector.count_documents_with_field(collection=CollectionType.PATHOGENS, field_value={"taxonomicID": id})
+        pathogen_doc['sampleCount'] = sample_count
+        unique_pathogens.append(pathogen_doc)
+    print(unique_pathogens)
+    # Return all reports formatted as JSON
+    return jsonify({'pathogens': unique_pathogens})
+
+# @bp.route('/v1/report/pathogenOptions', methods=['GET'])
+# def get_all_pathogens_with_id():
+#     print("connecting to MongoDB...")
+#     # Get all reports from the collection
+#     mongodb_connector = MongoDBConnector(force_ssl=True)
+#     cursor = mongodb_connector.fetch_all_documents(CollectionType.PATHOGENS, filter={})
+#     # Format each report to be returned
+#     returned_reports = []
+#     for report in cursor:
+#         report = _object_id_to_string(report)
+#         returned_reports.append(report)
+
 
 """
 Helper method to translate a report's MongoDB 'ObjectId' to a string (needed to convert report data to JSON)

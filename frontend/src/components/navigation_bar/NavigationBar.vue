@@ -114,9 +114,9 @@ Date: 11/25/24
         padding: 0.25rem 1rem;
         /* background-color: #FFFFFF;
         border-bottom: 1pt solid #EFF0F1; */
-        background: rgba(255, 255, 255, 0.75);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border-bottom: 1pt solid #EFF0F1;
         display: flex;
         flex-direction: row;
@@ -138,6 +138,8 @@ Date: 11/25/24
             width: auto;
             height: 65%;
             border-radius: 8px;
+            background-color: white;
+            padding-right: 0.25em;
         }
     }
 
@@ -146,6 +148,9 @@ Date: 11/25/24
             width: 65%;
             height: auto;
             border-radius: 8px;
+            background-color: white;
+            padding-right: 0.25em;
+
         }
     }
 
@@ -155,6 +160,10 @@ Date: 11/25/24
             height: auto;
             border-radius: 8px;
             min-width: 100px;
+            background-color: white;
+            padding-right: 0.25em;
+
+
         }
     }
 

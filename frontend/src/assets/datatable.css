@@ -12,9 +12,92 @@ Date: 11/5/24
     margin-bottom: 5rem;
 }
 
+.p-datatable.browse-reports-table {
+    padding: 1em;
+}
+
+.table-search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1em;
+}
+
+.p-iconfield {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 2em;
+    padding: 0.5em;
+    outline: 1pt solid var(--light-gray-outline);
+    border-radius: 5px;
+}
+
+.p-iconfield:focus-within {
+    outline: 1.5pt solid var(--fwdx-yellow);
+    transition: outline 0.05s;
+}
+
+.iconfield-icon {
+    height: 11pt;
+    width: auto;
+    margin-right: 0.5em;
+}
+
+.keyword-search-icon {
+    height: 100%;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.p-iconfield > .p-inputtext {
+    border: none;
+    outline: none;
+    font-size: 10pt;
+    color: var(--dark-gray-text);
+}
+
+.p-datatable.overlay-table {
+    width: 100%;
+    box-shadow: none;
+    outline: 1pt solid var(--light-gray-outline);
+}
+
+.p-datatable.mismatch-table {
+    width: 100%;
+    box-shadow: none;
+    outline: 0.5pt solid var(--light-gray-outline);
+    margin-bottom: 1.25em;
+    margin-top: 1.25em;
+    /* outline: 2pt solid var(--light-gray-outline); */
+
+}
+
+.blue-table-button:hover {
+    background-color: var(--fwdx-blue-button-hover);
+    cursor: pointer;
+    transition: background-color 0.05s;
+}
+
+.blue-table-button {
+    border: none;
+    border-radius: 5px;
+    height: 1.6em;
+    width: 3.2em;
+    font-size: 10pt;
+    font-weight: 700;
+    background-color: var(--fwdx-blue);
+    color: var(--blue-button-text);
+    /* padding: 0 1em; */
+}
+
 .p-datatable-table-container{
     background-color: transparent;
-    border-radius: var(--input-border-radius);
+    /* border-radius: var(--input-border-radius); */
+    border-radius: 10px;
     width: 100%;
     padding: 0rem 0rem;
 }
@@ -26,7 +109,7 @@ Date: 11/5/24
 }
 
 .p-datatable-thead {
-    border-top-right-radius: 10px;
+    /* border-top: 1pt solid var(--light-gray-outline); */
 }
 
 .table-head-row {
@@ -41,21 +124,23 @@ Date: 11/5/24
 }
 
 .header-cell {
-    padding-top: 1rem;
+    padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     font-weight: bolder;
     font-size: 12pt;
-    background-color: #eaeaea;
+    background-color: var(--fwdx-blue);
+    /* background-color: #f5f5f5; */
+    /* background-color: var(--light-gray-button-bg); */
 
 }
 
 .header-cell:is(:first-child) {
-    border-top-left-radius: 10px;
+    /* border-top-left-radius: 10px; */
     /* background-color: #eaeaea; */
 }
 
 .header-cell:is(:last-child) {
-    border-top-right-radius: 10px;
+    /* border-top-right-radius: 10px; */
 }
 
 
@@ -69,7 +154,8 @@ Date: 11/5/24
 .p-datatable-column-title {
     font-weight: 700;
     font-size: 12pt;
-    color: var(--fwdx-blue);
+    /* color: var(--fwdx-blue); */
+    color: var(--fwdx-white);
     margin-right: 5px;
 }
 
@@ -85,6 +171,25 @@ Date: 11/5/24
     opacity: 0.5;
 }
 
+.p-datatable-column-filter-button.in-use > svg > path {
+    /* fill: #FFD613; */
+    /* fill: var(--fwdx-blue); */
+    fill: var(--fwdx-yellow);
+    /* stroke: #FFD613; */
+    /* stroke: var(--fwdx-blue); */
+    stroke: var(--fwdx-yellow);
+    stroke-width: 0.1;
+}
+
+.p-datatable-column-filter-button > svg > path {
+    fill: var(--dark-gray-text);
+    fill: var(--light-gray-button-bg)
+}
+
+.p-datatable-column-filter-button.in-use {
+    opacity: 1;
+}
+
 .p-datatable-column-filter-button > .p-button-label {
     display: none;
     visibility: hidden;
@@ -93,7 +198,8 @@ Date: 11/5/24
 .p-datatable-column-filter-button:hover { 
     cursor: pointer;
     opacity: 1;
-    background-color: var(--light-gray-button-bg);
+    /* background-color: var(--light-gray-button-bg); */
+    background-color: var(--fwdx-blue-button-hover);
     transition: 0.1s;
 }
 
@@ -114,6 +220,7 @@ Date: 11/5/24
     background-color: transparent;
 }
 
+
 .p-row-even:hover, .p-row-odd:hover {
     background-color: #F7F7f7;
 }
@@ -128,7 +235,7 @@ Date: 11/5/24
 
 .table-head-row {
     background-color: transparent;
-    border-radius: 10px;
+    /* border-radius: 10px; */
 }
 
 .p-datatable-paginator-bottom {
@@ -149,6 +256,10 @@ Date: 11/5/24
     align-items: center;
     background-color: var(--fwdx-white);
     padding: 10px 10px;
+}
+
+.p-paginator-first:not(:disabled) > svg > path, .p-paginator-prev:not(:disabled) > svg > path, .p-paginator-next:not(:disabled) > svg > path, .p-paginator-last:not(:disabled) > svg > path {
+    fill: var(--fwdx-blue);
 }
 
 .p-paginator-first:not(:disabled):hover, .p-paginator-prev:not(:disabled):hover, .p-paginator-next:not(:disabled):hover, .p-paginator-last:not(:disabled):hover {
@@ -396,12 +507,28 @@ div:has(> .p-datatable-filter-remove-rule-button) {
     align-items: center;
     border: none;
     background-color: transparent;
-    opacity: 0.75;
+    opacity: 0.5;
+}
+
+.p-datatable-column-header-content > span:not(.p-datatable-column-title) > svg > path {
+    /* fill: #757575; */
+    fill: #ffffff;
+}
+
+.p-datatable-column-header-content > span:not(.p-datatable-column-title):has(svg[sorted="true"]) {
+    opacity: 1;
+}
+
+.p-datatable-column-header-content > span:not(.p-datatable-column-title):has(svg[sorted="true"]) > svg > path {
+    /* fill: #FFD613; */
+    /* fill: var(--fwdx-blue); */
+    fill: var(--fwdx-yellow);
 }
 
 .p-datatable-column-header-content > span:not(.p-datatable-column-title):hover {
     cursor: pointer;
     opacity: 1;
-    background-color: var(--light-gray-button-bg);
+    /* background-color: var(--light-gray-button-bg); */
+    background-color: var(--fwdx-blue-button-hover);
     transition: 0.1s;
 }

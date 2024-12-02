@@ -69,5 +69,20 @@ export default {
                     reject(Error("Error occurred while fetching data."));
                 });
         });
-    }
+    },
+    getUniquePathogens() {
+        return new Promise(function(resolve, reject){
+            api.getUniquePathogens()
+                .then(response => {
+                    console.log("Successful API call -- get all reports.");
+                    let pathogenOptions = response.data['pathogens'];
+                    console.log(pathogenOptions)
+                    resolve(pathogenOptions);
+                })
+                .catch(error => {
+                    console.error("API call failed:", error);
+                    reject(Error("Error fetching pathogenOptions"));
+                });
+        });
+    },
 }

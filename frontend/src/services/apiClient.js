@@ -17,6 +17,9 @@ const apiClient = axios.create({
 });
 
 export default {
+    generateReport(data) {
+        return apiClient.post('/v1/smith_wn', data);
+    },
     getDebug() {
         return apiClient.get('/v1/debug');
     },
@@ -35,6 +38,9 @@ export default {
     
     createPathogen(accessionID) {
         return apiClient.post('/v1/pathogens', accessionID)
+    },
+    getUniquePathogens() {
+        return apiClient.get('/v1/report/pathogenOptions')
     },
     getReportById(reportId) {
         var url = '/v1/report/' + reportId;

@@ -80,7 +80,7 @@ Date: 10/30/24
         }
         
         .card-info {
-            color: var(--light-gray-text);
+            color: var(--dark-gray-text);
             font-size: clamp(10pt, 40%, 14pt);
         }
 
@@ -127,7 +127,7 @@ Date: 10/30/24
         }
         
         .card-info {
-            color: var(--light-gray-text);
+            color: var(--dark-gray-text);
             font-size: 9pt;
         }
 

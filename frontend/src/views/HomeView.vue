@@ -8,6 +8,7 @@ Date: 10/30/24
     import ActionPane from '@/components/home_page/ActionPane.vue';
     import UpcomingCard from '@/components/home_page/UpcomingCard.vue';
     import {useRouter} from 'vue-router'
+    import apiClient from '@/services/apiClient';
     
     const router = useRouter();
 
@@ -193,6 +194,7 @@ Date: 10/30/24
     grid-template-rows: 1fr 5fr 5fr;
     gap: 10px;
     min-width: 0;
+    overflow-x: scroll;
 }
 
 .title-wrapper {

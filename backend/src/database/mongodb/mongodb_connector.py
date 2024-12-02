@@ -92,6 +92,14 @@ class MongoDBConnector:
     def fetch_all_documents(self, collection: CollectionType, filter: dict = {}):
         result = self.database[collection.value].find(filter)
         return result
+    
+    def get_unique_values(self, collection: CollectionType, field: str):
+        result = self.database[collection.value].distinct(field)
+        return result
+    
+    def count_documents_with_field(self, collection: CollectionType, field_value: str):
+        result = self.database[collection.value].count_documents(field_value)
+        return result
 
     def create_collection(self, collection: CollectionType):
         collection = self.database.create_collection(collection.value)
