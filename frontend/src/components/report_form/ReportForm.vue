@@ -9,7 +9,7 @@ Date: 10/30/24
     import { onBeforeMount } from 'vue';
     import FormSelectionItem from './FormSelectionItem.vue';
     import FormCheckboxItem from './FormCheckboxItem.vue';
-    import FormTextInputItem from './FormTextInputItem.vue';
+    import FormTextInputItemNew from './FormTextInputItemNew.vue';
     import FormActionButton from './FormActionButton.vue';
     import FormFrequencyInputItem from './FormFrequencyInputItem.vue';
     import PathogenSelectOverlay from './PathogenSelectOverlay.vue';
@@ -183,7 +183,7 @@ Date: 10/30/24
     <Transition name="form">
         <div v-if="initComplete" class="report-form-container">
             <h1 class="form-header">{{ formTitle }}</h1>
-            <FormTextInputItem v-model="reportTitle" section-header="Title" input-type="title" @inputTextChanged="updateDisabled()"/>
+            <FormTextInputItemNew v-model="reportTitle" section-header="Title" input-type="title" @inputTextChanged="updateDisabled()"/>
             <FormSelectionItem select-type="table" selection-header="Pathogen" :options-list="pathogenOptions" :selection-var="pathogenSelection" select-field="pathogen" @selectionChanged="setSelection" @selectButtonClicked="showPathogenSelect"/>
             <Transition>
                 <PathogenSelectOverlay v-if="showPathogenOverlay" v-model="pathogenSelection" :pathogen-options="pathogens" @pathogenSelected="showPathogenSelect" @hideOverlayClicked="showPathogenSelect" />
@@ -195,7 +195,7 @@ Date: 10/30/24
             <FormFrequencyInputItem v-if="showFrequency" section-header="Report Frequency" />
             <!-- <FormCheckboxItem section-header="Databases" :options-list="databaseCheckboxOptions" /> -->
             <FormCheckboxItem section-header="Notifications" :options-list="notificationCheckboxOptions" />
-            <FormTextInputItem v-model="confirmationText" input-type="confirmation" is-confirmation="true" section-header="Type 'YES' to confirm the above information is correct" @confirmationTextChanged="updateDisabled()"/>
+            <FormTextInputItemNew v-model="confirmationText" input-type="confirmation" is-confirmation="true" section-header="Type 'YES' to confirm the above information is correct" @confirmationTextChanged="updateDisabled()"/>
             <div class="form-button-container">
                 <FormActionButton button-text="Cancel" button-class="cancel" @cancelButtonClicked="cancelClicked"/>
                 <FormActionButton v-if="isEditReport" v-model="confirmationText" button-text="Save Changes" button-class="submit" @submitButtonClicked="submitClicked"/>
