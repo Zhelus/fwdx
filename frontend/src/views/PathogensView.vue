@@ -18,6 +18,8 @@
         filter-display="menu"
         paginator
         removableSort
+        currentPageReportTemplate="{currentPage} / {totalPages}"
+        paginatorTemplate="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
     >
       <!-- Column Definitions -->
       <Column field="taxonomicID" header="Taxonomic ID" sortable>
