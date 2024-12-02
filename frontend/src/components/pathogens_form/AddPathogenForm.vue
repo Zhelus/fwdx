@@ -2,22 +2,66 @@
 import {ref} from 'vue';
 import FormTextInputItem from '@/components/report_form/FormTextInputItem.vue';
 import {useRouter} from 'vue-router';
+import pathogenApiHelper from '@/services/pathogensApiHelper.js'
+import FormActionButton from "@/components/report_form/FormActionButton.vue";
+import {useToast} from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+
+const $toast = useToast(); // Initialize toast
+
+const router = useRouter();
+const props = defineProps(['formTitle', 'isEditReport']);
 
 const taxonomicID = ref('')
 const commonName = ref('');
 const sequence = ref('');
-
-const router = useRouter();
-const props = defineProps(['formTitle', 'isEditReport']);
+const accessionID = ref('');
+const confirmationText = ref('');
 
 function onCancel() {
   router.push("/pathogens");
 }
 
 function onSubmit() {
-  console.log(taxonomicID.value)
-  console.log(commonName.value)
-  console.log(sequence.value)
+  if (confirmationText.value !== "YES") {
+    console.error("Please type 'YES' to confirm before submitting.");
+    return;
+  }
+
+  if (commonName.value === '' || taxonomicID.value === '' || sequence.value === '' || accessionID.value === '') {
+    console.error("One or more fields left empty.");
+    $toast.error('One or more fields left empty.', {
+      position: 'top-right',
+      duration: 3000,
+    });
+    return;
+  }
+
+  // MARK: Check that these values are OK for database entry (strip whitespaces, etc.)
+  const pathogen = {
+    'common_name': commonName.value,
+    'taxonomicID': taxonomicID.value,
+    'genomic_sequence': sequence.value,
+    'accessionID': accessionID.value
+  }
+
+  // upload data
+  pathogenApiHelper.createPathogen(pathogen)
+      .then(data => {
+        console.log("Pathogen created successfully:", data);
+        $toast.success('Pathogen created successfully!', {
+          position: 'top-right',
+          duration: 3000,
+        });
+        router.push("/pathogens");
+      })
+      .catch(error => {
+        console.error("Error creating pathogen:", error);
+        $toast.error('Error creating pathogen. Please try again later.', {
+          position: 'top-right',
+          duration: 3000,
+        });
+      })
 }
 </script>
 
@@ -31,6 +75,14 @@ function onSubmit() {
           v-model="taxonomicID"
           placeholder="208893"
           section-header="Taxonomic ID"
+      />
+    </div>
+
+    <div>
+      <FormTextInputItem
+          v-model="accessionID"
+          placeholder="KJ643523.1"
+          section-header="Accession ID"
       />
     </div>
 
@@ -50,11 +102,24 @@ function onSubmit() {
       </div>
     </div>
 
-    <div class="button-group">
-      <button class="cancel-button" @click="onCancel">Cancel</button>
-      <button class="submit-button" @click="onSubmit">Submit</button>
-    </div>
+    <FormTextInputItem v-model="confirmationText"
+                       section-header="Type 'YES' to confirm the above information is correct"/>
 
+    <div class="button-group">
+      <FormActionButton
+          button-class="cancel"
+          button-text="Cancel"
+          @cancelButtonClicked=onCancel
+      />
+      <div class="action-buttons">
+        <FormActionButton
+            v-model="confirmationText"
+            button-class="submit"
+            button-text="Submit"
+            @click=onSubmit
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -167,5 +232,11 @@ button:disabled {
   max-height: 20rem;
   max-width: 100%;
   resize: vertical;
+}
+
+.text-input:focus {
+  border: var(--input-focus-border);
+  outline: var(--input-focus-outline);
+  transition: 0.03s;
 }
 </style>

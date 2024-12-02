@@ -62,18 +62,19 @@ export default {
     },
 
 
-    createPathogen(pathogenID) {
+    createPathogen(pathogen) {
         return new Promise((resolve, reject) => {
-            api.createPathogen(pathogenID)
+            api.createPathogen(JSON.stringify(pathogen))
                 .then(response => {
                     console.log("API call successful: Created pathogen.");
                     resolve(response.data);
                 })
                 .catch(error => {
                     console.error("API call failed:", error);
-                    reject(Error("Error creating new pathogen."));
+                    reject(new Error("Error creating new pathogen."));
                 });
         });
     },
+
 
 };
