@@ -22,30 +22,30 @@ Date: 11/11/24
     const initComplete = ref(false);
     const reports = ref([]);
     const filterButtons = ref();
-    const keyOrder = ['report_title', 'pathogen_id', 'reagent_id', 'mismatchCount'];
+    const keyOrder = ['report_title', 'pathogen_name', 'product_name', 'mismatchCount'];
     onBeforeMount(async () => {
         // GET all reports from MongoDB
-        // await reportsApiHelper.getAllReports()
-        //         .then(data => {
-        //             reports.value = data;
-        //             for(let i=0; i<reports.value.length; i++){
-        //                 reports.value[i]['mismatchCount'] = reports.value[i]['mismatches'].length;
-        //             }
-        //             initComplete.value = true;
+        await reportsApiHelper.getAllReports()
+                .then(data => {
+                    reports.value = data;
+                    for(let i=0; i<reports.value.length; i++){
+                        reports.value[i]['mismatchCount'] = reports.value[i]['mismatches'].length;
+                    }
+                    initComplete.value = true;
 
-        //         }).catch(error => {
-        //             console.error(error);
-        //         });
-        reports.value = [
-            {"_id":{"$oid":"673136062c3c0e7613ca1b9a"},
-            "report_id":"1234567",
-            "schedule_id":"7654321",
-            "report_title":"Test Report 1",
-            "reagent_id":"6730f02aec38fbfe063398da",
-            "pathogen_id":"10632",
-            "mismatches":[{"oligoID":"67366cb26b5f81586e616809","oligoName":"Forward Primer","oligoSequence":"AATGCAACAGTGCAATCTCA","mismatchLines":"|||||X||||||||||||||","pathogenSequence":"AATGCCACAGTGCAATCTCA","pathogenAccessionID":"KJ643523.1","pathogenCommonName":"Respiratory syncytial virus type A","pathogenCollectionDate":"2015","pathogenLocation":"USA","genomicPosition":"1987","mismatchIndex":["5"],"mismatchCount":"1"},{"oligoID":"67366cb26b5f81586e616809","oligoName":"Reverse Primer","oligoSequence":"GGCCCAACACCAAATTCATC","mismatchLines":"||||XX||X||XX|XX|||X","pathogenSequence":"GGCCTTACTCCTGAAACATA","pathogenAccessionID":"MF001052.1","pathogenCommonName":"Respiratory syncytial virus type A","pathogenCollectionDate":"2015","pathogenLocation":"USA","genomicPosition":"708","mismatchIndex":["4", "5", "8","11","12","14","15", "19"],"mismatchCount":{"$numberInt":"8"}},{"oligoID":"67366cb26b5f81586e616809","oligoName":"Probe 1","oligoSequence":"AAACCTGCTTAGTTTCTTCTTGTTCTC","mismatchLines":"||||||||||||||||||||X|||||X","pathogenSequence":"AAACCTGCTTAGTTTCTTCTGGTTCTT","pathogenAccessionID":"MG027862.1","pathogenCommonName":"Respiratory syncytial virus type A","pathogenCollectionDate":"2015","pathogenLocation":"USA","genomicPosition":"3861","mismatchIndex":[{"$numberInt":"21"},{"$numberInt":"27"}],"mismatchCount":{"$numberInt":"2"}}],
-            "creation_date":"11/15/24"}
-        ]
+                }).catch(error => {
+                    console.error(error);
+                });
+        // reports.value = [
+        //     {"_id":{"$oid":"673136062c3c0e7613ca1b9a"},
+        //     "report_id":"1234567",
+        //     "schedule_id":"7654321",
+        //     "report_title":"Test Report 1",
+        //     "reagent_id":"6730f02aec38fbfe063398da",
+        //     "pathogen_name":"10632",
+        //     "mismatches":[{"oligoID":"67366cb26b5f81586e616809","oligoName":"Forward Primer","oligoSequence":"AATGCAACAGTGCAATCTCA","mismatchLines":"|||||X||||||||||||||","pathogenSequence":"AATGCCACAGTGCAATCTCA","pathogenAccessionID":"KJ643523.1","pathogenCommonName":"Respiratory syncytial virus type A","pathogenCollectionDate":"2015","pathogenLocation":"USA","genomicPosition":"1987","mismatchIndex":["5"],"mismatchCount":"1"},{"oligoID":"67366cb26b5f81586e616809","oligoName":"Reverse Primer","oligoSequence":"GGCCCAACACCAAATTCATC","mismatchLines":"||||XX||X||XX|XX|||X","pathogenSequence":"GGCCTTACTCCTGAAACATA","pathogenAccessionID":"MF001052.1","pathogenCommonName":"Respiratory syncytial virus type A","pathogenCollectionDate":"2015","pathogenLocation":"USA","genomicPosition":"708","mismatchIndex":["4", "5", "8","11","12","14","15", "19"],"mismatchCount":{"$numberInt":"8"}},{"oligoID":"67366cb26b5f81586e616809","oligoName":"Probe 1","oligoSequence":"AAACCTGCTTAGTTTCTTCTTGTTCTC","mismatchLines":"||||||||||||||||||||X|||||X","pathogenSequence":"AAACCTGCTTAGTTTCTTCTGGTTCTT","pathogenAccessionID":"MG027862.1","pathogenCommonName":"Respiratory syncytial virus type A","pathogenCollectionDate":"2015","pathogenLocation":"USA","genomicPosition":"3861","mismatchIndex":[{"$numberInt":"21"},{"$numberInt":"27"}],"mismatchCount":{"$numberInt":"2"}}],
+        //     "creation_date":"11/15/24"}
+        // ]
         initComplete.value = true;
     })
 
@@ -79,14 +79,14 @@ Date: 11/11/24
                 matchMode: FilterMatchMode.STARTS_WITH 
             }] 
         },
-        pathogen_id: { 
+        pathogen_name: { 
             operator: FilterOperator.AND, 
             constraints: [{ 
                 value: null, 
                 matchMode: FilterMatchMode.STARTS_WITH 
             }] 
         },
-        reagent_id: { 
+        product_name: { 
             operator: FilterOperator.AND, 
             constraints: [{ 
                 value: null, 
@@ -199,7 +199,7 @@ Date: 11/11/24
     <!-- <h1 class="form-header">All Reports</h1> -->
     <!-- Use to add a new data table component to the page -->
     <!-- <Transition> -->
-    <BackButton :return-url="'/'" :display-warning="false"/>
+    <BackButton :return-url="'/reports'" :display-warning="false"/>
         <DataTable 
             v-if="initComplete"
             :value="reports"  
@@ -209,14 +209,13 @@ Date: 11/11/24
             currentPageReportTemplate="{currentPage} / {totalPages}"
             v-model:filters="filters"
             filter-display="menu"
-            :globalFilterFields="['report_title', 'pathogen_id', 'reagent_id', 'creation_date', 'mismatch_count']"
+            :globalFilterFields="['report_title', 'pathogen_name', 'product_name', 'creation_date', 'mismatch_count']"
             class="browse-reports-table"
             removableSort
         >
             <template #header>
                 <div class="table-search-header">
                 <h1 class="form-header">All Reports</h1>
-
                     <IconField>
                         <!-- <InputIcon>
                             <i class="pi pi-search" />
@@ -244,7 +243,7 @@ Date: 11/11/24
                 </template> 
             </Column>
             <Column field="creation_date" header="Date" sortable></Column>
-            <Column field="pathogen_id" header="Pathogen" sortable>
+            <Column field="pathogen_name" header="Pathogen" sortable>
                 <template #filter="{ filterModel }">
                     <InputText
                     v-model="filterModel.value"
@@ -252,12 +251,12 @@ Date: 11/11/24
                     placeholder="Search by pathogen"/>
                 </template> 
             </Column>
-            <Column field="reagent_id" header="Reagent" sortable>
+            <Column field="product_name" header="Reagent" sortable>
                 <template #filter="{ filterModel }">
                     <InputText
                     v-model="filterModel.value"
                     type="text"
-                    placeholder="Search by reagent"/>
+                    placeholder="Search by product"/>
                 </template> 
             </Column>
             <!-- Options for a column that is to be filtered numerically  -->
@@ -269,10 +268,10 @@ Date: 11/11/24
                     placeholder="Search by mismatches"/>
                 </template> 
             </Column>
-            <Column field="report_id" header="Actions">
+            <Column field="_id" header="Actions">
                 <!-- Use to pass custom content to a cell of the data table -->
                 <template #body="slotProps">
-                    <ViewReportButton button-class="table-button" :report-id="slotProps.data.report_id" />
+                    <ViewReportButton button-class="table-button" :report-id="slotProps.data._id" />
                 </template>
             </Column>
         </DataTable>
@@ -298,7 +297,7 @@ Date: 11/11/24
         height: 100%;
         max-height: 100%;
         background-color: var(--gray-page-background);
-        padding: 1rem 2rem 2rem;
+        padding: 1em 2rem 2rem;
         min-width: 100%;
     }
 

@@ -85,12 +85,13 @@ Date: 11/5/24
 .blue-table-button {
     border: none;
     border-radius: 5px;
-    height: 16pt;
+    height: 1.6em;
+    width: 3.2em;
     font-size: 10pt;
     font-weight: 700;
     background-color: var(--fwdx-blue);
     color: var(--blue-button-text);
-    padding: 0 1em;
+    /* padding: 0 1em; */
 }
 
 .p-datatable-table-container{

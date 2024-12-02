@@ -9,36 +9,61 @@
     const emit = defineEmits(['productSelected'])
     const testData = [
         {
-            productName: "Product 1",
-            oligoCount: "5",
+            productID: "1234567",
+            productName: "JC Polyomavirus Reagent",
+            oligoCount: "6",
+            oligos: [{
+                sequence: "AATGCAACAGTGCAATCTCA",
+                oligoName: "Forward Primer"
+            }, 
+            {
+                sequence: "GGCCCAACACCAAATTCATC",
+                oligoName: "Forward Primer"
+            }, 
+            {
+                sequence: "TTGGGTTCCTGATCCCACCAG",
+                oligoName: "Reverse Primer"
+            }, 
+            {
+                sequence: "AAGTACATGCCCATAAGCAA",
+                oligoName: "Reverse Primer"
+            }, 
+            {
+                sequence: "AGACAGCCATATGCAGTAG",
+                oligoName: "Probe 1"
+            }, 
+            {
+                sequence: "AAACCTGCTTAGTTTCTTCTGGTTCTT",
+                oligoName: "Probe 1"
+            }],
+            metadata: "Extra Data"
+        },{
+            productID: "1234567",
+            productName: "Covid-19 Reagent",
+            oligoCount: "6",
             oligos: ["AATGCAACAGTGCAATCTCA", "GGCCCAACACCAAATTCATC", "TTGGGTTCCTGATCCCACCAG", "AAGTACATGCCCATAAGCAA", "AGACAGCCATATGCAGTAG", "AAACCTGCTTAGTTTCTTCTGGTTCTT"],
             metadata: "Extra Data"
         },{
-            productName: "Product 2",
-            oligoCount: "5",
+            productID: "1234567",
+            productName: "RSV A Reagent",
+            oligoCount: "6",
             oligos: ["AATGCAACAGTGCAATCTCA", "GGCCCAACACCAAATTCATC", "TTGGGTTCCTGATCCCACCAG", "AAGTACATGCCCATAAGCAA", "AGACAGCCATATGCAGTAG", "AAACCTGCTTAGTTTCTTCTGGTTCTT"],
             metadata: "Extra Data"
         },{
-            productName: "Product 3",
-            oligoCount: "5",
-            oligos: ["AATGCAACAGTGCAATCTCA", "GGCCCAACACCAAATTCATC", "TTGGGTTCCTGATCCCACCAG", "AAGTACATGCCCATAAGCAA", "AGACAGCCATATGCAGTAG", "AAACCTGCTTAGTTTCTTCTGGTTCTT"],
-            metadata: "Extra Data"
-        },{
-            productName: "Product 4",
-            oligoCount: "5",
+            productID: "1234567",
+            productName: "RSV B Reagent",
+            oligoCount: "6",
             oligos: ["AATGCAACAGTGCAATCTCA", "GGCCCAACACCAAATTCATC", "TTGGGTTCCTGATCCCACCAG", "AAGTACATGCCCATAAGCAA", "AGACAGCCATATGCAGTAG", "AAACCTGCTTAGTTTCTTCTGGTTCTT"],
             metadata: "Extra Data"
         }
     ]
 
-    function assignProduct(oligos, metadata, productName){
-        console.log(oligos);
-        console.log(metadata)
-        productSelected.value = {
-            oligos: oligos,
-            metadata: metadata,
-            name: productName
-        }
+    function assignProduct(product){
+        console.log(product);
+        product['name'] = product.productName;
+        productSelected.value = product;
+        // console.log(productSelected.value);
+        // productSelected.value['name'] = product.productName;
         emit('productSelected')
     }
 </script>
@@ -65,7 +90,7 @@
                         <Column field="metadata" header="Metadata" sortable></Column>
                         <Column field="oligos" header="Actions">
                             <template #body="slotProps">
-                                <AddProductButton button-class="table-button" :oligos="slotProps.data.oligos" :metadata="slotProps.data.metadata" :product-name="slotProps.data.productName" @addProductClicked="assignProduct"/>
+                                <AddProductButton button-class="table-button" :oligos="slotProps.data.oligos" :metadata="slotProps.data.metadata" :product-name="slotProps.data.productName" :product="slotProps.data" @addProductClicked="assignProduct"/>
                             </template>
                         </Column>
                     </DataTable>

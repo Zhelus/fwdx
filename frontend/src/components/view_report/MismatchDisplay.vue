@@ -1,13 +1,58 @@
 <script setup>
     import { ref, onMounted, onBeforeMount, onUpdated } from 'vue'
+    import { InputText, IconField, InputIcon } from 'primevue';
+    import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
     import DataTable from 'primevue/datatable';
     import Column from 'primevue/column';
 
     const props = defineProps(['mismatch', 'mismatches']);
     const sequenceCharClassName = ref("")
+    const arrowId = ref("");
     const activeMismatch = ref({});
     const displayMismatch = ref(false);
+    const filterButtons = ref();
+    const keyOrder = ['pathogenCommonName', 'mismatchCount', 'pathogenLocation', 'pathogenCollectionDate', 'pathogenAccessionID'];
 
+
+    const filters = ref();
+    filters.value = {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        pathogenCommonName: { 
+            operator: FilterOperator.AND, 
+            constraints: [{ 
+                value: null, 
+                matchMode: FilterMatchMode.STARTS_WITH 
+            }] 
+        },
+        pathogenLocation: { 
+            operator: FilterOperator.AND, 
+            constraints: [{ 
+                value: null, 
+                matchMode: FilterMatchMode.STARTS_WITH 
+            }] 
+        },
+        pathogenCollectionDate: { 
+            operator: FilterOperator.AND, 
+            constraints: [{ 
+                value: null, 
+                matchMode: FilterMatchMode.STARTS_WITH 
+            }] 
+        },
+        pathogenAccessionID: { 
+            operator: FilterOperator.AND, 
+            constraints: [{ 
+                value: null, 
+                matchMode: FilterMatchMode.STARTS_WITH 
+            }] 
+        },
+        mismatchCount: { 
+            operator: FilterOperator.AND, 
+            constraints: [{
+                value: null, 
+                matchMode: FilterMatchMode.EQUALS 
+            }] 
+        }
+    };
     // Set a new active mismatch
     function changeActiveMismatch(groupIndex){
         activeMismatch.value = props.mismatches[groupIndex];
@@ -15,6 +60,17 @@
 
     function toggleMismatchDisplay(){
         displayMismatch.value = !displayMismatch.value;
+        let arrow = document.getElementById(arrowId.value);
+        // for(let arrow of arrows) {
+        if(arrow.classList.contains("down")){
+            arrow.classList.remove("down");
+            arrow.classList.add("up");
+        }
+        else{
+            arrow.classList.add("down");
+            arrow.classList.remove("up");
+        }
+        // }
     }
 
     function setDisplayWidths(){
@@ -29,24 +85,41 @@
     // Update display sizing after setting a new active mismatch
     onUpdated(() => {
         setDisplayWidths();
-
+        // Chang the color of the filter icons when a filter is applied
+        console.log("UPDATED");
+        filterButtons.value = document.getElementsByClassName("p-datatable-column-filter-button");
+        if(filterButtons.value.length > 0){
+            for(let i=0; i<keyOrder.length; i++){
+                if(filters.value[keyOrder[i]].constraints[0].value !== null){
+                    filterButtons.value[i].classList.add("in-use");
+                    console.log("ADDING");
+                }
+                else{
+                    filterButtons.value[i].classList.remove("in-use");
+                    console.log("NOT ADDING");   
+                }
+            }
+        }
     })
 
     // Set the first mismatch as "active"
     onBeforeMount(() => {
         activeMismatch.value = props.mismatches[0];
         sequenceCharClassName.value = `${activeMismatch.value.oligoName.replaceAll(' ', '')}-sequence-char`
+        arrowId.value = `${activeMismatch.value.oligoName.replaceAll(' ', '')}-arrow`;
     })
 
     // Set the size of each mismatch character
     onMounted(() => {
+        filterButtons.value = document.getElementsByClassName("p-datatable-column-filter-button");
         setDisplayWidths();
     })
 </script>
 <template>
     <div class="mismatch-container">
         <div class="mismatch-title-wrapper" @click="toggleMismatchDisplay">
-            <img class="inline-icon" src="../icons/dna-icon.svg"></img>
+            <!-- <img class="inline-icon" src="../icons/dna-icon.svg"></img> -->
+            <img :id="arrowId" class="dropdown-icon" src="../icons/dropdown-arrow-gray.svg"></img>
             <h3 class="mismatch-title">{{ activeMismatch.oligoName }}</h3>
 
         </div>
@@ -59,12 +132,49 @@
                 currentPageReportTemplate="{currentPage} / {totalPages}"
                 removableSort
                 class="mismatch-table"
+                v-model:filters="filters"
+                filter-display="menu"
             >
-                <Column field="pathogenCommonName" header="Common Name" sortable></Column>
-                <Column field="mismatchCount" header="Mismatches" sortable></Column>
-                <Column field="pathogenLocation" header="Sample Location" sortable></Column>
-                <Column field="pathogenCollectionDate" header="Sample Date" sortable></Column>
-                <Column field="pathogenAccessionID" header="Accession ID"></Column>
+                <Column field="pathogenCommonName" header="Common Name" sortable>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                        v-model="filterModel.value"
+                        type="text"
+                        placeholder="Search by name"/>
+                    </template> 
+                </Column>
+                <Column field="mismatchCount" filterField="mismatchCount" dataType="numeric" header="Mismatches" sortable>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                        v-model="filterModel.value"
+                        type="text"
+                        placeholder="Search by mismatch count"/>
+                    </template> 
+                </Column>
+                <Column field="pathogenLocation" header="Sample Location" sortable>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                        v-model="filterModel.value"
+                        type="text"
+                        placeholder="Search by sample location"/>
+                    </template> 
+                </Column>
+                <Column field="pathogenCollectionDate" header="Sample Date" sortable>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                        v-model="filterModel.value"
+                        type="text"
+                        placeholder="Search by collection date"/>
+                    </template> 
+                </Column>
+                <Column field="pathogenAccessionID" header="Accession ID">
+                    <template #filter="{ filterModel }">
+                        <InputText
+                        v-model="filterModel.value"
+                        type="text"
+                        placeholder="Search by accession ID"/>
+                    </template> 
+                </Column>
                 <Column field="groupIndex" header="Actions" sortable>
                     <template #body="slotProps">
                         <button class="blue-table-button" @click="changeActiveMismatch(slotProps.data.groupIndex)">View</button>
@@ -109,9 +219,29 @@
         /* border-top: 1.5pt solid var(--light-gray-outline); */
     }
 
-    .inline-icon {
+    .dropdown-icon {
         height: var(--body-text-size);
         margin-right: 0.4em;
+        transition: translate 1s;
+    }
+
+    .dropdown-icon.up {
+        animation: flip-arrow-up 0.2s;
+    }
+
+    .dropdown-icon.down {
+        transform: rotate(180deg);
+        animation: flip-arrow-down 0.2s;
+    }
+
+    @keyframes flip-arrow-down {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(180deg); }
+    }
+
+    @keyframes flip-arrow-up {
+        0% { transform: rotate(180deg); }
+        100% { transform: rotate(0deg); }
     }
 
     .mismatch-title-wrapper{
@@ -131,8 +261,6 @@
         color: #555555;
     }
     
-
-
     .mismatch-title {
         font-size: var(--body-text-size);
         font-weight: 600;

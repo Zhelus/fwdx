@@ -86,7 +86,7 @@ Date: 11/21/24
             <img id="fwdx-image" src="@/assets/bioblade.svg" />
         </div>
         <div id="navbar-main-buttons">
-            <NavigationButton text="Home" :class-object="homeClassObject" routerPath="/" button-name="home-nav" @nav-button-clicked="navigateToPage"/>
+            <NavigationButton text="Home" :class-object="homeClassObject" routerPath="/reports" button-name="home-nav" @nav-button-clicked="navigateToPage"/>
             <NavigationButton text="Pathogens" :class-object="pathogenClassObject" routerPath="/pathogens" button-name="pathogens-nav" @nav-button-clicked="navigateToPage"/>
             <NavigationButton text="Oligos" :class-object="oligoClassObject" routerPath="/oligos" button-name="oligos-nav" @nav-button-clicked="navigateToPage"/>
             <NavigationButton text="Products" :class-object="reagentClassObject" routerPath="/reagents" button-name="reagents-nav" @nav-button-clicked="navigateToPage"/>
@@ -104,9 +104,9 @@ Date: 11/21/24
         padding: 0.25rem 1rem;
         /* background-color: #FFFFFF;
         border-bottom: 1pt solid #EFF0F1; */
-        background: rgba(255, 255, 255, 0.75);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border-bottom: 1pt solid #EFF0F1;
         display: flex;
         flex-direction: row;
@@ -128,6 +128,8 @@ Date: 11/21/24
             width: auto;
             height: 65%;
             border-radius: 8px;
+            background-color: white;
+            padding-right: 0.25em;
         }
     }
 
@@ -136,6 +138,9 @@ Date: 11/21/24
             width: 65%;
             height: auto;
             border-radius: 8px;
+            background-color: white;
+            padding-right: 0.25em;
+
         }
     }
 
@@ -145,6 +150,10 @@ Date: 11/21/24
             height: auto;
             border-radius: 8px;
             min-width: 100px;
+            background-color: white;
+            padding-right: 0.25em;
+
+
         }
     }
 

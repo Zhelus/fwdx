@@ -1,8 +1,8 @@
 <script setup>
-    const props = defineProps(['oligos', 'metadata', 'productName', 'buttonClass'])
+    const props = defineProps(['oligos', 'metadata', 'productName', 'product', 'buttonClass'])
 </script>
 <template>
-    <button :class="buttonClass" @click="$emit('addProductClicked', oligos, metadata, productName)">Add</button>
+    <button :class="buttonClass" @click="$emit('addProductClicked', product)">Add</button>
 </template>
 <style scoped>
      @media(min-width: 1400px) {

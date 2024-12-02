@@ -147,19 +147,24 @@ Date: 10/30/24
 
     function cancelClicked(){
         console.log("Clicked cancel button");
-        router.push("/");
+        router.push("/reports");
     }
     
     function getSMN() {
         console.log(pathogenSelection.value);
         console.log(reagentSelection.value);
         let requestData = {
+            report_title: reportTitle.value,
             NCBI_taxonomy_ID: pathogenSelection.value.pathogenID,
+            pathogen_name: pathogenSelection.value['name'],
+            product_name: reagentSelection.value['productName'],
+            product_id: reagentSelection.value['productID'],
             product: {
-                oligos: ["AATGCAACAGTGCAATCTCA", "GGCCCAACACCAAATTCATC", "TTGGGTTCCTGATCCCACCAG", "AAGTACATGCCCATAAGCAA", "AGACAGCCATATGCAGTAG", "AAACCTGCTTAGTTTCTTCTGGTTCTT"],
-                metadata: "Extra data"
+                oligos: reagentSelection.value['oligos'],
+                metadata: reagentSelection.value['metadata']
             }
         }
+        console.log("REQUEST -- ");
         console.log(requestData);
 
         apiClient.generateReport({data: requestData})

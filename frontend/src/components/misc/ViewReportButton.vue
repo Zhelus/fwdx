@@ -40,13 +40,13 @@
         background-color: var(--fwdx-blue);
         color: var(--blue-button-text);
         border-radius: 5px;
-        height: 25px;
-        width: 60%;
-        min-width: 50px;
+        height: 1.6em;
+        width: 3.2em;
+        /* min-width: 50px; */
         border: none;
         outline: none;
-        font-size: 11pt;
-        font-weight: 500;
+        font-size: 10pt;
+        font-weight: 700;
     }
 
     button:hover {

@@ -118,7 +118,7 @@ Date: 11/5/24
 
 body {
   min-height: 100vh;
-  max-height: 100vh;
+  /* max-height: 100vh; */
   overflow-y: scroll;
   color: var(--color-text);
   background: var(--color-background);
