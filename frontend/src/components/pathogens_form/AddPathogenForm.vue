@@ -2,7 +2,6 @@
 import {ref} from 'vue';
 import FormTextInputItem from '@/components/report_form/FormTextInputItem.vue';
 import {useRouter} from 'vue-router';
-import pathogensApi from '@/services/pathogensApiHelper';
 
 const taxonomicID = ref('')
 const commonName = ref('');
@@ -29,27 +28,26 @@ function onSubmit() {
     <!-- pathogen ID -->
     <div>
       <FormTextInputItem
-          placeholder="Enter here or Upload from text file"
-          section-header="Taxonomic ID"
           v-model="taxonomicID"
+          placeholder="208893"
+          section-header="Taxonomic ID"
       />
     </div>
 
     <!-- pathogen Name -->
     <div>
       <FormTextInputItem
-          placeholder="Enter pathogen Name"
-          section-header="Common Name"
           v-model="commonName"
+          placeholder="Human respiratory syncytial virus A"
+          section-header="Common Name"
       />
     </div>
 
     <div>
-      <FormTextInputItem
-          placeholder="Enter pathogen Name"
-          section-header="Genomic Sequence"
-          v-model="sequence"
-      />
+      <div class="text-input-container">
+        <h3 class="section-header">Genomic Sequence</h3>
+        <textarea v-model="sequence" class="text-input" placeholder="ACTGAGTCACG..." type="text"/>
+      </div>
     </div>
 
     <div class="button-group">
@@ -133,5 +131,41 @@ button:disabled {
   gap: 10px;
   justify-content: flex-end; /* Align buttons to the right */
   margin-top: 10px;
+}
+
+.section-header {
+  color: var(--dark-gray-text);
+  font-size: var(--subheading-size);
+  font-weight: var(--subheading-weight);
+  line-height: var(--subheading-size);
+  text-align: left;
+  text-justify: top;
+  margin-bottom: 0.25rem;
+}
+
+.text-input-container {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  width: 40%;
+  min-width: 505px;
+  background-color: transparent;
+  margin-bottom: var(--form-element-spacing);
+  margin-top: 0rem;
+}
+
+.text-input {
+  border: 1pt solid var(--light-gray-outline);
+  border-radius: 5px;
+  height: 2.5rem;
+  width: 100%;
+  color: var(--dark-gray-text);
+  font-weight: 500;
+  font-size: var(--body-text-size);
+  padding-left: .3rem;
+  min-height: 8rem;
+  max-height: 20rem;
+  max-width: 100%;
+  resize: vertical;
 }
 </style>
