@@ -16,6 +16,8 @@
             :rowsPerPageOptions="[5, 10, 15]"
             paginator
             removableSort
+            currentPageReportTemplate="{currentPage} / {totalPages}"
+            paginatorTemplate="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
         >
             <!-- Column Definitions -->
             <Column field="accessID" header="Pathogen ID" sortable />

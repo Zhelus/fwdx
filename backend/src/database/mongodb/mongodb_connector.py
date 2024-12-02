@@ -25,7 +25,7 @@ config.env file must contain PYTHONPATH=./ so that the project root is included 
 class MongoDBConnector:
 
     # NOTE: initialization of object creates new connection to MongoDB, may want to create a singleton instead
-    def __init__(self, force_ssl: bool = False):
+    def __init__(self, force_ssl: bool=True):
         self.env = Environment()
 
         self.uri = self.env.DB_CONNECTION_STRING

@@ -35,9 +35,9 @@ export default {
     getAllPathogens() {
         return apiClient.get('/v1/pathogens/all');
     },
-    
-    createPathogen(accessionID) {
-        return apiClient.post('/v1/pathogens', accessionID)
+
+    createPathogen(pathogen) {
+        return apiClient.post('/v1/pathogen', pathogen)
     },
     getUniquePathogens() {
         return apiClient.get('/v1/report/pathogenOptions')
@@ -65,7 +65,7 @@ export default {
         var url = 'v1/users/get/' + user_id;
         return apiClient.get(url)
     },
-    getAllUsers(){
+    getAllUsers() {
         var url = 'v1/users/get_all_users'
         return apiClient.get(url)
     },
@@ -73,19 +73,19 @@ export default {
         var url = 'v1/users/update/' + user_id;
         return apiClient.put(url, updatedUserData)
     },
-    deleteUser(user_id){
+    deleteUser(user_id) {
         var url = 'v1/users/delete/' + user_id;
         return apiClient.delete(user_id)
     },
-    loginUser(credentials){
+    loginUser(credentials) {
         var url = 'v1/users/login';
         return apiClient.post(url, credentials)
     },
-    logoutUser(user_id){
+    logoutUser(user_id) {
         var url = 'v1/users/logout/' + user_id;
         return apiClient.post(url)
     },
-    registerUser(){
+    registerUser() {
         var url = 'v1/users/register';
         return apiClient.post(url)
     },
@@ -109,7 +109,7 @@ export default {
     deleteProduct(productId) {
         var url = '/v1/products/' + productId;
         return apiClient.delete(url);
-    }, 
+    },
     getAllOligos() {
         return apiClient.get('/v1/oligos/all');
     },

@@ -1,112 +1,124 @@
 <script setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 import FormTextInputItem from '@/components/report_form/FormTextInputItem.vue';
-import FormCheckboxItem from '@/components/report_form/FormCheckboxItem.vue';
-import FormActionButton from '@/components/report_form/FormActionButton.vue';
-import { useRouter } from 'vue-router';
-import pathogensApi from '@/services/pathogensApiHelper';
+import {useRouter} from 'vue-router';
+import pathogenApiHelper from '@/services/pathogensApiHelper.js'
+import FormActionButton from "@/components/report_form/FormActionButton.vue";
+import {useToast} from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
-const pathogenName = ref('');
-const pathogenString = ref('');
-const dnaStrandPositive = ref(true); // Bind directly to the checkbox
-const confirmationText = ref('');
-const props = defineProps(['formTitle', 'isEditReport']);
+const $toast = useToast(); // Initialize toast
+
 const router = useRouter();
+const props = defineProps(['formTitle', 'isEditReport']);
 
-function cancelClicked() {
-  console.log("Clicked cancel button");
+const taxonomicID = ref('')
+const commonName = ref('');
+const sequence = ref('');
+const accessionID = ref('');
+const confirmationText = ref('');
+
+function onCancel() {
   router.push("/pathogens");
 }
 
-async function submitClicked() {
+function onSubmit() {
   if (confirmationText.value !== "YES") {
     console.error("Please type 'YES' to confirm before submitting.");
     return;
   }
 
-  const pathogenData = {
-    name: pathogenName.value,
-    sequence: pathogenString.value,
-    archived: false,
-    dna_strand_positive: dnaStrandPositive.value, // Use the directly bound value
-  };
-
-  try {
-    const response = await pathogensApi.createpathogen(pathogenData);
-    console.log("pathogen created successfully:", response);
-    router.push("/pathogens"); // Redirect to pathogens list after successful creation
-  } catch (error) {
-    console.error("Failed to create pathogen:", error);
+  if (commonName.value === '' || taxonomicID.value === '' || sequence.value === '' || accessionID.value === '') {
+    console.error("One or more fields left empty.");
+    $toast.error('One or more fields left empty.', {
+      position: 'top-right',
+      duration: 3000,
+    });
+    return;
   }
-}
 
-function handleFileUpload(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      pathogenString.value = e.target.result; // Set the file content to the input field
-    };
-    reader.onerror = () => {
-      console.error("Failed to read the file.");
-    };
-    reader.readAsText(file); // Read file content as text
+  // MARK: Check that these values are OK for database entry (strip whitespaces, etc.)
+  const pathogen = {
+    'common_name': commonName.value,
+    'taxonomicID': taxonomicID.value,
+    'genomic_sequence': sequence.value,
+    'accessionID': accessionID.value
   }
-}
 
-function triggerFileInput() {
-  document.getElementById('file-upload').click();
+  // upload data
+  pathogenApiHelper.createPathogen(pathogen)
+      .then(data => {
+        console.log("Pathogen created successfully:", data);
+        $toast.success('Pathogen created successfully!', {
+          position: 'top-right',
+          duration: 3000,
+        });
+        router.push("/pathogens");
+      })
+      .catch(error => {
+        console.error("Error creating pathogen:", error);
+        $toast.error('Error creating pathogen. Please try again later.', {
+          position: 'top-right',
+          duration: 3000,
+        });
+      })
 }
 </script>
 
 <template>
   <div class="add-pathogen-form-container">
     <h1 class="form-header">{{ formTitle }}</h1>
-    
-    <!-- pathogen ID -->
-    <div class="pathogen-id-upload">
-      <FormTextInputItem 
-        v-model="PathogensDetailedView" 
-        section-header="Unique Pathogen Identifier" 
-        placeholder="Enter here or Upload from text file" 
-      /> 
-    </div>
 
-    <!-- pathogen Name -->
-    <div class="pathogen-name">
-      <FormTextInputItem 
-        v-model="pathogenName" 
-        section-header="Common Name" 
-        placeholder="Enter pathogen Name" 
+    <!-- pathogen ID -->
+    <div>
+      <FormTextInputItem
+          v-model="taxonomicID"
+          placeholder="208893"
+          section-header="Taxonomic ID"
       />
     </div>
 
-    <div class="pathogen-gene-upload">
-    <span class="upload-text">Genomic Sequence File:</span> <!-- Add this text to the left of the button -->
-
-    <!-- Hidden File Input -->
-    <input 
-        type="file" 
-        accept=".txt" 
-        class="hidden-file-input" 
-        id="file-upload" 
-        @change="handleFileUpload" 
-    />
-
-    <!-- Styled Button to Trigger File Upload -->
-    <FormActionButton 
-        section-header="Upload Genomic Sequence" 
-        button-text="Select" 
-        button-class="upload-file-button" 
-        @click="triggerFileInput" 
-    />
+    <div>
+      <FormTextInputItem
+          v-model="accessionID"
+          placeholder="KJ643523.1"
+          section-header="Accession ID"
+      />
     </div>
 
+    <!-- pathogen Name -->
+    <div>
+      <FormTextInputItem
+          v-model="commonName"
+          placeholder="Human respiratory syncytial virus A"
+          section-header="Common Name"
+      />
+    </div>
 
+    <div>
+      <div class="text-input-container">
+        <h3 class="section-header">Genomic Sequence</h3>
+        <textarea v-model="sequence" class="text-input" placeholder="ACTGAGTCACG..." type="text"/>
+      </div>
+    </div>
+
+    <FormTextInputItem v-model="confirmationText"
+                       section-header="Type 'YES' to confirm the above information is correct"/>
 
     <div class="button-group">
-    <button class="cancel-button" @click="onCancel">Cancel</button>
-    <button class="submit-button" :disabled="isSubmitting" @click="onSubmit">Submit</button>
+      <FormActionButton
+          button-class="cancel"
+          button-text="Cancel"
+          @cancelButtonClicked=onCancel
+      />
+      <div class="action-buttons">
+        <FormActionButton
+            v-model="confirmationText"
+            button-class="submit"
+            button-text="Submit"
+            @click=onSubmit
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -133,78 +145,98 @@ function triggerFileInput() {
 .pathogen-name {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
 }
 
-.pathogen-string-upload {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.hidden-file-input {
-  display: none; /* Hide the native file input */
-}
-.pathogen-gene-upload {
-  display: flex;
-  align-items: center;
-  gap: 10px; /* Adjust spacing between the text and the button */
-}
-
-.upload-text {
-  font-size: 20px; /* Match the button font size */
-  font-weight: 700; /* Optional: Make the text bold */
-  color: #333; /* Adjust color as needed */
-}
 /* General Button Styles */
 button {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 /* Cancel Button */
 button.cancel-button {
-    background-color: #f5f5f5;
-    color: #333;
-    border: 1px solid #ccc;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
 }
 
 button.cancel-button:hover {
-    background-color: #e0e0e0;
-    transform: scale(1.05);
+  background-color: #e0e0e0;
+  transform: scale(1.05);
 }
 
 /* Submit Button */
 button.submit-button {
-    background-color: #007bff;
-    color: #fff;
-    border: 1px solid #007bff;
+  background-color: #007bff;
+  color: #fff;
+  border: 1px solid #007bff;
 }
 
 button.submit-button:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
+  background-color: #0056b3;
+  transform: scale(1.05);
 }
 
 /* Disabled Button */
 button:disabled {
-    background-color: #ccc;
-    color: #666;
-    cursor: not-allowed;
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
 }
 
 /* Flexbox Alignment for Buttons */
 .button-group {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end; /* Align buttons to the right */
-    margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end; /* Align buttons to the right */
+  margin-top: 10px;
+}
+
+.section-header {
+  color: var(--dark-gray-text);
+  font-size: var(--subheading-size);
+  font-weight: var(--subheading-weight);
+  line-height: var(--subheading-size);
+  text-align: left;
+  text-justify: top;
+  margin-bottom: 0.25rem;
+}
+
+.text-input-container {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  width: 40%;
+  min-width: 505px;
+  background-color: transparent;
+  margin-bottom: var(--form-element-spacing);
+  margin-top: 0rem;
+}
+
+.text-input {
+  border: 1pt solid var(--light-gray-outline);
+  border-radius: 5px;
+  height: 2.5rem;
+  width: 100%;
+  color: var(--dark-gray-text);
+  font-weight: 500;
+  font-size: var(--body-text-size);
+  padding-left: .3rem;
+  min-height: 8rem;
+  max-height: 20rem;
+  max-width: 100%;
+  resize: vertical;
+}
+
+.text-input:focus {
+  border: var(--input-focus-border);
+  outline: var(--input-focus-outline);
+  transition: 0.03s;
 }
 </style>

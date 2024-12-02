@@ -5,14 +5,14 @@ Date: 10/30/24
 -->
 <script setup>
     import {ref} from 'vue'
-    const props = defineProps(['sectionHeader', 'optionsList', 'selectionVar', 'selectField']);
+    const props = defineProps(['sectionHeader', 'optionsList', 'selectionVar', 'selectField', 'placeholder']);
     const confirmationModel = defineModel();
     const localSelectionVar = ref();
 </script>
 <template>
     <div class="text-input-container">
         <h3 class="section-header">{{ sectionHeader }}</h3>
-        <input class="text-input" type="text" v-model="confirmationModel"/>
+        <input class="text-input" type="text" v-model="confirmationModel" :placeholder="placeholder" />
     </div>
 </template>
 <style scoped>
