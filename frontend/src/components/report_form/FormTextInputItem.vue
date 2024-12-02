@@ -12,7 +12,7 @@ Date: 10/30/24
 <template>
     <div class="text-input-container">
         <h3 class="section-header">{{ sectionHeader }}</h3>
-        <input class="text-input" type="text" v-model="confirmationModel">
+        <input class="text-input" type="text" v-model="confirmationModel" :placeholder="placeholder" />
     </div>
 </template>
 <style scoped>
